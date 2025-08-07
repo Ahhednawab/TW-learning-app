@@ -1,0 +1,139 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
+import 'package:mandarinapp/app/modules/home/views/home_view.dart';
+
+class BottomnavView extends GetView<BottomnavController> {
+  final TextStyle unselectedLabelStyle = const TextStyle(
+    color: whiteColor,
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+  );
+
+  final TextStyle selectedLabelStyle = const TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+    fontSize: 12,
+  );
+
+  const BottomnavView({super.key});
+
+  buildBottomNavigationMenu(context, controller) {
+    return Obx(
+      () => MediaQuery(
+        data: MediaQuery.of(
+          context,
+        ).copyWith(textScaler: const TextScaler.linear(1.0)),
+        child: Container(
+          height: 70,
+          decoration: const BoxDecoration(
+            color: secondaryColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                spreadRadius: 1,
+                blurRadius: 10,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            showUnselectedLabels: true,
+            showSelectedLabels: true,
+
+            onTap: controller.changeTabIndex,
+            currentIndex: controller.tabIndex.value,
+            backgroundColor: whiteColor,
+            unselectedItemColor: greyColor,
+            selectedItemColor: primaryColor,
+            unselectedLabelStyle: unselectedLabelStyle,
+            selectedLabelStyle: selectedLabelStyle,
+            items: List.generate(
+              4,
+              (index) => BottomNavigationBarItem(
+                icon: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Top Indicator
+                    Container(
+                      height: 4,
+                      width: 44,
+                      decoration: BoxDecoration(
+                        color:
+                            controller.tabIndex.value == index
+                                ? primaryColor
+                                : Colors.transparent,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ), // Space between indicator and icon
+                    Icon(
+                      _getIcon(index),
+                      size: controller.tabIndex.value == index ? 24.0 : 20.0,
+                      color:
+                          controller.tabIndex.value == index
+                              ? primaryColor
+                              : greyColor,
+                    ),
+                  ],
+                ),
+                label: _getLabel(index),
+                backgroundColor: whiteColor,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconData _getIcon(int index) {
+    switch (index) {
+      case 0:
+        return Icons.home_outlined;
+      case 1:
+        return Icons.menu_book_rounded;
+      case 2:
+        return Icons.style_rounded;
+      case 3:
+        return Icons.quiz_outlined;
+      default:
+        return Icons.home_outlined;
+    }
+  }
+
+  String _getLabel(int index) {
+    switch (index) {
+      case 0:
+        return 'Home';
+      case 1:
+        return 'Vocabulary';
+      case 2:
+        return 'Flash Cards';
+      case 3:
+        return 'Quiz';
+      default:
+        return 'Home';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBody: true,
+      backgroundColor: whiteColor,
+      bottomNavigationBar: buildBottomNavigationMenu(context, controller),
+      body: Obx(() {
+        print(controller.tabIndex.value);
+        return IndexedStack(
+          index: controller.tabIndex.value,
+          children: [HomeView(), Placeholder(), Placeholder(), Placeholder()],
+        );
+      }),
+    );
+  }
+}
