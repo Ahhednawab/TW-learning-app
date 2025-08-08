@@ -10,7 +10,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.orange,
-        scaffoldBackgroundColor: scaffoldColor, // Updated to match the new color
+        scaffoldBackgroundColor: scaffoldColor, 
       ),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

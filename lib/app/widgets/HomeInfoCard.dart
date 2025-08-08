@@ -22,7 +22,7 @@ Widget HomeInfoCard({
               child: Opacity(
                 opacity: 0.12,
                 child: Text(
-                  watermark!,
+                  watermark,
                   style: const TextStyle(
                     fontSize: 64,
                     fontWeight: FontWeight.bold,

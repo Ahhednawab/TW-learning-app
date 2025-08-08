@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
 import 'package:mandarinapp/app/modules/home/views/home_view.dart';
+import 'package:mandarinapp/app/modules/vocabulary/controllers/vocabulary_controller.dart';
+import 'package:mandarinapp/app/modules/vocabulary/views/vocabulary_view.dart';
 
 class BottomnavView extends GetView<BottomnavController> {
   final TextStyle unselectedLabelStyle = const TextStyle(
@@ -123,6 +125,7 @@ class BottomnavView extends GetView<BottomnavController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(VocabularyController());
     return Scaffold(
       extendBody: true,
       backgroundColor: whiteColor,
@@ -131,7 +134,7 @@ class BottomnavView extends GetView<BottomnavController> {
         print(controller.tabIndex.value);
         return IndexedStack(
           index: controller.tabIndex.value,
-          children: [HomeView(), Placeholder(), Placeholder(), Placeholder()],
+          children: [HomeView(), VocabularyView(), Placeholder(), Placeholder()],
         );
       }),
     );

@@ -33,29 +33,37 @@ class HomeView extends GetView<HomeController> {
                         Get.toNamed('/profile');
                       },
                       child: const CircleAvatar(
-                        radius: 26,
+                        radius: 24,
                         backgroundColor: primaryColor,
-                        child: Icon(Icons.person, color: whiteColor, size: 36),
+                        // child: Icon(Icons.person, color: whiteColor, size: 36),
+                        backgroundImage: AssetImage(
+                          'assets/images/profile.png',),
                       ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Chinese',
-                            style: TextStyle(
-                              color: blackColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17,
+                      child: GestureDetector(
+                        onTap:() {
+                          //Dropdown for language selection
+                          
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Chinese',
+                              style: TextStyle(
+                                color: blackColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 17,
+                              ),
                             ),
-                          ),
-                          const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: blackColor,
-                          ),
-                        ],
+                            const Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: blackColor,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     IconButton(

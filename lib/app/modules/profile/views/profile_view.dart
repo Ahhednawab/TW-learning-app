@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/profile/widgets/profile_header.dart';
 import 'package:mandarinapp/app/modules/profile/widgets/profile_section_header.dart';
 import 'package:mandarinapp/app/modules/profile/widgets/profile_list_tile.dart';
-
+import 'package:mandarinapp/app/routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -16,6 +17,7 @@ class ProfileView extends GetView<ProfileController> {
       backgroundColor: scaffoldColor,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Back arrow and header
             Padding(
@@ -25,18 +27,24 @@ class ProfileView extends GetView<ProfileController> {
                   InkWell(
                     borderRadius: BorderRadius.circular(24),
                     onTap: () => Get.back(),
-                    child: const Icon(Icons.arrow_back_ios_new_rounded, size: 28, color: Colors.black),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 28,
+                      color: Colors.black,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             // Profile header
-            const ProfileHeader(
-              avatarUrl: null,
+            ProfileHeader(
+              avatarUrl: 'assets/images/profile.png',
               userName: 'John Steve',
               learnedWords: 3,
-              onEdit: null,
+              onEdit: () {
+                Get.toNamed(Routes.EDITPROFILE);
+              },
             ),
             const SizedBox(height: 16),
             // Divider
@@ -55,7 +63,7 @@ class ProfileView extends GetView<ProfileController> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
+                      color: Colors.black.withValues(alpha:0.03),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -66,18 +74,30 @@ class ProfileView extends GetView<ProfileController> {
                     ProfileListTile(
                       icon: Icons.language,
                       label: 'Language',
-                      trailing: const Icon(Icons.keyboard_arrow_right_rounded, color: Colors.black),
-                      onTap: () {},
+                      trailing: const Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        color: Colors.black,
+                      ),
+                      onTap: () {
+                        controller.showLanguageSelectionDialog();
+                      },
                     ),
                     Divider(height: 1, color: lightgreyColor),
                     ProfileListTile(
                       icon: Icons.notifications_none_rounded,
                       label: 'Notification',
-                      trailing: Switch(
-                        value: true,
-                        onChanged: (v) {},
-                        activeColor: primaryColor,
-                        inactiveTrackColor: lightgreyColor,
+                      trailing: Obx(
+                        ()=> Transform.scale(
+                          scale: 0.7,
+                          child: CupertinoSwitch(
+                            value: controller.isNotificationEnabled.value,
+                            onChanged: (v) {
+                              controller.toggleNotification(v);
+                            },
+                            activeTrackColor: primaryColor,
+                            inactiveTrackColor: lightgreyColor,
+                          ),
+                        ),
                       ),
                       onTap: null,
                     ),
@@ -95,7 +115,7 @@ class ProfileView extends GetView<ProfileController> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
+                      color: Colors.black.withValues(alpha:0.03),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),

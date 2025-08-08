@@ -13,7 +13,7 @@ Widget HomeProgressCard({
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: blueColor.withOpacity(0.08),
+          color: blueColor.withValues(alpha:0.08),
           borderRadius: BorderRadius.circular(18),
         ),
         child: Row(
