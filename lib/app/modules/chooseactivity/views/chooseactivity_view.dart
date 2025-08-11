@@ -14,7 +14,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
     return Scaffold(
       appBar: customAppBar(title:controller.activity ?? 'Choose Activity'),
       body:Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(14.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -53,6 +53,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
               subtitle: Text('0/20', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.gamepad,),            
               onTap: () {               
+                Get.toNamed(Routes.GAMESSELECTION,arguments: {'activity': controller.activity,});
               },
             ),
             const SizedBox(height: 10),
@@ -68,7 +69,8 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
               title: Text('Take a Quiz', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
               subtitle: Text('0/20', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.question_answer_outlined,),            
-              onTap: () {               
+              onTap: () {   
+                Get.toNamed(Routes.QUIZ,arguments: {'activity': controller.activity});
               },
             ),
           ],

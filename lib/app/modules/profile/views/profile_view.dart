@@ -13,30 +13,31 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: scaffoldColor,
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: scaffoldColor,
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Back arrow and header
-            Padding(
-              padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
-              child: Row(
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(24),
-                    onTap: () => Get.back(),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 28,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+            //   child: Row(
+            //     children: [
+            //       InkWell(
+            //         borderRadius: BorderRadius.circular(24),
+            //         onTap: () => Get.back(),
+            //         child: const Icon(
+            //           Icons.arrow_back_ios_new_rounded,
+            //           size: 28,
+            //           color: Colors.black,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            const SizedBox(height: 66),
             // Profile header
             ProfileHeader(
               avatarUrl: 'assets/images/profile.png',
@@ -142,7 +143,6 @@ class ProfileView extends GetView<ProfileController> {
             ),
           ],
         ),
-      ),
-    );
+      ));
   }
 }

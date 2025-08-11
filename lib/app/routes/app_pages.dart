@@ -2,14 +2,27 @@ import 'package:get/get.dart';
 
 import '../modules/bottomnav/bindings/bottomnav_binding.dart';
 import '../modules/bottomnav/views/bottomnav_view.dart';
+import '../modules/charactermatching/bindings/charactermatching_binding.dart';
+import '../modules/charactermatching/views/charactermatching_view.dart';
 import '../modules/chooseactivity/bindings/chooseactivity_binding.dart';
 import '../modules/chooseactivity/views/chooseactivity_view.dart';
 import '../modules/editprofile/bindings/editprofile_binding.dart';
 import '../modules/editprofile/views/editprofile_view.dart';
+import '../modules/favorites/bindings/favorites_binding.dart';
+import '../modules/favorites/views/favorites_view.dart';
+import '../modules/fillblanks/bindings/fillblanks_binding.dart';
+import '../modules/fillblanks/views/fillblanks_view.dart';
+import '../modules/gamesselection/bindings/gamesselection_binding.dart';
+import '../modules/gamesselection/views/gamesselection_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/listening/bindings/listening_binding.dart';
+import '../modules/listening/views/listening_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/quiz/bindings/quiz_binding.dart';
+import '../modules/quiz/views/quiz_view.dart';
+import '../modules/quiz/views/success_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/swipecard/bindings/swipecard_binding.dart';
@@ -64,6 +77,40 @@ class AppPages {
       name: _Paths.SWIPECARD,
       page: () => const SwipecardView(),
       binding: SwipecardBinding(),
+    ),
+    GetPage(
+      name: _Paths.GAMESSELECTION,
+      page: () => const GamesselectionView(),
+      binding: GamesselectionBinding(),
+    ),
+    GetPage(
+      name: _Paths.FILLBLANKS,
+      page: () => const FillblanksView(),
+      binding: FillblanksBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHARACTERMATCHING,
+      page: () => const CharactermatchingView(),
+      binding: CharactermatchingBinding(),
+    ),
+    GetPage(
+      name: _Paths.LISTENING,
+      page: () => const ListeningView(),
+      binding: ListeningBinding(),
+    ),
+    GetPage(
+      name: _Paths.QUIZ,
+      page: () => const QuizView(),
+      binding: QuizBinding(),
+    ),
+    GetPage(
+      name: _Paths.SUCCESS,
+      page: () => const SuccessView(),
+    ),
+    GetPage(
+      name: _Paths.FAVORITES,
+      page: () => const FavoritesView(),
+      binding: FavoritesBinding(),
     ),
   ];
 }

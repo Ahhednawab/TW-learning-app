@@ -12,6 +12,13 @@ abstract class Routes {
   static const VOCABULARY = _Paths.VOCABULARY;
   static const CHOOSEACTIVITY = _Paths.CHOOSEACTIVITY;
   static const SWIPECARD = _Paths.SWIPECARD;
+  static const GAMESSELECTION = _Paths.GAMESSELECTION;
+  static const FILLBLANKS = _Paths.FILLBLANKS;
+  static const CHARACTERMATCHING = _Paths.CHARACTERMATCHING;
+  static const LISTENING = _Paths.LISTENING;
+  static const QUIZ = _Paths.QUIZ;
+  static const SUCCESS = _Paths.SUCCESS;
+  static const FAVORITES = _Paths.FAVORITES;
 }
 
 abstract class _Paths {
@@ -25,4 +32,11 @@ abstract class _Paths {
   static const VOCABULARY = '/vocabulary';
   static const CHOOSEACTIVITY = '/chooseactivity';
   static const SWIPECARD = '/swipecard';
+  static const GAMESSELECTION = '/gamesselection';
+  static const FILLBLANKS = '/fillblanks';
+  static const CHARACTERMATCHING = '/charactermatching';
+  static const LISTENING = '/listening';
+  static const QUIZ = '/quiz';
+  static const SUCCESS = '/success';
+  static const FAVORITES = '/favorites';
 }

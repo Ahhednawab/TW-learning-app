@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
+import 'package:mandarinapp/app/modules/favorites/views/favorites_view.dart';
 import 'package:mandarinapp/app/modules/home/views/home_view.dart';
+import 'package:mandarinapp/app/modules/profile/controllers/profile_controller.dart';
+import 'package:mandarinapp/app/modules/profile/views/profile_view.dart';
 import 'package:mandarinapp/app/modules/vocabulary/controllers/vocabulary_controller.dart';
 import 'package:mandarinapp/app/modules/vocabulary/views/vocabulary_view.dart';
 
@@ -100,11 +103,11 @@ class BottomnavView extends GetView<BottomnavController> {
       case 1:
         return Icons.menu_book_rounded;
       case 2:
-        return Icons.style_rounded;
+        return Icons.favorite;
       case 3:
-        return Icons.quiz_outlined;
+        return Icons.person;
       default:
-        return Icons.home_outlined;
+        return Icons.person;
     }
   }
 
@@ -115,17 +118,18 @@ class BottomnavView extends GetView<BottomnavController> {
       case 1:
         return 'Vocabulary';
       case 2:
-        return 'Flash Cards';
+        return 'Favourites';
       case 3:
-        return 'Quiz';
+        return 'Profile';
       default:
-        return 'Home';
+        return 'Profile';
     }
   }
 
   @override
   Widget build(BuildContext context) {
     Get.put(VocabularyController());
+    Get.put(ProfileController());
     return Scaffold(
       extendBody: true,
       backgroundColor: whiteColor,
@@ -134,7 +138,7 @@ class BottomnavView extends GetView<BottomnavController> {
         print(controller.tabIndex.value);
         return IndexedStack(
           index: controller.tabIndex.value,
-          children: [HomeView(), VocabularyView(), Placeholder(), Placeholder()],
+          children: [HomeView(), VocabularyView(), FavoritesView(), ProfileView()],
         );
       }),
     );
