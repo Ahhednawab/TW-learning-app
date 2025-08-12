@@ -25,70 +25,120 @@ class QuizController extends GetxController {
   // Store color states for each option
   var answerColor = <int, dynamic>{}.obs;
 
-  // Static question bank
-  final List<QuizQuestion> questions = [
-    QuizQuestion(
-      image: 'assets/images/goat.jpg',
-      description:
-          'A four-legged farm mammal raised for wool, meat (mutton/lamb), and milk in agriculture.',
-      options: ['Goat', 'Dog', 'Horse', 'Cat'],
-      correctIndex: 0,
-    ),
-    QuizQuestion(
-      image: 'assets/images/dog.png',
-      description: 'A loyal domestic animal known as man\'s best friend.',
-      options: ['Dog', 'Cat', 'Cow', 'Sheep'],
-      correctIndex: 0,
-    ),
-    QuizQuestion(
-      image: 'assets/images/sheep.png',
-      description: 'A wool-producing farm animal often seen grazing in fields.',
-      options: ['Goat', 'Sheep', 'Horse', 'Pig'],
-      correctIndex: 1,
-    ),
-    QuizQuestion(
-      image: 'assets/images/horse.png',
-      description: 'A large mammal used for riding, racing, and farm work.',
-      options: ['Horse', 'Goat', 'Dog', 'Cow'],
-      correctIndex: 0,
-    ),
-    QuizQuestion(
-      image: 'assets/images/cat.jpg',
-      description: 'A small domesticated carnivore kept as a pet worldwide.',
-      options: ['Dog', 'Cat', 'Cow', 'Goat'],
-      correctIndex: 1,
-    ),
-    QuizQuestion(
-      image: 'assets/images/cow.webp',
-      description: 'A farm mammal raised for milk, meat, and leather.',
-      options: ['Sheep', 'Pig', 'Cow', 'Goat'],
-      correctIndex: 2,
-    ),
-    QuizQuestion(
-      image: 'assets/images/pig.jpg',
-      description: 'A pink farm animal raised for pork.',
-      options: ['Pig', 'Goat', 'Dog', 'Horse'],
-      correctIndex: 0,
-    ),
-    QuizQuestion(
-      image: 'assets/images/chicken.webp',
-      description: 'A domesticated bird raised for eggs and meat.',
-      options: ['Goat', 'Dog', 'Chicken', 'Duck'],
-      correctIndex: 2,
-    ),
-    QuizQuestion(
-      image: 'assets/images/duck.jpg',
-      description: 'A waterfowl with webbed feet, raised for meat and eggs.',
-      options: ['Duck', 'Chicken', 'Cow', 'Sheep'],
-      correctIndex: 0,
-    ),
-    QuizQuestion(
-      image: 'assets/images/fish.jfif',
-      description: 'An aquatic animal that lives in water and breathes through gills.',
-      options: ['Dog', 'Goat', 'Fish', 'Duck'],
-      correctIndex: 2,
-    ),
-  ];
+ final List<QuizQuestion> questions = [
+  QuizQuestion(
+    image: 'assets/images/goat.jpg',
+    description:
+        'A four-legged farm mammal raised for wool, meat (mutton/lamb), and milk in agriculture.',
+    options: [
+      'A. 羊 (yáng)',
+      'B. 狗 (gǒu)',
+      'C. 馬 (mǎ)',
+      'D. 貓 (māo)',
+    ],
+    correctIndex: 0,
+  ),
+  QuizQuestion(
+    image: 'assets/images/dog.png',
+    description: 'A loyal domestic animal known as man\'s best friend.',
+    options: [
+      'A. 狗 (gǒu)',
+      'B. 貓 (māo)',
+      'C. 牛 (niú)',
+      'D. 羊 (yáng)',
+    ],
+    correctIndex: 0,
+  ),
+  QuizQuestion(
+    image: 'assets/images/sheep.png',
+    description: 'A wool-producing farm animal often seen grazing in fields.',
+    options: [
+      'A. 山羊 (shānyáng)',
+      'B. 羊 (yáng)',
+      'C. 馬 (mǎ)',
+      'D. 豬 (zhū)',
+    ],
+    correctIndex: 1,
+  ),
+  QuizQuestion(
+    image: 'assets/images/horse.png',
+    description: 'A large mammal used for riding, racing, and farm work.',
+    options: [
+      'A. 馬 (mǎ)',
+      'B. 山羊 (shānyáng)',
+      'C. 狗 (gǒu)',
+      'D. 牛 (niú)',
+    ],
+    correctIndex: 0,
+  ),
+  QuizQuestion(
+    image: 'assets/images/cat.jpg',
+    description: 'A small domesticated carnivore kept as a pet worldwide.',
+    options: [
+      'A. 狗 (gǒu)',
+      'B. 貓 (māo)',
+      'C. 牛 (niú)',
+      'D. 羊 (yáng)',
+    ],
+    correctIndex: 1,
+  ),
+  QuizQuestion(
+    image: 'assets/images/cow.webp',
+    description: 'A farm mammal raised for milk, meat, and leather.',
+    options: [
+      'A. 羊 (yáng)',
+      'B. 豬 (zhū)',
+      'C. 牛 (niú)',
+      'D. 山羊 (shānyáng)',
+    ],
+    correctIndex: 2,
+  ),
+  QuizQuestion(
+    image: 'assets/images/pig.jpg',
+    description: 'A pink farm animal raised for pork.',
+    options: [
+      'A. 豬 (zhū)',
+      'B. 山羊 (shānyáng)',
+      'C. 狗 (gǒu)',
+      'D. 馬 (mǎ)',
+    ],
+    correctIndex: 0,
+  ),
+  QuizQuestion(
+    image: 'assets/images/chicken.webp',
+    description: 'A domesticated bird raised for eggs and meat.',
+    options: [
+      'A. 山羊 (shānyáng)',
+      'B. 狗 (gǒu)',
+      'C. 雞 (jī)',
+      'D. 鴨 (yā)',
+    ],
+    correctIndex: 2,
+  ),
+  QuizQuestion(
+    image: 'assets/images/duck.jpg',
+    description: 'A waterfowl with webbed feet, raised for meat and eggs.',
+    options: [
+      'A. 鴨 (yā)',
+      'B. 雞 (jī)',
+      'C. 牛 (niú)',
+      'D. 羊 (yáng)',
+    ],
+    correctIndex: 0,
+  ),
+  QuizQuestion(
+    image: 'assets/images/fish.jfif',
+    description: 'An aquatic animal that lives in water and breathes through gills.',
+    options: [
+      'A. 狗 (gǒu)',
+      'B. 山羊 (shānyáng)',
+      'C. 魚 (yú)',
+      'D. 鴨 (yā)',
+    ],
+    correctIndex: 2,
+  ),
+];
+
 
   void selectOption(int index) {
     if (selectedOption.value != -1) return; // Prevent double tap
@@ -118,7 +168,8 @@ class QuizController extends GetxController {
       answerColor.clear();
       progress.value = currentIndex.value / questions.length;
     } else {
-      Get.offNamed('/success'); // Redirect to success screen
+      // correct score percentage to argument
+      Get.offNamed('/success', arguments: {'score': correctCount.value / questions.length * 100}); // Redirect to success screen
     }
   }
 }

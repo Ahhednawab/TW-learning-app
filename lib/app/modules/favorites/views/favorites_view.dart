@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
 import '../controllers/favorites_controller.dart';
 
@@ -10,13 +12,108 @@ class FavoritesView extends GetView<FavoritesController> {
     return SafeArea(
       top: false,
       child: Scaffold(
-        appBar: customAppBar(
-          title: 'Favorite Words',
+        appBar: customAppBar(title: 'Favorite Words', implyleading: true),
+        body: Padding(
+          padding: EdgeInsets.all(14),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'My Favorite',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Get.find<BottomnavController>().changeTabIndex(1);
+                    },
+                    child: Text(
+                      'Take a quiz',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: primaryColor,
+                        decoration: TextDecoration.underline,
+                        decorationColor: primaryColor,
+                        decorationThickness: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 14),
+              Expanded(
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 0.6,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  itemCount: controller.favorites.length,
+                  itemBuilder: (context, index) {
+                    final favorite = controller.favorites[index];
+                    return Column(
+                      children: [
+                        Container(
+                          height: 130,
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withValues(alpha: 0.2),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Stack(
+                              children: [
+                                Image.asset(
+                                  favorite.image,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                                Container(
+                                  color: Colors.black.withValues(alpha: 0.6),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 180,
+                                      child: Text(
+                                        favorite.word,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(favorite.meaning),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
-        body:Padding(padding: EdgeInsets.all(14),
-        child:Column(
-          children: [],
-        ),)
       ),
     );
   }

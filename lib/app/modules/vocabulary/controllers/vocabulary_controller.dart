@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 class VocabularyController extends GetxController with GetTickerProviderStateMixin {
   late TabController tabController;
   final ScrollController categoryScrollController = ScrollController();
+  var isSearching = false.obs;
 
 
   @override
@@ -11,6 +12,10 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
     super.onInit();
     tabController = TabController(length: categories.length, vsync: this);
     tabController.addListener(scrollToSelectedTab);
+  }
+
+  void toggleSearch() {
+    isSearching.value = !isSearching.value;
   }
 
   final List<Category> categories = [

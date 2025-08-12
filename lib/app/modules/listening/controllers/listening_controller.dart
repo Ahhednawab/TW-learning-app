@@ -64,4 +64,11 @@ class ListeningController extends GetxController {
       Get.back();
     }
   }
+
+  // disposing the audio player
+  @override
+  void onClose() {
+    _audioPlayer.dispose();
+    super.onClose();
+  }
 }

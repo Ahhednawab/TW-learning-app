@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mandarinapp/app/constants/Colors.dart';
 
 Widget EditableInfoSection({
   required String label,
@@ -22,7 +23,7 @@ Widget EditableInfoSection({
           ),
           IconButton(
             onPressed: onEdit,
-            icon: Icon(Icons.edit_square, color: textColor),
+            icon: Icon(Icons.edit_square, color: greyColor),
           ),
         ],
       ),

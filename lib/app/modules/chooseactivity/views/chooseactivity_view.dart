@@ -33,7 +33,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
               ),
               tileColor: Colors.white,
               title: Text('Swipe Cards', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
-              subtitle: Text('0/20', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
+              subtitle: Text('0/10', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.card_giftcard_sharp,),            
               onTap: () {   
                 Get.toNamed(Routes.SWIPECARD,arguments: {'activity': controller.activity,});           
@@ -50,7 +50,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
               ),
               tileColor: Colors.white,
               title: Text('Play Games', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
-              subtitle: Text('0/20', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
+              subtitle: Text('0/3', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.gamepad,),            
               onTap: () {               
                 Get.toNamed(Routes.GAMESSELECTION,arguments: {'activity': controller.activity,});
@@ -67,7 +67,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
               ),
               tileColor: Colors.white,
               title: Text('Take a Quiz', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
-              subtitle: Text('0/20', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
+              subtitle: Text('0/10', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.question_answer_outlined,),            
               onTap: () {   
                 Get.toNamed(Routes.QUIZ,arguments: {'activity': controller.activity});

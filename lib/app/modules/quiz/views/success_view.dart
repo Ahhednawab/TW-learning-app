@@ -7,6 +7,8 @@ class SuccessView extends GetView {
   const SuccessView({super.key});
   @override
   Widget build(BuildContext context) {
+    // Get arguments from the navigation route
+    final score = Get.arguments['score'] as double;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -72,7 +74,7 @@ class SuccessView extends GetView {
                       ),                      
                       SizedBox(height: 5),
                       Text(
-                        '92%',
+                        '${score.toStringAsFixed(0)}%',
                         style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                     ],

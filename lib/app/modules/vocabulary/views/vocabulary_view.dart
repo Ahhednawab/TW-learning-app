@@ -23,6 +23,14 @@ class VocabularyView extends GetView<VocabularyController> {
               'Vocabulary',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  
+                },
+                icon: const Icon(Icons.search),
+              ),
+            ],
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(48),
               child: SingleChildScrollView(
@@ -82,11 +90,10 @@ class VocabularyView extends GetView<VocabularyController> {
             children: [
               const Icon(Icons.lock_outline, size: 38, color: primaryColor),
               const SizedBox(height: 8),
-              Text('Pass quizzes to unlock levels.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  )),
+              Text(
+                'Pass quizzes to unlock levels.',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
             ],
           ),
         ),
@@ -103,7 +110,6 @@ class VocabularyView extends GetView<VocabularyController> {
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: ListTile(
-            
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 8,
@@ -154,8 +160,10 @@ class VocabularyView extends GetView<VocabularyController> {
                 );
                 return;
               }
-              Get.toNamed(Routes.CHOOSEACTIVITY,
-                arguments: {'activity': category.name,});
+              Get.toNamed(
+                Routes.CHOOSEACTIVITY,
+                arguments: {'activity': category.name},
+              );
             },
           ),
         );

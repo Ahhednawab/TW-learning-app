@@ -41,7 +41,7 @@ class EditprofileView extends GetView<EditprofileController> {
                       onTap: () {
                         // Handle edit avatar action
                       },
-                      child: Icon(Icons.edit_square, size: 16, color: blackColor),
+                      child: Icon(Icons.edit_square, size: 16, color: greyColor),
                     ),
                   ),
                 ],

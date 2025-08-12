@@ -4,6 +4,7 @@ import 'package:mandarinapp/app/constants/Colors.dart';
 
 PreferredSizeWidget customAppBar({
   // required VoidCallback onBackPressed,
+  bool implyleading = false,
   required String title,
   }) {
   return AppBar(
@@ -14,7 +15,7 @@ PreferredSizeWidget customAppBar({
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     ),
     centerTitle: true,
-    leading: InkWell(
+    leading: implyleading ? null: InkWell(
       borderRadius: BorderRadius.circular(24),
       onTap: () => Get.back(),
       child: const Icon(

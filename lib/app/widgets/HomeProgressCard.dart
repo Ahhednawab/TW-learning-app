@@ -13,12 +13,12 @@ Widget HomeProgressCard({
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: blueColor.withValues(alpha:0.08),
+          color: Color(0xFFE9FFFD),
           borderRadius: BorderRadius.circular(18),
         ),
         child: Row(
           children: [
-            Icon(Icons.menu_book_rounded, color: blueColor, size: 28),
+            Icon(Icons.menu_book_rounded, color: Color(0xFF61CBC2), size: 28),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

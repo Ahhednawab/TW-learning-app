@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
 import 'package:mandarinapp/app/widgets/HomeActionButton.dart';
 import 'package:mandarinapp/app/widgets/HomeGreeting.dart';
 import 'package:mandarinapp/app/widgets/HomeInfoCard.dart';
@@ -30,39 +31,63 @@ class HomeView extends GetView<HomeController> {
                     GestureDetector(
                       onTap: () {
                         // Navigate to profile
-                        Get.toNamed('/profile');
+                        Get.find<BottomnavController>().changeTabIndex(3);
                       },
                       child: const CircleAvatar(
                         radius: 24,
                         backgroundColor: primaryColor,
                         // child: Icon(Icons.person, color: whiteColor, size: 36),
                         backgroundImage: AssetImage(
-                          'assets/images/profile.png',),
+                          'assets/images/profile.png',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
-                      child: GestureDetector(
-                        onTap:() {
-                          //Dropdown for language selection
-                          
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Chinese',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
+                      child: Center(
+                        child: PopupMenuButton<String>(
+                          color: whiteColor,
+                          menuPadding: EdgeInsets.zero,
+                          borderRadius: BorderRadius.circular(12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          onSelected: (value) {
+                            // Handle language selection logic here
+                            print('Selected language: $value');
+                            // You can update state or use GetX controller here if needed
+                            controller.selectedLanguage!.value = value;
+                          },
+                          itemBuilder:
+                              (context) =>
+                                  controller.languages.map((language) {
+                                    return PopupMenuItem(
+                                      height: 40,
+                                      value: language,
+                                      child: Text(language),
+                                    );
+                                  }).toList(),
+
+                          offset: const Offset(-6, 40),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Obx(
+                                () => Text(
+                                  controller.selectedLanguage!.value,
+                                  style: TextStyle(
+                                    color: blackColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 17,
+                                  ),
+                                ),
                               ),
-                            ),
-                            const Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: blackColor,
-                            ),
-                          ],
+                              const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: blackColor,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -89,22 +114,30 @@ class HomeView extends GetView<HomeController> {
                     HomeActionButton(
                       icon: Icons.menu_book_rounded,
                       label: 'New\nVocabulary',
-                      onTap: () {},
+                      onTap: () {
+                        Get.find<BottomnavController>().changeTabIndex(1);
+                      },
                     ),
                     HomeActionButton(
                       icon: Icons.quiz_rounded,
                       label: 'Continue\nQuiz',
-                      onTap: () {},
+                      onTap: () {
+                        Get.find<BottomnavController>().changeTabIndex(1);
+                      },
                     ),
                     HomeActionButton(
                       icon: Icons.style_rounded,
                       label: "Today's\nFlash Cards",
-                      onTap: () {},
+                      onTap: () {
+                        Get.find<BottomnavController>().changeTabIndex(1);
+                      },
                     ),
                     HomeActionButton(
                       icon: Icons.translate_rounded,
                       label: 'Favourite\nWords',
-                      onTap: () {},
+                      onTap: () {
+                        Get.find<BottomnavController>().changeTabIndex(1);
+                      },
                     ),
                   ],
                 ),
@@ -119,47 +152,61 @@ class HomeView extends GetView<HomeController> {
                 ),
                 const SizedBox(height: 28),
 
-                // Info Cards
-                Row(
-                  children: [
-                    Expanded(
-                      child: HomeInfoCard(
-                        title: 'Word of the Day',
-                        value: 'nǐ hǎo',
-                        color: primaryColor,
-                        watermark: '大',
-                      ),
-                    ),
-                    SizedBox(width: 14),
-                    Expanded(
-                      child: HomeInfoCard(
-                        title: 'Last word reviewed',
-                        value: 'xiè xiè',
-                        color: Color(0xFF6EC6C5),
-                        watermark: '大',
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                Row(
-                  children: [
-                    Expanded(
-                      child: HomeInfoCard(
-                        title: 'Time spend today',
-                        value: '20 mins',
-                        color: Color(0xFF9CA6F5),
-                        watermark: '大',
-                      ),
-                    ),
-                    SizedBox(width: 14),
-                    Expanded(child: SizedBox()),
-                  ],
-                ),
-                const SizedBox(height: 28),
+                IntrinsicHeight(
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      // Left side: Word of the Day (tall card)
+      Expanded(
+        flex: 1,
+        child: HomeInfoCard(
+          title: 'Word of the Day',
+          value: 'nǐ hǎo',
+          color: primaryColor,
+          watermark: '大',
+        ),
+      ),
+      const SizedBox(width: 5),
 
+      // Right side: Two stacked cards
+      Expanded(
+        flex: 1,
+        child: Column(
+          children: [
+            SizedBox(
+              // height: 126,
+              width: double.infinity,
+              child: HomeInfoCard(
+                title: 'Last word reviewed    ',
+                value: 'xiè xiè',
+                color: const Color(0xFF6EC6C5),
+                watermark: '大',
+              ),
+            ),
+            const SizedBox(height: 5),
+            SizedBox(
+              // height: 126,
+              width: double.infinity,
+              child: HomeInfoCard(
+                title: 'Time spent today        ',
+                value: '20 mins',
+                color: const Color(0xFF9CA6F5),
+                watermark: '大',
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+)
+,
+
+                SizedBox(height: 28),
                 // Streak Card
-                HomeStreakCard(streakDays: 10, onTap: () {}),
+                HomeStreakCard(streakDays: 10, onTap: () {
+                  Get.find<BottomnavController>().changeTabIndex(1);
+                }),
                 const SizedBox(height: 18),
               ],
             ),

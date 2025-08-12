@@ -83,48 +83,50 @@ class ListeningView extends GetView<ListeningController> {
               const SizedBox(height: 20),
 
               // Answer field
-              Align(
-                child: Obx(() => SizedBox(
-                      height: 50,
-                      width: 200,
-                      child: TextField(
-                        controller: answerController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: controller.textFieldColor.value,
-                          label: const Align(
-                            child: Text(
-                              'Answer',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            alignment: Alignment.center,
-                          ),
-                          alignLabelWithHint: true,
-                          suffix: IconButton(
-                            onPressed: () {
-                              controller.checkAnswer(answerController.text);
-                              answerController.clear();
-                            },
-                            icon: const Icon(Icons.send),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    )),
-              ),
+            Align(
+  child: Obx(
+    () => SizedBox(
+      height: 40,
+      width: 200,
+      child: TextFormField(
+        controller: answerController,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: controller.textFieldColor.value,
+          hintText: 'Answer',
+          suffixIcon: IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              controller.checkAnswer(answerController.text);
+              answerController.clear();
+            },
+            icon: const Icon(Icons.send, color: primaryColor,),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 0,
+            horizontal: 12,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    ),
+  ),
+),
 
-              const SizedBox(height: 5),
+              const SizedBox(height: 20),
 
               // Progress bar
-              Obx(() => LinearProgressIndicator(
-                    value: controller.progress.value,
-                    backgroundColor: primaryColor.withValues(alpha: 0.4),
-                    color: primaryColor,
-                    minHeight: 5,
-                  )),
+              Obx(
+                () => LinearProgressIndicator(
+                  value: controller.progress.value,
+                  backgroundColor: primaryColor.withValues(alpha: 0.4),
+                  color: primaryColor,
+                  minHeight: 5,
+                ),
+              ),
 
               const SizedBox(height: 10),
 

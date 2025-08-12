@@ -19,6 +19,11 @@ class WordModel {
 
 class SwipecardController extends GetxController with GetTickerProviderStateMixin {
   String? title;
+  RxBool isLiked = false.obs;
+
+  void toggleLike() {
+    isLiked.value = !isLiked.value;
+  }
 
   final words = <WordModel>[
     WordModel(word: "Sheep", meaning: "A domesticated ruminant animal", example: "The sheep grazed in the meadow.", type: "Noun", image: "assets/images/sheep.png"),

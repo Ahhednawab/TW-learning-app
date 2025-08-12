@@ -68,7 +68,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
-                '0/10',
+                '0/3',
                 style: TextStyle(
                   fontSize: 14,
                   color: primaryColor,
@@ -95,7 +95,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
-                '0/10',
+                '0/3',
                 style: TextStyle(
                   fontSize: 14,
                   color: primaryColor,

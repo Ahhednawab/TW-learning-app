@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
+import 'package:mandarinapp/app/modules/favorites/controllers/favorites_controller.dart';
 import 'package:mandarinapp/app/modules/favorites/views/favorites_view.dart';
+import 'package:mandarinapp/app/modules/home/controllers/home_controller.dart';
 import 'package:mandarinapp/app/modules/home/views/home_view.dart';
 import 'package:mandarinapp/app/modules/profile/controllers/profile_controller.dart';
 import 'package:mandarinapp/app/modules/profile/views/profile_view.dart';
@@ -130,6 +132,8 @@ class BottomnavView extends GetView<BottomnavController> {
   Widget build(BuildContext context) {
     Get.put(VocabularyController());
     Get.put(ProfileController());
+    Get.put(HomeController());
+    Get.put(FavoritesController());
     return Scaffold(
       extendBody: true,
       backgroundColor: whiteColor,
