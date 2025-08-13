@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 
 Widget EditableInfoSection({
@@ -14,7 +15,7 @@ Widget EditableInfoSection({
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            label,
+            label.tr,
             style: TextStyle(
               fontSize: 14,
               color: textColor,

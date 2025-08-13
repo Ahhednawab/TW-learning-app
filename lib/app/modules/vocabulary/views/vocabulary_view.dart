@@ -19,8 +19,8 @@ class VocabularyView extends GetView<VocabularyController> {
           appBar: AppBar(
             backgroundColor: scaffoldColor,
             centerTitle: true,
-            title: const Text(
-              'Vocabulary',
+            title: Text(
+              'vocabulary'.tr,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             actions: [
@@ -46,7 +46,7 @@ class VocabularyView extends GetView<VocabularyController> {
                   dividerColor: Colors.transparent,
                   tabs:
                       controller.categories.map((category) {
-                        return Tab(text: category.name);
+                        return Tab(text: category.name.tr);
                       }).toList(),
                 ),
               ),
@@ -91,7 +91,7 @@ class VocabularyView extends GetView<VocabularyController> {
               const Icon(Icons.lock_outline, size: 38, color: primaryColor),
               const SizedBox(height: 8),
               Text(
-                'Pass quizzes to unlock levels.',
+                'passquiz'.tr,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ],
@@ -152,8 +152,8 @@ class VocabularyView extends GetView<VocabularyController> {
             onTap: () {
               if (product.progress == 0) {
                 Get.snackbar(
-                  'Locked',
-                  'Complete previous levels to unlock this category.',
+                  'locked'.tr,
+                  'lockedinfo'.tr,
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.white,
                   colorText: primaryColor,

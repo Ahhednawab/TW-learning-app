@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import '../constants/Colors.dart';
 
 Widget HomeGreeting({required userName}) {
@@ -6,7 +7,7 @@ Widget HomeGreeting({required userName}) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'Hi $userName,',
+        'hi'.tr+' $userName,',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 28,
@@ -15,7 +16,7 @@ Widget HomeGreeting({required userName}) {
       ),
       const SizedBox(height: 4),
       Text(
-        "Let's learn something",
+        "learnsomething".tr,
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 20,

@@ -27,7 +27,7 @@ class SuccessView extends GetView {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Results of your practice!',
+              'practiceresults'.tr,
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,),
             ),
             SizedBox(height: 20),
@@ -42,7 +42,7 @@ class SuccessView extends GetView {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'You earned the badge',
+                        'badgeearned'.tr,
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 5),
@@ -54,7 +54,7 @@ class SuccessView extends GetView {
                       
                       SizedBox(height: 5),
                       Text(
-                        'Intermediate level unlocked',
+                        'imu'.tr,
                         style: TextStyle(fontSize: 12),
                       ),
                     ],
@@ -68,7 +68,7 @@ class SuccessView extends GetView {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'Congratulations! You \nhave scored',
+                        'scored'.tr,
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),                      

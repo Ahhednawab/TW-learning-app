@@ -12,14 +12,14 @@ class GamesselectionView extends GetView<GamesselectionController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: controller.activity ?? 'Games Selection'),
+      appBar: customAppBar(title: controller.activity ?? 'gamesselection'),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Choose Game',
+            Text(
+              'choosegame'.tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -37,7 +37,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
               ),
               tileColor: Colors.white,
               title: Text(
-                'Fill in the blanks',
+                'fillblanks'.tr,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
@@ -64,7 +64,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
               ),
               tileColor: Colors.white,
               title: Text(
-                'Character Matching',
+                'charactermatching'.tr,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
@@ -91,7 +91,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
               ),
               tileColor: Colors.white,
               title: Text(
-                'Listening',
+                'listening'.tr,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               subtitle: Text(

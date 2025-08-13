@@ -10,7 +10,7 @@ class EditprofileView extends GetView<EditprofileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: 'Edit Profile'),
+      appBar: customAppBar(title: 'editprofile'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -49,7 +49,7 @@ class EditprofileView extends GetView<EditprofileController> {
             ),
             const SizedBox(height: 16),
             EditableInfoSection(
-              label: 'Name',
+              label: 'name',
               value: 'John Steve',
               textColor: blackColor,
               onEdit: () {
@@ -58,7 +58,7 @@ class EditprofileView extends GetView<EditprofileController> {
             ),
             const SizedBox(height: 16),
             EditableInfoSection(
-              label: 'Email',
+              label: 'email',
               value: 'johnsteve@yahoo.com',
               textColor: blackColor,
               onEdit: () {
@@ -67,7 +67,7 @@ class EditprofileView extends GetView<EditprofileController> {
             ),
             const SizedBox(height: 16),
             EditableInfoSection(
-              label: 'Age',
+              label: 'age',
               value: '25 years',
               textColor: blackColor,
               onEdit: () {
@@ -76,7 +76,7 @@ class EditprofileView extends GetView<EditprofileController> {
             ),
             const SizedBox(height: 16),
             EditableInfoSection(
-              label: 'Gender',
+              label: 'gender',
               value: 'Male',
               textColor: blackColor,
               onEdit: () {},

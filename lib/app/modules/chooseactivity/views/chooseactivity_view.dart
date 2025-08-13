@@ -12,14 +12,14 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title:controller.activity ?? 'Choose Activity'),
+      appBar: customAppBar(title:controller.activity ?? 'chooseactivity'),
       body:Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Choose Activity',
+             Text(
+              'chooseactivity'.tr,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: primaryColor),
             ),
             const SizedBox(height: 20),
@@ -32,7 +32,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
                 borderRadius: BorderRadius.circular(12),
               ),
               tileColor: Colors.white,
-              title: Text('Swipe Cards', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+              title: Text('swipecards'.tr, style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
               subtitle: Text('0/10', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.card_giftcard_sharp,),            
               onTap: () {   
@@ -49,7 +49,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
                 borderRadius: BorderRadius.circular(12),
               ),
               tileColor: Colors.white,
-              title: Text('Play Games', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+              title: Text('playgames'.tr, style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
               subtitle: Text('0/3', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.gamepad,),            
               onTap: () {               
@@ -66,7 +66,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
                 borderRadius: BorderRadius.circular(12),
               ),
               tileColor: Colors.white,
-              title: Text('Take a Quiz', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+              title: Text('takeaquiz'.tr, style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
               subtitle: Text('0/10', style: TextStyle(fontSize: 14, color: primaryColor,fontWeight: FontWeight.w600)),
               leading: Icon(Icons.question_answer_outlined,),            
               onTap: () {   

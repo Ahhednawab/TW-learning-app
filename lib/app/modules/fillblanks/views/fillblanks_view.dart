@@ -10,13 +10,13 @@ class FillblanksView extends GetView<FillblanksController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: controller.activity ?? 'Fill in the blanks'),
+      appBar: customAppBar(title: controller.activity ?? 'fillblanks'),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
-            const Text(
-              'Fill in the blanks - Animals',
+             Text(
+              'fillblanks.animals'.tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -115,7 +115,7 @@ class FillblanksView extends GetView<FillblanksController> {
             const SizedBox(height: 10),
             Obx(
               () => Text(
-                "Correct Answers: ${controller.currentIndex.value}/${controller.questions.length}",
+                "correctanswers".tr+": ${controller.currentIndex.value}/${controller.questions.length}",
               ),
             ),
             SizedBox(height: 10),
@@ -133,8 +133,8 @@ class FillblanksView extends GetView<FillblanksController> {
                     ),
                   ),
                   onPressed: controller.passQuestion,
-                  child: const Text(
-                    'Pass',
+                  child: Text(
+                    'pass'.tr,
                     style: TextStyle(color: blackColor),
                   ),
                 ),

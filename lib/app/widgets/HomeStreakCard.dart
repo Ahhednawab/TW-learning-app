@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 
 Widget HomeStreakCard({
@@ -22,7 +23,7 @@ Widget HomeStreakCard({
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Streak Tracker',
+                  'streaktracker'.tr,
                   style: TextStyle(
                     color: greyColor,
                     fontWeight: FontWeight.w500,
@@ -30,7 +31,7 @@ Widget HomeStreakCard({
                   ),
                 ),
                 Text(
-                  '$streakDays-Day Learning Streak',
+                  '$streakDays-'+'daystreak'.tr,
                   style: TextStyle(
                     color: blackColor,
                     fontWeight: FontWeight.bold,

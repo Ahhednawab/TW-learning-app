@@ -11,7 +11,7 @@ PreferredSizeWidget customAppBar({
     backgroundColor: scaffoldColor,
     surfaceTintColor: scaffoldColor,
     title: Text(
-      title,
+      title.tr,
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     ),
     centerTitle: true,

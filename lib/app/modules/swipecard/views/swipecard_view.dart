@@ -10,14 +10,14 @@ class SwipecardView extends GetView<SwipecardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: controller.title ?? 'Beginner'),
+      appBar: customAppBar(title: controller.title ?? 'beginner'),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
             const SizedBox(height: 6),
             Text(
-              "Animals",
+              "animals".tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -176,7 +176,7 @@ class SwipecardView extends GetView<SwipecardController> {
                       ),
                       onPressed: controller.markKnown,
                     ),
-                    const Text('Known'),
+                    Text('known'.tr),
                   ],
                 ),
                 Column(
@@ -189,7 +189,7 @@ class SwipecardView extends GetView<SwipecardController> {
                       ),
                       onPressed: controller.markLearn,
                     ),
-                    const Text('Learn'),
+                    Text('learn'.tr),
                   ],
                 ),
               ],
@@ -209,7 +209,7 @@ class SwipecardView extends GetView<SwipecardController> {
             const SizedBox(height: 10),
             Obx(
               () => Text(
-                "Words: ${controller.currentIndex.value + 1}/${controller.words.length}",
+                "words".tr+": ${controller.currentIndex.value + 1}/${controller.words.length}",
               ),
             ),
           ],

@@ -9,14 +9,14 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: controller.activity ?? 'Character Matching'),
+      appBar: customAppBar(title: controller.activity ?? 'charactermatching'),
       body: Padding(
         padding: const EdgeInsets.all(6.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const Text(
-                'Character Matching - Animals',
+               Text(
+                'charactermatching.animals'.tr,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -161,7 +161,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
               const SizedBox(height: 10),
               Obx(
                 () => Text(
-                  "Correct Answers: ${controller.currentIndex.value}/${controller.questions.length}",
+                  "correctanswers".tr + ": ${controller.currentIndex.value}/${controller.questions.length}",
                 ),
               ),
               SizedBox(height: 10),
@@ -179,8 +179,8 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                       ),
                     ),
                     onPressed: controller.passQuestion,
-                    child: const Text(
-                      'Pass',
+                    child: Text(
+                      'pass'.tr,
                       style: TextStyle(color: blackColor),
                     ),
                   ),

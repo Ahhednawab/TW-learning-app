@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
+import 'package:mandarinapp/app/services/Localization.dart';
 import 'package:mandarinapp/app/widgets/HomeActionButton.dart';
 import 'package:mandarinapp/app/widgets/HomeGreeting.dart';
 import 'package:mandarinapp/app/widgets/HomeInfoCard.dart';
@@ -56,7 +57,8 @@ class HomeView extends GetView<HomeController> {
                             // Handle language selection logic here
                             print('Selected language: $value');
                             // You can update state or use GetX controller here if needed
-                            controller.selectedLanguage!.value = value;
+                            // controller.selectedLanguage!.value = value;
+                            Get.find<LocalizationController>().setLanguage(Locale(value));
                           },
                           itemBuilder:
                               (context) =>
@@ -64,7 +66,7 @@ class HomeView extends GetView<HomeController> {
                                     return PopupMenuItem(
                                       height: 40,
                                       value: language,
-                                      child: Text(language),
+                                      child: Text(language.tr),
                                     );
                                   }).toList(),
 
@@ -74,7 +76,7 @@ class HomeView extends GetView<HomeController> {
                             children: [
                               Obx(
                                 () => Text(
-                                  controller.selectedLanguage!.value,
+                                  controller.selectedLanguage!.value.tr,
                                   style: TextStyle(
                                     color: blackColor,
                                     fontWeight: FontWeight.w600,
@@ -113,28 +115,28 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     HomeActionButton(
                       icon: Icons.menu_book_rounded,
-                      label: 'New\nVocabulary',
+                      label: 'newvocabulary'.tr,
                       onTap: () {
                         Get.find<BottomnavController>().changeTabIndex(1);
                       },
                     ),
                     HomeActionButton(
                       icon: Icons.quiz_rounded,
-                      label: 'Continue\nQuiz',
+                      label: 'continuequiz'.tr,
                       onTap: () {
                         Get.find<BottomnavController>().changeTabIndex(1);
                       },
                     ),
                     HomeActionButton(
                       icon: Icons.style_rounded,
-                      label: "Today's\nFlash Cards",
+                      label: "todaysflashcards".tr,
                       onTap: () {
                         Get.find<BottomnavController>().changeTabIndex(1);
                       },
                     ),
                     HomeActionButton(
                       icon: Icons.translate_rounded,
-                      label: 'Favourite\nWords',
+                      label: 'favoritewords'.tr,
                       onTap: () {
                         Get.find<BottomnavController>().changeTabIndex(1);
                       },
@@ -145,7 +147,7 @@ class HomeView extends GetView<HomeController> {
 
                 // Progress Card
                 HomeProgressCard(
-                  level: 'Beginner',
+                  level: 'beginner'.tr,
                   words: 3,
                   totalWords: 10,
                   onTap: () {},
@@ -160,7 +162,7 @@ class HomeView extends GetView<HomeController> {
       Expanded(
         flex: 1,
         child: HomeInfoCard(
-          title: 'Word of the Day',
+          title: 'wordofday',
           value: 'nǐ hǎo',
           color: primaryColor,
           watermark: '大',
@@ -177,7 +179,7 @@ class HomeView extends GetView<HomeController> {
               // height: 126,
               width: double.infinity,
               child: HomeInfoCard(
-                title: 'Last word reviewed    ',
+                title: 'lastwordreviewed',
                 value: 'xiè xiè',
                 color: const Color(0xFF6EC6C5),
                 watermark: '大',
@@ -188,7 +190,7 @@ class HomeView extends GetView<HomeController> {
               // height: 126,
               width: double.infinity,
               child: HomeInfoCard(
-                title: 'Time spent today        ',
+                title: 'timespenttoday',
                 value: '20 mins',
                 color: const Color(0xFF9CA6F5),
                 watermark: '大',

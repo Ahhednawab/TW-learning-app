@@ -16,6 +16,8 @@ class ProfileSectionHeader extends StatelessWidget {
           fontWeight: FontWeight.w700,
           fontSize: 16,
           letterSpacing: 0.2,
+
+          
         ),
       ),
     );

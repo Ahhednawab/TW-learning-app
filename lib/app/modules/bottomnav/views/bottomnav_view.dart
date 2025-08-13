@@ -88,7 +88,7 @@ class BottomnavView extends GetView<BottomnavController> {
                     ),
                   ],
                 ),
-                label: _getLabel(index),
+                label: _getLabel(index).tr,
                 backgroundColor: whiteColor,
               ),
             ),
@@ -116,15 +116,15 @@ class BottomnavView extends GetView<BottomnavController> {
   String _getLabel(int index) {
     switch (index) {
       case 0:
-        return 'Home';
+        return 'home';
       case 1:
-        return 'Vocabulary';
+        return 'vocabulary';
       case 2:
-        return 'Favourites';
+        return 'favourites';
       case 3:
-        return 'Profile';
+        return 'profile';
       default:
-        return 'Profile';
+        return 'profile';
     }
   }
 

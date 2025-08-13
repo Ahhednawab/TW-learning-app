@@ -10,7 +10,7 @@ class QuizView extends GetView<QuizController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: 'Quiz'),
+      appBar: customAppBar(title: 'quiz'),
       body: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -117,7 +117,7 @@ class QuizView extends GetView<QuizController> {
 
             // Score
             Obx(() => Text(
-                  "Correct Answers: ${controller.correctCount.value}/${controller.questions.length}",
+                  "correctanswers".tr+": ${controller.correctCount.value}/${controller.questions.length}",
                 )),
 
             const SizedBox(height: 10),
@@ -136,8 +136,8 @@ class QuizView extends GetView<QuizController> {
                     ),
                   ),
                   onPressed: controller.passQuestion,
-                  child: const Text(
-                    'Pass',
+                  child: Text(
+                    'pass'.tr,
                     style: TextStyle(color: blackColor),
                   ),
                 ),

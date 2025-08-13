@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 
 Widget ProfileHeader({
@@ -46,7 +47,7 @@ Widget ProfileHeader({
               ),
               const SizedBox(height: 2),
               Text(
-                'Learned $learnedWords Words',
+                'learned'.tr+ ' $learnedWords ' +'words'.tr.toLowerCase(),
                 style: const TextStyle(
                   fontSize: 16,
                   color: primaryColor,
@@ -56,8 +57,8 @@ Widget ProfileHeader({
               const SizedBox(height: 4),
               GestureDetector(
                 onTap: onEdit,
-                child: const Text(
-                  'Edit Profile',
+                child: Text(
+                  'editprofile'.tr,
                   style: TextStyle(
                     fontSize: 16,
                     color: greyColor,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 Widget HomeInfoCard({
   required String title,
@@ -34,7 +35,7 @@ Widget HomeInfoCard({
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                title.tr,
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 15,

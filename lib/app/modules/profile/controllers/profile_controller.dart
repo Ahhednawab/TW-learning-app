@@ -4,16 +4,17 @@ import 'package:mandarinapp/app/constants/Colors.dart';
 
 class ProfileController extends GetxController {
   var isNotificationEnabled = true.obs;
+  var selectedLanguage = 'en'.obs;
 
   void toggleNotification(bool value) {
     isNotificationEnabled.value = value;
   }
 
-  List<String> languages = ["English", "Chinese", "Japanese"];
+  List<String> languages = ["en", "zh", "ja"];
 
   void showLanguageSelectionDialog() {
     Get.defaultDialog(
-      title: "Select Language",
+      title: "selectlanguage".tr,
       titleStyle: TextStyle(fontWeight: FontWeight.bold),
       backgroundColor: whiteColor,
       titlePadding: EdgeInsets.all(16),
@@ -32,7 +33,9 @@ class ProfileController extends GetxController {
                   children: [
                     ListTile(
                       minTileHeight: 8,
-                      title: Text(languages[index]),
+                      selected: selectedLanguage.value == languages[index],
+                      // selectedTileColor: ,
+                      title: Text(languages[index].tr),
                       onTap: () {
                         // Handle language selection
                         Get.back();
@@ -56,7 +59,7 @@ class ProfileController extends GetxController {
                 Get.back();
               },
               child: Text(
-                "Set Language",
+                "setlanguage".tr,
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -78,7 +81,7 @@ class ProfileController extends GetxController {
                 Get.back();
               },
               child: Text(
-                "Cancel",
+                "cancel".tr,
                 style: TextStyle(
                   color: primaryColor,
                   fontWeight: FontWeight.bold,

@@ -12,7 +12,7 @@ class ListeningView extends GetView<ListeningController> {
     final TextEditingController answerController = TextEditingController();
 
     return Scaffold(
-      appBar: customAppBar(title: controller.activity ?? 'Games Selection'),
+      appBar: customAppBar(title: controller.activity ?? 'gamesselection'),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
         child: SingleChildScrollView(
@@ -20,8 +20,8 @@ class ListeningView extends GetView<ListeningController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Align(
-                child: const Text(
-                  'Listening - Animals',
+                child: Text(
+                  'listening.animals'.tr,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -83,38 +83,38 @@ class ListeningView extends GetView<ListeningController> {
               const SizedBox(height: 20),
 
               // Answer field
-            Align(
-  child: Obx(
-    () => SizedBox(
-      height: 40,
-      width: 200,
-      child: TextFormField(
-        controller: answerController,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: controller.textFieldColor.value,
-          hintText: 'Answer',
-          suffixIcon: IconButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              controller.checkAnswer(answerController.text);
-              answerController.clear();
-            },
-            icon: const Icon(Icons.send, color: primaryColor,),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 0,
-            horizontal: 12,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-    ),
-  ),
-),
+              Align(
+                child: Obx(
+                  () => SizedBox(
+                    height: 40,
+                    width: 200,
+                    child: TextFormField(
+                      controller: answerController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: controller.textFieldColor.value,
+                        hintText: 'answer'.tr,
+                        suffixIcon: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            controller.checkAnswer(answerController.text);
+                            answerController.clear();
+                          },
+                          icon: const Icon(Icons.send, color: primaryColor),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 20),
 
@@ -133,7 +133,7 @@ class ListeningView extends GetView<ListeningController> {
               // Correct answers text
               Obx(
                 () => Text(
-                  "Correct Answers: ${controller.correctCount.value}/${controller.questions.length}",
+                  "correctanswers".tr+": ${controller.correctCount.value}/${controller.questions.length}",
                 ),
               ),
 
@@ -155,8 +155,8 @@ class ListeningView extends GetView<ListeningController> {
                     onPressed: () {
                       controller.nextQuestion();
                     },
-                    child: const Text(
-                      'Pass',
+                    child: Text(
+                      'pass'.tr,
                       style: TextStyle(color: blackColor),
                     ),
                   ),

@@ -55,7 +55,7 @@ class ProfileView extends GetView<ProfileController> {
             ),
             const SizedBox(height: 8),
             // GENERAL section
-            const ProfileSectionHeader(title: 'GENERAL'),
+            ProfileSectionHeader(title: 'general'.tr),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Container(
@@ -74,7 +74,7 @@ class ProfileView extends GetView<ProfileController> {
                   children: [
                     ProfileListTile(
                       icon: Icons.language,
-                      label: 'Language',
+                      label: 'language'.tr,
                       trailing: const Icon(
                         Icons.keyboard_arrow_right_rounded,
                         color: Colors.black,
@@ -86,7 +86,7 @@ class ProfileView extends GetView<ProfileController> {
                     Divider(height: 1, color: lightgreyColor),
                     ProfileListTile(
                       icon: Icons.notifications_none_rounded,
-                      label: 'Notification',
+                      label: 'notifications'.tr,
                       trailing: Obx(
                         ()=> Transform.scale(
                           scale: 0.7,
@@ -107,7 +107,7 @@ class ProfileView extends GetView<ProfileController> {
               ),
             ),
             // OTHERS section
-            const ProfileSectionHeader(title: 'OTHERS'),
+             ProfileSectionHeader(title: 'others'.tr),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Container(
@@ -126,14 +126,14 @@ class ProfileView extends GetView<ProfileController> {
                   children: [
                     ProfileListTile(
                       icon: Icons.star_border_rounded,
-                      label: 'Rate App',
+                      label: 'rateapp'.tr,
                       trailing: null,
                       onTap: () {},
                     ),
                     Divider(height: 1, color: lightgreyColor),
                     ProfileListTile(
                       icon: Icons.edit_document,
-                      label: 'Report Problem',
+                      label: 'reportproblem'.tr,
                       trailing: null,
                       onTap: () {},
                     ),

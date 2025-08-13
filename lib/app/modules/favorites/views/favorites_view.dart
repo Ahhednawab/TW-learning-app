@@ -12,7 +12,7 @@ class FavoritesView extends GetView<FavoritesController> {
     return SafeArea(
       top: false,
       child: Scaffold(
-        appBar: customAppBar(title: 'Favorite Words', implyleading: true),
+        appBar: customAppBar(title: 'favoritewords', implyleading: true),
         body: Padding(
           padding: EdgeInsets.all(14),
           child: Column(
@@ -20,7 +20,7 @@ class FavoritesView extends GetView<FavoritesController> {
               Row(
                 children: [
                   Text(
-                    'My Favorite',
+                    'myfavorites'.tr,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -33,7 +33,7 @@ class FavoritesView extends GetView<FavoritesController> {
                       Get.find<BottomnavController>().changeTabIndex(1);
                     },
                     child: Text(
-                      'Take a quiz',
+                      'takeaquiz'.tr,
                       style: TextStyle(
                         fontSize: 14,
                         color: primaryColor,
