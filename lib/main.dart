@@ -16,7 +16,7 @@ void main() async {
   // Initialize languages
   Map<String, Map<String, String>> languages = await di.init();
 
-  // ✅ Initialize the LocalizationController with Get.put
+  //Initialize the LocalizationController with Get.put
   Get.put(LocalizationController(sharedPreferences: sharedPreferences));
 
   runApp(MyApp(languages: languages));
@@ -36,7 +36,15 @@ class MyApp extends StatelessWidget {
         return MediaQuery(
           data: MediaQuery.of(
             context,
-          ).copyWith(textScaler: TextScaler.linear(size.width < 380 ? 0.8 : 1)),
+          ).copyWith(
+            textScaler: TextScaler.linear(
+              size.shortestSide < 400
+                  ? 0.85 // very small phones
+                  : size.shortestSide < 600
+                      ? 0.95 // normal phones
+                      : 1.05, // tablets get a slight bump
+            ),
+          ),
           child: GetMaterialApp(
             title: AppConstants.appName,
             debugShowCheckedModeBanner: false,

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/swipecard_controller.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 class SwipecardView extends GetView<SwipecardController> {
   const SwipecardView({super.key});
@@ -19,7 +20,7 @@ class SwipecardView extends GetView<SwipecardController> {
             Text(
               "animals".tr,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: Responsive.sp(context, 18),
                 fontWeight: FontWeight.w600,
                 color: primaryColor,
               ),
@@ -31,24 +32,26 @@ class SwipecardView extends GetView<SwipecardController> {
               final word = controller.words[controller.currentIndex.value];
               return SlideTransition(
                 position: controller.swipeAnimation,
-                child: Container(
-                  height: 380,
-                  width: 300,
-                  decoration: BoxDecoration(
-                    color: whiteColor,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
+                child: SizedBox(
+                  width: Responsive.wp(0.85),
+                  child: AspectRatio(
+                    aspectRatio: 4 / 5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withValues(alpha: 0.2),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Stack(
-                      children: [
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Stack(
+                          children: [
                         Image.asset(
                           word.image,
                           fit: BoxFit.cover,
@@ -79,8 +82,8 @@ class SwipecardView extends GetView<SwipecardController> {
                                         children: [
                                           Text(
                                             word.word,
-                                            style: const TextStyle(
-                                              fontSize: 24,
+                                            style: TextStyle(
+                                              fontSize: Responsive.sp(context, 24),
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
                                             ),
@@ -90,6 +93,7 @@ class SwipecardView extends GetView<SwipecardController> {
                                               Icon(
                                                 Icons.volume_up,
                                                 color: Colors.white,
+                                                size: Responsive.isTablet(context) ? 26 : 22,
                                               ),
                                               SizedBox(width: 10),
                                               Obx(
@@ -100,6 +104,7 @@ class SwipecardView extends GetView<SwipecardController> {
                                                         ? Icons.favorite
                                                         : Icons.favorite_border,
                                                     color: controller.isLiked.value ? Colors.red : Colors.white,
+                                                    size: Responsive.isTablet(context) ? 24 : 22,
                                                   ),
                                                 ),
                                               ),
@@ -110,17 +115,17 @@ class SwipecardView extends GetView<SwipecardController> {
                                       const SizedBox(height: 8),
                                       Text(
                                         "${word.type} • ${word.meaning}",
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 16,
+                                          fontSize: Responsive.sp(context, 16),
                                         ),
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
                                         word.example,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           color: Colors.white70,
-                                          fontSize: 14,
+                                          fontSize: Responsive.sp(context, 14),
                                         ),
                                       ),
                                     ],
@@ -143,8 +148,8 @@ class SwipecardView extends GetView<SwipecardController> {
                                   padding: const EdgeInsets.all(8),
                                   child: Text(
                                     word.word,
-                                    style: const TextStyle(
-                                      fontSize: 24,
+                                    style: TextStyle(
+                                      fontSize: Responsive.sp(context, 24),
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
@@ -153,7 +158,9 @@ class SwipecardView extends GetView<SwipecardController> {
                                 ),
                               );
                         }),
-                      ],
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -171,12 +178,12 @@ class SwipecardView extends GetView<SwipecardController> {
                     IconButton(
                       icon: Image.asset(
                         'assets/images/left.png',
-                        height: 40,
-                        width: 40,
+                        height: Responsive.isTablet(context) ? 48 : 40,
+                        width: Responsive.isTablet(context) ? 48 : 40,
                       ),
                       onPressed: controller.markKnown,
                     ),
-                    Text('known'.tr),
+                    Text('known'.tr, style: TextStyle(fontSize: Responsive.sp(context, 14))),
                   ],
                 ),
                 Column(
@@ -184,12 +191,12 @@ class SwipecardView extends GetView<SwipecardController> {
                     IconButton(
                       icon: Image.asset(
                         'assets/images/right.png',
-                        height: 40,
-                        width: 40,
+                        height: Responsive.isTablet(context) ? 48 : 40,
+                        width: Responsive.isTablet(context) ? 48 : 40,
                       ),
                       onPressed: controller.markLearn,
                     ),
-                    Text('learn'.tr),
+                    Text('learn'.tr, style: TextStyle(fontSize: Responsive.sp(context, 14))),
                   ],
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get/get.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 Widget HomeInfoCard({
   required String title,
@@ -8,7 +9,7 @@ Widget HomeInfoCard({
   String? watermark,
 }) {
  return Container(
-      height: 120,
+      height: Responsive.isTablet(Get.context!) ? 220 : 120,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: color,

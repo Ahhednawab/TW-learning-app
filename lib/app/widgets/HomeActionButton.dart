@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 Widget HomeActionButton({
   required String label,
@@ -15,20 +16,24 @@ Widget HomeActionButton({
           shape: const CircleBorder(),
         ),
         child: IconButton(
-          icon: Icon(icon, color: whiteColor, size: 28),
+          icon: Icon(
+            icon,
+            color: whiteColor,
+            size: Responsive.isTablet(Get.context!) ? 42 : 28,
+          ),
           onPressed: onTap,
-          splashRadius: 28,
+          splashRadius: Responsive.isTablet(Get.context!) ? 42 : 28,
         ),
       ),
       const SizedBox(height: 8),
       SizedBox(
-        width: MediaQuery.of(Get.context!).size.width * 2 / 10,
+        width: Responsive.wp(0.25),
         child: Text(
           label,
           style: TextStyle(
             color: primaryColor,
             fontWeight: FontWeight.w500,
-            fontSize: 14,
+            fontSize: Responsive.sp(Get.context!, 14),
             overflow: TextOverflow.ellipsis,
           ),
           maxLines: 2,

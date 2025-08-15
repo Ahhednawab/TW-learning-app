@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
 import '../controllers/charactermatching_controller.dart';
 
@@ -8,6 +9,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
   const CharactermatchingView({super.key});
   @override
   Widget build(BuildContext context) {
+    final bool isTablet = Responsive.isTablet(context);
     return Scaffold(
       appBar: customAppBar(title: controller.activity ?? 'charactermatching'),
       body: Padding(
@@ -18,7 +20,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                Text(
                 'charactermatching.animals'.tr,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: Responsive.sp(context, isTablet ? 20 : 18),
                   fontWeight: FontWeight.bold,
                   color: primaryColor,
                 ),
@@ -27,58 +29,63 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
               // Image grid
               Obx(() {
                 var q = controller.questions[controller.currentIndex.value];
-                return SizedBox(
-                  height: 350,
-                  child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                    ),
-                    itemCount: 4,
-                    padding: const EdgeInsets.all(46),
-                    itemBuilder: (context, index) {
-                      return Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: whiteColor,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withValues(alpha: 0.2),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.asset(
-                                q["images"]![index],
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
+                final double gridSide = Responsive.hp(isTablet ? 0.5 : 0.48);
+                return GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
+                  ),
+                  itemCount: 4,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isTablet ? 48 : 24,
+                    vertical: isTablet ? 24 : 16,
+                  ),
+                  itemBuilder: (context, index) {
+                    return Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withValues(alpha: 0.2),
+                                spreadRadius: 2,
+                                blurRadius: 5,
                               ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              q["images"]![index],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
                             ),
                           ),
-                          
-                            Obx(() =>  !controller.revealed[index] ? Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                  borderRadius: BorderRadius.circular(20),
+                        ),
+                        
+                          Obx(() =>  !controller.revealed[index] ? Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.8),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.question_mark,
+                                  size: isTablet ? 88 : 72,
+                                  color: Colors.black,
                                 ),
-                                child: const Center(
-                                  child: Icon(Icons.question_mark,
-                                      size: 80, color: Colors.black),
-                                ),
-                              ) : const SizedBox()
-                            ),
-                        ],
-                      );
-                    },
-                  ),
+                              ),
+                            ) : const SizedBox()
+                          ),
+                      ],
+                    );
+                  },
                 );
               }),
               // const SizedBox(height: 20),
@@ -104,7 +111,10 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2),
                           child: ChoiceChip(
-                            label: Text(q["chinese"]![i]),
+                            label: Text(
+                              q["chinese"]![i],
+                              style: TextStyle(fontSize: Responsive.sp(context, isTablet ? 16 : 14)),
+                            ),
                             selected: isSelected,
                             backgroundColor: bg,
                             selectedColor: bg,
@@ -135,7 +145,10 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2),
                           child: ChoiceChip(
-                            label: Text(q["english"]![i]),
+                            label: Text(
+                              q["english"]![i],
+                              style: TextStyle(fontSize: Responsive.sp(context, isTablet ? 16 : 14)),
+                            ),
                             selected: isSelected,
                             backgroundColor: bg,
                             side: BorderSide.none,
@@ -162,26 +175,27 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
               Obx(
                 () => Text(
                   "correctanswers".tr + ": ${controller.currentIndex.value}/${controller.questions.length}",
+                  style: TextStyle(fontSize: Responsive.sp(context, isTablet ? 16 : 14)),
                 ),
               ),
               SizedBox(height: 10),
               // Pass button
               Align(
                 alignment: Alignment.bottomRight,
-                child: SizedBox(
-                  height: 30,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: whiteColor,
-                      side: const BorderSide(color: primaryColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: whiteColor,
+                    side: const BorderSide(color: primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    onPressed: controller.passQuestion,
-                    child: Text(
-                      'pass'.tr,
-                      style: TextStyle(color: blackColor),
+                  ),
+                  onPressed: controller.passQuestion,
+                  child: Text(
+                    'pass'.tr,
+                    style: TextStyle(
+                      color: blackColor,
+                      fontSize: Responsive.sp(context, isTablet ? 16 : 14),
                     ),
                   ),
                 ),

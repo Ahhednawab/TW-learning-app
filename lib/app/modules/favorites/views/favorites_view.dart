@@ -4,6 +4,7 @@ import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
 import '../controllers/favorites_controller.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 class FavoritesView extends GetView<FavoritesController> {
   const FavoritesView({super.key});
@@ -14,7 +15,7 @@ class FavoritesView extends GetView<FavoritesController> {
       child: Scaffold(
         appBar: customAppBar(title: 'favoritewords', implyleading: true),
         body: Padding(
-          padding: EdgeInsets.all(14),
+          padding: const EdgeInsets.all(14),
           child: Column(
             children: [
               Row(
@@ -22,7 +23,7 @@ class FavoritesView extends GetView<FavoritesController> {
                   Text(
                     'myfavorites'.tr,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: Responsive.sp(context, 16),
                       fontWeight: FontWeight.w600,
                       color: primaryColor,
                     ),
@@ -35,7 +36,7 @@ class FavoritesView extends GetView<FavoritesController> {
                     child: Text(
                       'takeaquiz'.tr,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: Responsive.sp(context, 14),
                         color: primaryColor,
                         decoration: TextDecoration.underline,
                         decorationColor: primaryColor,
@@ -50,8 +51,8 @@ class FavoritesView extends GetView<FavoritesController> {
               Expanded(
                 child: GridView.builder(
                   shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: Responsive.isTablet(context) ? 4 : 3,
                     childAspectRatio: 0.6,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
@@ -62,7 +63,7 @@ class FavoritesView extends GetView<FavoritesController> {
                     return Column(
                       children: [
                         Container(
-                          height: 130,
+                          height: Responsive.isTablet(context) ? 160 : 130,
                           decoration: BoxDecoration(
                             color: whiteColor,
                             borderRadius: BorderRadius.circular(20),
@@ -88,15 +89,14 @@ class FavoritesView extends GetView<FavoritesController> {
                                   color: Colors.black.withValues(alpha: 0.6),
                                   padding: const EdgeInsets.all(12),
                                   child: Center(
-                                    child: SizedBox(
-                                      width: 180,
-                                      child: Text(
-                                        favorite.word,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        textAlign: TextAlign.center,
+                                    child: Text(
+                                      favorite.word,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: Responsive.sp(context, 14),
+                                        fontWeight: FontWeight.w600,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
@@ -105,7 +105,10 @@ class FavoritesView extends GetView<FavoritesController> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(favorite.meaning),
+                        Text(
+                          favorite.meaning,
+                          style: TextStyle(fontSize: Responsive.sp(context, 13)),
+                        ),
                       ],
                     );
                   },

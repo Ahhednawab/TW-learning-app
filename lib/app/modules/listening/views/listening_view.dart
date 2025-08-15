@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
 import '../controllers/listening_controller.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 class ListeningView extends GetView<ListeningController> {
   const ListeningView({super.key});
@@ -23,7 +24,7 @@ class ListeningView extends GetView<ListeningController> {
                 child: Text(
                   'listening.animals'.tr,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: Responsive.sp(context, 18),
                     fontWeight: FontWeight.bold,
                     color: primaryColor,
                   ),
@@ -35,46 +36,50 @@ class ListeningView extends GetView<ListeningController> {
               Align(
                 child: Obx(() {
                   final q = controller.questions[controller.currentIndex.value];
-                  return Container(
-                    height: 380,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      color: whiteColor,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.2),
-                          spreadRadius: 2,
-                          blurRadius: 5,
+                  return SizedBox(
+                    width: Responsive.wp(0.85),
+                    child: AspectRatio(
+                      aspectRatio: 4 / 5,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withValues(alpha: 0.2),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Stack(
-                        children: [
-                          Image.asset(
-                            q["image"]!,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              controller.playSound(q["audio"]!);
-                            },
-                            child: Container(
-                              color: Colors.black.withValues(alpha: 0.6),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.volume_up,
-                                  color: Colors.white,
-                                  size: 80,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Stack(
+                            children: [
+                              Image.asset(
+                                q["image"]!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  controller.playSound(q["audio"]!);
+                                },
+                                child: Container(
+                                  color: Colors.black.withValues(alpha: 0.6),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.volume_up,
+                                      color: Colors.white,
+                                      size: Responsive.isTablet(context) ? 92 : 80,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   );
@@ -86,8 +91,8 @@ class ListeningView extends GetView<ListeningController> {
               Align(
                 child: Obx(
                   () => SizedBox(
-                    height: 40,
-                    width: 200,
+                    height: Responsive.isTablet(context) ? 48 : 44,
+                    width: Responsive.wp(0.6),
                     child: TextFormField(
                       controller: answerController,
                       decoration: InputDecoration(
@@ -103,7 +108,7 @@ class ListeningView extends GetView<ListeningController> {
                           icon: const Icon(Icons.send, color: primaryColor),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                          vertical: 0,
+                          vertical: 6,
                           horizontal: 12,
                         ),
                         border: OutlineInputBorder(
@@ -143,7 +148,7 @@ class ListeningView extends GetView<ListeningController> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: SizedBox(
-                  height: 30,
+                  height: Responsive.isTablet(context) ? 40 : 34,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: whiteColor,
@@ -157,7 +162,7 @@ class ListeningView extends GetView<ListeningController> {
                     },
                     child: Text(
                       'pass'.tr,
-                      style: TextStyle(color: blackColor),
+                      style: TextStyle(color: blackColor, fontSize: Responsive.sp(context, 14)),
                     ),
                   ),
                 ),

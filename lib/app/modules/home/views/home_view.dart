@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
 import 'package:mandarinapp/app/services/Localization.dart';
@@ -10,6 +9,7 @@ import 'package:mandarinapp/app/widgets/HomeInfoCard.dart';
 import 'package:mandarinapp/app/widgets/HomeProgressCard.dart';
 import 'package:mandarinapp/app/widgets/HomeStreakCard.dart';
 import '../controllers/home_controller.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -17,12 +17,15 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      top: F,
+      top: false,
       child: Scaffold(
         backgroundColor: scaffoldColor,
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+            padding: EdgeInsets.symmetric(
+              horizontal: Responsive.wp(0.055),
+              vertical: 18,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -80,7 +83,7 @@ class HomeView extends GetView<HomeController> {
                                   style: TextStyle(
                                     color: blackColor,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 17,
+                                    fontSize: Responsive.sp(context, 17),
                                   ),
                                 ),
                               ),
@@ -209,6 +212,26 @@ class HomeView extends GetView<HomeController> {
                 HomeStreakCard(streakDays: 10, onTap: () {
                   Get.find<BottomnavController>().changeTabIndex(1);
                 }),
+                const SizedBox(height: 28),
+                // Advertise Card 
+                Container(
+                  height: Responsive.hp(0.1),
+                  margin: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                  color: greyColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'advertise'.tr,
+                      style: TextStyle(
+                        color: whiteColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: Responsive.sp(Get.context!, 14),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 18),
               ],
             ),

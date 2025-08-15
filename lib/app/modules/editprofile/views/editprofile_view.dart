@@ -4,6 +4,7 @@ import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
 import 'package:mandarinapp/app/widgets/EditProfileSection.dart';
 import '../controllers/editprofile_controller.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 class EditprofileView extends GetView<EditprofileController> {
   const EditprofileView({super.key});
@@ -29,7 +30,7 @@ class EditprofileView extends GetView<EditprofileController> {
                       border: Border.all(color: primaryColor, width: 1),
                     ),
                     child: CircleAvatar(
-                      radius: 48,
+                      radius: Responsive.isTablet(context) ? 60 : 48,
                       backgroundColor: Colors.transparent,
                       backgroundImage: AssetImage('assets/images/profile.png'),
                     ),
@@ -41,7 +42,7 @@ class EditprofileView extends GetView<EditprofileController> {
                       onTap: () {
                         // Handle edit avatar action
                       },
-                      child: Icon(Icons.edit_square, size: 16, color: greyColor),
+                      child: Icon(Icons.edit_square, size: Responsive.isTablet(context) ? 20 : 16, color: greyColor),
                     ),
                   ),
                 ],

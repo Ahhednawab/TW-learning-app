@@ -7,6 +7,7 @@ import 'package:mandarinapp/app/modules/profile/widgets/profile_section_header.d
 import 'package:mandarinapp/app/modules/profile/widgets/profile_list_tile.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -37,7 +38,7 @@ class ProfileView extends GetView<ProfileController> {
             //     ],
             //   ),
             // ),
-            const SizedBox(height: 66),
+            SizedBox(height: Responsive.isTablet(context) ? 66 : 48),
             // Profile header
             ProfileHeader(
               avatarUrl: 'assets/images/profile.png',

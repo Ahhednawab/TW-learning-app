@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 Widget HomeStreakCard({
   required VoidCallback onTap,
@@ -17,7 +18,11 @@ Widget HomeStreakCard({
         ),
         child: Row(
           children: [
-            Icon(Icons.flash_on, color: Colors.amber[700], size: 28),
+            Icon(
+              Icons.flash_on,
+              color: Colors.amber[700],
+              size: Responsive.isTablet(Get.context!) ? 52 : 28,
+            ),
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +32,7 @@ Widget HomeStreakCard({
                   style: TextStyle(
                     color: greyColor,
                     fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                    fontSize: Responsive.sp(Get.context!, 14),
                   ),
                 ),
                 Text(
@@ -35,13 +40,17 @@ Widget HomeStreakCard({
                   style: TextStyle(
                     color: blackColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 17,
+                    fontSize: Responsive.sp(Get.context!, 17),
                   ),
                 ),
               ],
             ),
             const Spacer(),
-            Icon(Icons.arrow_forward_ios_rounded, color: greyColor, size: 18),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: greyColor,
+              size: Responsive.isTablet(Get.context!) ? 30 : 18,
+            ),
           ],
         ),
       ),

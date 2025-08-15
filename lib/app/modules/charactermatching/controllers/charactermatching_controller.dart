@@ -68,7 +68,7 @@ class CharactermatchingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    activity = Get.arguments['activity'];
+    activity = Get.arguments['activity'] ?? '';
     resetQuestion();
   }
 

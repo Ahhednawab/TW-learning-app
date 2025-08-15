@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 
 import '../controllers/vocabulary_controller.dart';
 
@@ -21,18 +22,18 @@ class VocabularyView extends GetView<VocabularyController> {
             centerTitle: true,
             title: Text(
               'vocabulary'.tr,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: Responsive.sp(context, 20), fontWeight: FontWeight.bold),
             ),
             actions: [
               IconButton(
                 onPressed: () {
                   
                 },
-                icon: const Icon(Icons.search),
+                icon: Icon(Icons.search, size: Responsive.isTablet(context) ? 26 : 24),
               ),
             ],
             bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(48),
+              preferredSize: Size.fromHeight(Responsive.isTablet(context) ? 56 : 48),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
@@ -46,7 +47,7 @@ class VocabularyView extends GetView<VocabularyController> {
                   dividerColor: Colors.transparent,
                   tabs:
                       controller.categories.map((category) {
-                        return Tab(text: category.name.tr);
+                        return Tab(child: Text(category.name.tr, style: TextStyle(fontSize: Responsive.sp(context, 14))));
                       }).toList(),
                 ),
               ),
@@ -76,7 +77,7 @@ class VocabularyView extends GetView<VocabularyController> {
     if (filteredProducts.isEmpty) {
       return Center(
         child: Container(
-          height: 120,
+          height: Responsive.isTablet(Get.context!) ? 140 : 120,
           width: double.infinity,
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(16),
@@ -88,11 +89,11 @@ class VocabularyView extends GetView<VocabularyController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lock_outline, size: 38, color: primaryColor),
+              Icon(Icons.lock_outline, size: Responsive.isTablet(Get.context!) ? 44 : 38, color: primaryColor),
               const SizedBox(height: 8),
               Text(
                 'passquiz'.tr,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: Responsive.sp(Get.context!, 16), fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -110,23 +111,30 @@ class VocabularyView extends GetView<VocabularyController> {
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(
+            contentPadding: EdgeInsets.symmetric(
               horizontal: 16,
-              vertical: 8,
+              vertical: Responsive.isTablet(context) ? 16 : 8,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             tileColor: Colors.white,
-            title: Text(product.name),
-            leading: Icon(product.icon ?? Icons.category, color: Colors.purple),
+            title: Text(
+              product.name,
+              style: TextStyle(fontSize: Responsive.sp(context, 16), fontWeight: FontWeight.w600),
+            ),
+            leading: Icon(
+              product.icon ?? Icons.category,
+              color: Colors.purple,
+              size: Responsive.isTablet(context) ? 38 : 24,
+            ),
             // Displaying progress as a percentage with rounded progress
             trailing:
                 product.progress == 0
-                    ? Icon(Icons.lock_outline, color: primaryColor)
+                    ? Icon(Icons.lock_outline, color: primaryColor, size: Responsive.isTablet(context) ? 32 : 20)
                     : SizedBox(
-                      width: 30,
-                      height: 30,
+                      width: Responsive.isTablet(context) ? 44 : 30,
+                      height: Responsive.isTablet(context) ? 44 : 30,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -136,12 +144,12 @@ class VocabularyView extends GetView<VocabularyController> {
                             valueColor: AlwaysStoppedAnimation<Color>(
                               primaryColor,
                             ),
-                            strokeWidth: 2.5,
+                            strokeWidth: Responsive.isTablet(context) ? 3.0 : 2.5,
                           ),
                           Text(
                             '${((product.progress ?? 0.0) * 100).toInt()}%',
-                            style: const TextStyle(
-                              fontSize: 9,
+                            style: TextStyle(
+                              fontSize: Responsive.sp(context, 10),
                               color: Colors.black54,
                             ),
                           ),
