@@ -19,6 +19,7 @@ abstract class Routes {
   static const QUIZ = _Paths.QUIZ;
   static const SUCCESS = _Paths.SUCCESS;
   static const FAVORITES = _Paths.FAVORITES;
+  static const FILLSUCCESS = _Paths.FILLSUCCESS;
 }
 
 abstract class _Paths {
@@ -38,5 +39,6 @@ abstract class _Paths {
   static const LISTENING = '/listening';
   static const QUIZ = '/quiz';
   static const SUCCESS = '/success';
+  static const FILLSUCCESS = '/fillsuccess';
   static const FAVORITES = '/favorites';
 }

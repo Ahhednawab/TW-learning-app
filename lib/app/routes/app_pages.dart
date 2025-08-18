@@ -29,6 +29,7 @@ import '../modules/swipecard/bindings/swipecard_binding.dart';
 import '../modules/swipecard/views/swipecard_view.dart';
 import '../modules/vocabulary/bindings/vocabulary_binding.dart';
 import '../modules/vocabulary/views/vocabulary_view.dart';
+import '../modules/fillblanks/views/success_view.dart' as fs;
 
 part 'app_routes.dart';
 
@@ -111,6 +112,10 @@ class AppPages {
       name: _Paths.FAVORITES,
       page: () => const FavoritesView(),
       binding: FavoritesBinding(),
+    ),
+    GetPage(
+      name: _Paths.FILLSUCCESS,
+      page: () => const fs.SuccessView(),
     ),
   ];
 }

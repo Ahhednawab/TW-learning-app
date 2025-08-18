@@ -27,7 +27,7 @@ Widget HomeActionButton({
       ),
       const SizedBox(height: 8),
       SizedBox(
-        width: Responsive.wp(0.25),
+        width: Responsive.wp(0.20),
         child: Text(
           label,
           style: TextStyle(

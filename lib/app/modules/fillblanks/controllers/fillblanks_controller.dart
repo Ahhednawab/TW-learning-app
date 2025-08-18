@@ -1,5 +1,8 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:mandarinapp/app/routes/app_pages.dart';
 
 class QuestionModel {
   final String image;
@@ -23,6 +26,8 @@ class FillblanksController extends GetxController with GetTickerProviderStateMix
 
   var selectedOption = (-1).obs;
   var answerColor = <int, Color>{}.obs;
+  var score = 0.obs;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   late AnimationController swipeController;
   late Animation<Offset> swipeAnimation;
@@ -99,17 +104,25 @@ final List<QuestionModel> questions = [
     updateProgress();
   }
 
+    void playSound(String filePath) async {
+    await _audioPlayer.stop();
+    await _audioPlayer.play(AssetSource(filePath));
+  }
+
   void selectOption(int index) async {
     selectedOption.value = index;
 
     if (index == questions[currentIndex.value].correctIndex) {
       answerColor[index] = Colors.lightGreen;
+      playSound('audio/correct.mp3');
       await Future.delayed(const Duration(milliseconds: 500));
       await swipeController.forward();
+      score.value += 1;
       nextQuestion();
       swipeController.reset();
     } else {
       answerColor[index] = Colors.red.shade200;
+      playSound('audio/failure.mp3');
       await Future.delayed(const Duration(seconds: 1));
       answerColor.remove(index); 
     }
@@ -121,7 +134,7 @@ final List<QuestionModel> questions = [
     swipeController.reset();
   }
 
-  void nextQuestion() {
+  void nextQuestion() async{
    
       // Get.back if last question
       if (currentIndex.value < questions.length - 1) {
@@ -130,7 +143,11 @@ final List<QuestionModel> questions = [
         answerColor.clear();
         updateProgress();
       } else {
-        Get.back();
+        print(score.value);
+        playSound('audio/levelup.mp3');
+        await Future.delayed(const Duration(milliseconds: 1500));
+        Get.toNamed(Routes.FILLSUCCESS, arguments: {'score': score.value}); // Redirect to success screen
+        // Get.back();
       }
     
   }

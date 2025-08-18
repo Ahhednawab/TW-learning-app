@@ -14,212 +14,233 @@ class SwipecardView extends GetView<SwipecardController> {
       appBar: customAppBar(title: controller.title ?? 'beginner'),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 6),
-            Text(
-              "animals".tr,
-              style: TextStyle(
-                fontSize: Responsive.sp(context, 18),
-                fontWeight: FontWeight.w600,
-                color: primaryColor,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 6),
+              Text(
+                "animals".tr,
+                style: TextStyle(
+                  fontSize: Responsive.sp(context, 18),
+                  fontWeight: FontWeight.w600,
+                  color: primaryColor,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-
-            // Animated Swipe Card
-            Obx(() {
-              final word = controller.words[controller.currentIndex.value];
-              return SlideTransition(
-                position: controller.swipeAnimation,
-                child: SizedBox(
-                  width: Responsive.wp(0.85),
-                  child: AspectRatio(
-                    aspectRatio: 4 / 5,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: whiteColor,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.2),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Stack(
-                          children: [
-                        Image.asset(
-                          word.image,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
+              const SizedBox(height: 20),
+          
+              // Animated Swipe Card
+              Obx(() {
+                final word = controller.words[controller.currentIndex.value];
+                return SlideTransition(
+                  position: controller.swipeAnimation,
+                  child: SizedBox(
+                    width: Responsive.wp(0.85),
+                    child: AspectRatio(
+                      aspectRatio: 4 / 5,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withValues(alpha: 0.2),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                            ),
+                          ],
                         ),
-
-                        // Overlay animation for Learn mode
-                        GetBuilder<SwipecardController>(
-                          builder: (controller) {
-                            return Align(
-                              alignment: Alignment.bottomCenter,
-                              child: SizeTransition(
-                                sizeFactor: controller.overlayAnimation,
-                                axis: Axis.vertical,
-                                axisAlignment: -1,
-                                child: Container(
-                                  color: Colors.black.withValues(alpha: 0.7),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            word.word,
-                                            style: TextStyle(
-                                              fontSize: Responsive.sp(context, 24),
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.volume_up,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Stack(
+                            children: [
+                          Image.asset(
+                            word.image,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
+          
+                          // Overlay animation for Learn mode
+                          GetBuilder<SwipecardController>(
+                            builder: (controller) {
+                              return Align(
+                                alignment: Alignment.bottomCenter,
+                                child: SizeTransition(
+                                  sizeFactor: controller.overlayAnimation,
+                                  axis: Axis.vertical,
+                                  axisAlignment: -1,
+                                  child: Container(
+                                    color: Colors.black.withValues(alpha: 0.7),
+                                    height: Responsive.isTablet(context) ? 320 : 150,
+                                    padding: EdgeInsets.all(Responsive.isTablet(context) ? 36 : 12),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              word.word,
+                                              style: TextStyle(
+                                                fontSize: Responsive.isTablet(context) ? 40 : 24,
+                                                fontWeight: FontWeight.bold,
                                                 color: Colors.white,
-                                                size: Responsive.isTablet(context) ? 26 : 22,
                                               ),
-                                              SizedBox(width: 10),
-                                              Obx(
-                                                () => GestureDetector(
-                                                  onTap: controller.toggleLike,
-                                                  child: Icon(
-                                                    controller.isLiked.value
-                                                        ? Icons.favorite
-                                                        : Icons.favorite_border,
-                                                    color: controller.isLiked.value ? Colors.red : Colors.white,
-                                                    size: Responsive.isTablet(context) ? 24 : 22,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.volume_up,
+                                                  color: Colors.white,
+                                                  size: Responsive.isTablet(context) ? 36 : 22,
+                                                ),
+                                                SizedBox(width: 10),
+                                                Obx(
+                                                  () => GestureDetector(
+                                                    onTap: controller.toggleLike,
+                                                    child: Icon(
+                                                      controller.isLiked.value
+                                                          ? Icons.favorite
+                                                          : Icons.favorite_border,
+                                                      color: controller.isLiked.value ? Colors.red : Colors.white,
+                                                      size: Responsive.isTablet(context) ? 34 : 22,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          "${word.type} • ${word.meaning}",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: Responsive.isTablet(context) ? 36 : 14,
                                           ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        "${word.type} • ${word.meaning}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: Responsive.sp(context, 16),
                                         ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        word.example,
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: Responsive.sp(context, 14),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          word.example,
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: Responsive.isTablet(context) ? 34 : 14,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-
-                        // Word text at bottom if not learning
-                        Obx(() {
-                          return controller.isLearning.value
-                              ? const SizedBox()
-                              : Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                  width: double.infinity,
-                                  color: Colors.black.withValues(alpha: 0.6),
-                                  padding: const EdgeInsets.all(8),
-                                  child: Text(
-                                    word.word,
-                                    style: TextStyle(
-                                      fontSize: Responsive.sp(context, 24),
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      ],
                                     ),
-                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               );
-                        }),
-                          ],
+                            },
+                          ),
+          
+                          // Word text at bottom if not learning
+                          Obx(() {
+                            return controller.isLearning.value
+                                ? const SizedBox()
+                                : Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    width: double.infinity,
+                                    color: Colors.black.withValues(alpha: 0.6),
+                                    padding: const EdgeInsets.all(8),
+                                    child: Text(
+                                      word.word,
+                                      style: TextStyle(
+                                        fontSize: Responsive.isTablet(context) ? 40 : 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                          }),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              );
-            }),
-
-            const SizedBox(height: 20),
-
-            // Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Image.asset(
-                        'assets/images/left.png',
-                        height: Responsive.isTablet(context) ? 48 : 40,
-                        width: Responsive.isTablet(context) ? 48 : 40,
+                );
+              }),
+          
+              const SizedBox(height: 20),
+          
+              // Buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Image.asset(
+                          'assets/images/left.png',
+                          height: Responsive.isTablet(context) ? 58 : 40,
+                          width: Responsive.isTablet(context) ? 58 : 40,
+                        ),
+                        onPressed: controller.markLearn,
                       ),
-                      onPressed: controller.markKnown,
+                      Text('no'.tr, style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.bold,)),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Text('known'.tr, style: TextStyle(fontSize: Responsive.sp(context, 14))),
-                  ],
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Image.asset(
-                        'assets/images/right.png',
-                        height: Responsive.isTablet(context) ? 48 : 40,
-                        width: Responsive.isTablet(context) ? 48 : 40,
+                    child: Center(
+                      child: Text(
+                        'doyouknow'.tr,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Responsive.sp(context, 22),
+                        ),
                       ),
-                      onPressed: controller.markLearn,
                     ),
-                    Text('learn'.tr, style: TextStyle(fontSize: Responsive.sp(context, 14))),
-                  ],
+                  ),                  
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Image.asset(
+                          'assets/images/right.png',
+                          height: Responsive.isTablet(context) ? 58 : 40,
+                          width: Responsive.isTablet(context) ? 58 : 40,
+                        ),
+                        onPressed: controller.markKnown,
+                      ),
+                      Text('yes'.tr, style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.bold,)),
+                    ],
+                  ),
+                ],
+              ),
+          
+              const SizedBox(height: 20),
+          
+              // Progress
+              Obx(
+                () => LinearProgressIndicator(
+                  value: controller.progress.value,
+                  backgroundColor: primaryColor.withValues(alpha: 0.4),
+                  color: primaryColor,
+                  minHeight: 5,
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            // Progress
-            Obx(
-              () => LinearProgressIndicator(
-                value: controller.progress.value,
-                backgroundColor: primaryColor.withValues(alpha: 0.4),
-                color: primaryColor,
-                minHeight: 5,
               ),
-            ),
-            const SizedBox(height: 10),
-            Obx(
-              () => Text(
-                "words".tr+": ${controller.currentIndex.value + 1}/${controller.words.length}",
+              const SizedBox(height: 10),
+              Obx(
+                () => Text(
+                  "words".tr+": ${controller.currentIndex.value + 1}/${controller.words.length}",
+                  style: TextStyle(fontSize: Responsive.sp(context, 18)),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

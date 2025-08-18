@@ -15,9 +15,7 @@ class ProfileSectionHeader extends StatelessWidget {
           color: greyColor,
           fontWeight: FontWeight.w700,
           fontSize: 16,
-          letterSpacing: 0.2,
-
-          
+          letterSpacing: 0.2,          
         ),
       ),
     );

@@ -6,7 +6,11 @@ class ChooseactivityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    activity = Get.arguments['activity'];
+    try {
+      activity = Get.arguments['activity'];
+    } catch (e) {
+      activity = 'chooseactivity';
+    }
   }
 
 

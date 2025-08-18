@@ -53,7 +53,7 @@ class FavoritesView extends GetView<FavoritesController> {
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: Responsive.isTablet(context) ? 4 : 3,
-                    childAspectRatio: 0.6,
+                    childAspectRatio: 0.65,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),

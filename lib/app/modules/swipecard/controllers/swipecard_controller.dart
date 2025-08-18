@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +27,7 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
   }
 
   final words = <WordModel>[
-    WordModel(word: "Sheep", meaning: "A domesticated ruminant animal", example: "The sheep grazed in the meadow.", type: "Noun", image: "assets/images/sheep.png"),
+    WordModel(word: "⽺", meaning: "A domesticated ruminant animal", example: "The sheep grazed in the meadow.", type: "Noun", image: "assets/images/sheep.png"),
     WordModel(word: "Cat", meaning: "A small domesticated carnivorous mammal", example: "The cat chased the mouse.", type: "Noun", image: "assets/images/cat.jpg"),
     WordModel(word: "Dog", meaning: "A domesticated carnivorous mammal", example: "The dog barked loudly.", type: "Noun", image: "assets/images/dog.png"),
     WordModel(word: "Bird", meaning: "A warm-blooded egg-laying vertebrate", example: "The bird sang beautifully.", type: "Noun", image: "assets/images/bird.jpg"),
@@ -47,14 +48,16 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
 
   late AnimationController overlayController;
   late Animation<double> overlayAnimation;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void onInit() {
     super.onInit();
     title = Get.arguments?['activity'];
+    
 
-    swipeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    swipeAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(-2, 0))
+    swipeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    swipeAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(2, 0))
         .animate(CurvedAnimation(parent: swipeController, curve: Curves.easeInOut));
 
     overlayController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
@@ -63,12 +66,18 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
     updateProgress();
   }
 
+    void playSound(String filePath) async {
+    await _audioPlayer.stop();
+    await _audioPlayer.play(AssetSource(filePath));
+  }
+
   void markKnown() async {
     if (isLearning.value) {
       // If overlay is open, close it first
       await overlayController.reverse();
       isLearning.value = false;
     }
+    playSound('audio/levelup.mp3');
     await swipeController.forward();
     nextCard();
     swipeController.reset();
@@ -97,6 +106,7 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
   void onClose() {
     swipeController.dispose();
     overlayController.dispose();
+    _audioPlayer.dispose();
     super.onClose();
   }
 }

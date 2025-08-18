@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-class ListeningController extends GetxController {
+class ListeningController extends GetxController with GetTickerProviderStateMixin  {
   String? activity;
 
   final progress = 0.0.obs;

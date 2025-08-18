@@ -62,6 +62,7 @@ class HomeView extends GetView<HomeController> {
                             // You can update state or use GetX controller here if needed
                             // controller.selectedLanguage!.value = value;
                             Get.find<LocalizationController>().setLanguage(Locale(value));
+                            controller.selectedLanguage?.value = value;
                           },
                           itemBuilder:
                               (context) =>
@@ -79,7 +80,7 @@ class HomeView extends GetView<HomeController> {
                             children: [
                               Obx(
                                 () => Text(
-                                  controller.selectedLanguage!.value.tr,
+                                  controller.selectedLanguage?.value.tr ?? '',
                                   style: TextStyle(
                                     color: blackColor,
                                     fontWeight: FontWeight.w600,

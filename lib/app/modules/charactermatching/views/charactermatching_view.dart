@@ -29,7 +29,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
               // Image grid
               Obx(() {
                 var q = controller.questions[controller.currentIndex.value];
-                final double gridSide = Responsive.hp(isTablet ? 0.5 : 0.48);
+                // final double gridSide = Responsive.hp(isTablet ? 0.5 : 0.48);
                 return GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

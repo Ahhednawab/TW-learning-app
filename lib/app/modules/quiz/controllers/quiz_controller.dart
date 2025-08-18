@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,6 +22,7 @@ class QuizController extends GetxController {
   var progress = 0.0.obs;
   var correctCount = 0.obs;
   var selectedOption = (-1).obs;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Store color states for each option
   var answerColor = <int, dynamic>{}.obs;
@@ -140,16 +142,23 @@ class QuizController extends GetxController {
 ];
 
 
+
+  void playSound(String filePath) async {
+    await _audioPlayer.stop();
+    await _audioPlayer.play(AssetSource(filePath));
+  }
   void selectOption(int index) {
     if (selectedOption.value != -1) return; // Prevent double tap
     selectedOption.value = index;
 
     if (index == questions[currentIndex.value].correctIndex) {
       answerColor[index] = const Color(0xFFD0F0C0); // green
+      playSound('audio/correct.mp3');
       correctCount.value++;
     } else {
       answerColor[index] = const Color(0xFFF4C2C2); // red
       int correct = questions[currentIndex.value].correctIndex;
+      playSound('audio/failure.mp3');
       answerColor[correct] = const Color(0xFFD0F0C0); // show correct
     }
 

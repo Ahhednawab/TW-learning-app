@@ -19,6 +19,7 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
   }
 
   final List<Category> categories = [
+    
     Category(name: 'beginner'),
     Category(name: 'preintermediate'),
     Category(name: 'intermediate'),

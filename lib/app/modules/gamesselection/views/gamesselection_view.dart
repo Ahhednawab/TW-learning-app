@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
 
@@ -20,17 +21,13 @@ class GamesselectionView extends GetView<GamesselectionController> {
           children: [
             Text(
               'choosegame'.tr,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: primaryColor,
-              ),
+              style: TextStyle(fontSize: Responsive.sp(context, 20),fontWeight: FontWeight.bold,color: primaryColor),
             ),
             const SizedBox(height: 20),
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 8,
+                vertical: Responsive.isTablet(context) ? 14 : 10,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -38,7 +35,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
               tileColor: Colors.white,
               title: Text(
                 'fillblanks'.tr,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
                 '0/10',
@@ -48,16 +45,17 @@ class GamesselectionView extends GetView<GamesselectionController> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              leading: Icon(Icons.checklist_sharp),
+              leading: Icon(Icons.checklist_sharp, size: 35,),
               onTap: () {
                 Get.toNamed(Routes.FILLBLANKS, arguments: {'activity': controller.activity});
               },
             ),
             const SizedBox(height: 10),
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 8,
+                vertical: Responsive.isTablet(context) ? 14 : 10,
+
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -65,7 +63,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
               tileColor: Colors.white,
               title: Text(
                 'charactermatching'.tr,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
                 '0/3',
@@ -75,16 +73,16 @@ class GamesselectionView extends GetView<GamesselectionController> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              leading: Icon(Icons.circle_rounded),
+              leading: Icon(Icons.circle_rounded, size: 35,),
               onTap: () {
                 Get.toNamed(Routes.CHARACTERMATCHING, arguments: {'activity': controller.activity});
               },
             ),
             const SizedBox(height: 10),
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 8,
+                vertical: Responsive.isTablet(context) ? 14 : 10,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -92,7 +90,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
               tileColor: Colors.white,
               title: Text(
                 'listening'.tr,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize:  Responsive.sp(context, 18),fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
                 '0/3',
@@ -102,7 +100,7 @@ class GamesselectionView extends GetView<GamesselectionController> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              leading: Icon(Icons.earbuds),
+              leading: Icon(Icons.earbuds, size: 35,),
               onTap: () {
                 Get.toNamed(Routes.LISTENING, arguments: {'activity': controller.activity});
               },

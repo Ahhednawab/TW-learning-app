@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/helper/responsive.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
 import 'package:mandarinapp/app/modules/favorites/controllers/favorites_controller.dart';
 import 'package:mandarinapp/app/modules/favorites/views/favorites_view.dart';
@@ -15,13 +16,13 @@ class BottomnavView extends GetView<BottomnavController> {
   final TextStyle unselectedLabelStyle = const TextStyle(
     color: whiteColor,
     fontWeight: FontWeight.w500,
-    fontSize: 12,
+    // fontSize: 12,
   );
 
   final TextStyle selectedLabelStyle = const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.bold,
-    fontSize: 12,
+    // fontSize: 12,
   );
 
   const BottomnavView({super.key});
@@ -31,9 +32,9 @@ class BottomnavView extends GetView<BottomnavController> {
       () => MediaQuery(
         data: MediaQuery.of(
           context,
-        ).copyWith(textScaler: const TextScaler.linear(1.0)),
+        ).copyWith(textScaler: TextScaler.linear(Responsive.isTablet(context) ? 2.0 : 1.0)),
         child: Container(
-          height: 70,
+          height: Responsive.isTablet(context) ? 100 : 70,
           decoration: const BoxDecoration(
             color: secondaryColor,
             boxShadow: [
@@ -49,7 +50,8 @@ class BottomnavView extends GetView<BottomnavController> {
             type: BottomNavigationBarType.fixed,
             showUnselectedLabels: true,
             showSelectedLabels: true,
-
+            unselectedFontSize: Responsive.isTablet(context) ? 16 : 12, 
+            selectedFontSize: Responsive.isTablet(context) ? 16 : 12,
             onTap: controller.changeTabIndex,
             currentIndex: controller.tabIndex.value,
             backgroundColor: whiteColor,
@@ -80,7 +82,7 @@ class BottomnavView extends GetView<BottomnavController> {
                     ), // Space between indicator and icon
                     Icon(
                       _getIcon(index),
-                      size: controller.tabIndex.value == index ? 24.0 : 20.0,
+                      size: controller.tabIndex.value == index ? Responsive.isTablet(context) ? 40.0 : 24.0 : Responsive.isTablet(context) ? 44.0 : 20.0,
                       color:
                           controller.tabIndex.value == index
                               ? primaryColor
