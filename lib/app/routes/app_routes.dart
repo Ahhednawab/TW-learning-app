@@ -20,6 +20,8 @@ abstract class Routes {
   static const SUCCESS = _Paths.SUCCESS;
   static const FAVORITES = _Paths.FAVORITES;
   static const FILLSUCCESS = _Paths.FILLSUCCESS;
+  static const LOGIN = _Paths.LOGIN;
+  static const SIGNUP = _Paths.SIGNUP;
 }
 
 abstract class _Paths {
@@ -41,4 +43,6 @@ abstract class _Paths {
   static const SUCCESS = '/success';
   static const FILLSUCCESS = '/fillsuccess';
   static const FAVORITES = '/favorites';
+  static const LOGIN = '/login';
+  static const SIGNUP = '/signup';
 }

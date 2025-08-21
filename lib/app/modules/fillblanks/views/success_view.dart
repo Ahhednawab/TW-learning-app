@@ -9,7 +9,12 @@ class SuccessView extends GetView {
   @override
   Widget build(BuildContext context) {
     // Get arguments from the navigation route
-    final score = Get.arguments['score'] as int;
+    int score = 0;
+    try {
+       score = Get.arguments['score'] as int;
+    } catch (e) {
+      print("Error retrieving score: $e");
+    }
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -17,6 +22,7 @@ class SuccessView extends GetView {
         actions: [
           IconButton(
             onPressed: () {
+              Get.back();
               Get.back();
             },
             icon: const Icon(Icons.close),
@@ -73,7 +79,7 @@ class SuccessView extends GetView {
                   ),
                 ),
                 Positioned(
-                  top: 60,
+                  top: 30,
                   right: 0,
                   left: 0,
                   child: Column(
@@ -90,10 +96,19 @@ class SuccessView extends GetView {
 
                       SizedBox(height: 5),
                       Text(
-                        '${'yougot'.tr} $score ${'outof'.tr} 10 ${'correctanswers'.tr}',
+                        '${'yougot'.tr} $score ${'outof'.tr} 10 \n${'correctanswers'.tr}',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 18),
+                          fontSize: Responsive.sp(context, 16),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 5),
+                       Text(
+                        '$score/10',
+                        style: TextStyle(
+                          fontSize: Responsive.isTablet(context) ? 42 : 24,
                           fontWeight: FontWeight.bold,
+                          color: primaryColor,
                         ),
                         textAlign: TextAlign.center,
                       ),

@@ -1,6 +1,7 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 
-class CharactermatchingController extends GetxController {
+class CharactermatchingController extends GetxController with GetTickerProviderStateMixin{
   String? activity;
 
   var currentIndex = 0.obs;
@@ -12,6 +13,7 @@ class CharactermatchingController extends GetxController {
 
   // Tracks which images are revealed
   var revealed = <bool>[false, false, false, false].obs;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   // 3 questions: images, Chinese, English
   final List<Map<String, dynamic>> questions =  [
@@ -72,6 +74,12 @@ class CharactermatchingController extends GetxController {
     resetQuestion();
   }
 
+
+     void playSound(String filePath) async {
+    await _audioPlayer.stop();
+    await _audioPlayer.play(AssetSource(filePath));
+  }
+
   void selectLeft(int index) {
     selectedLeft.value = index;
     checkMatch();
@@ -91,11 +99,13 @@ class CharactermatchingController extends GetxController {
         matchesFound.value++;
         selectedLeft.value = -1;
         selectedRight.value = -1;
+        playSound('audio/correct.mp3');
         if (matchesFound.value == 4) {
           nextQuestion();
         }
       } else {
         // Wrong — reset after short delay
+        playSound('audio/failure.mp3');
         Future.delayed(Duration(milliseconds: 300), () {
           selectedLeft.value = -1;
           selectedRight.value = -1;
@@ -124,5 +134,11 @@ class CharactermatchingController extends GetxController {
     selectedLeft.value = -1;
     selectedRight.value = -1;
     progress.value = (currentIndex.value) / questions.length;
+  }
+
+   @override
+  void onClose() {
+    _audioPlayer.dispose();
+    super.onClose();
   }
 }

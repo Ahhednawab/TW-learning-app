@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
 
 class QuestionModel {
@@ -159,6 +158,7 @@ final List<QuestionModel> questions = [
   @override
   void onClose() {
     swipeController.dispose();
+    _audioPlayer.dispose();
     super.onClose();
   }
 }
