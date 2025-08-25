@@ -11,27 +11,46 @@ class SwipecardView extends GetView<SwipecardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: controller.title ?? 'beginner'),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 6),
-              Text(
-                "animals".tr,
-                style: TextStyle(
-                  fontSize: Responsive.sp(context, 18),
-                  fontWeight: FontWeight.w600,
-                  color: primaryColor,
-                ),
-              ),
-              const SizedBox(height: 20),
-          
-              // Animated Swipe Card
-              Obx(() {
-                final word = controller.words[controller.currentIndex.value];
-                return SlideTransition(
+      appBar: customAppBar(title: controller.categoryName.isNotEmpty ? controller.categoryName : 'Swipe Cards'),
+      body: Obx(() => controller.isLoading.value
+          ? Center(child: CircularProgressIndicator(color: primaryColor))
+          : controller.words.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text(
+                        'No words available',
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 6),
+                        Text(
+                          controller.categoryName.tr,
+                          style: TextStyle(
+                            fontSize: Responsive.sp(context, 18),
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                    
+                        // Animated Swipe Card
+                        Obx(() {
+                          if (controller.currentIndex.value >= controller.words.length) {
+                            return SizedBox.shrink();
+                          }
+                          final word = controller.words[controller.currentIndex.value];
+                          return SlideTransition(
                   position: controller.swipeAnimation,
                   child: SizedBox(
                     width: Responsive.wp(0.85),
@@ -53,12 +72,27 @@ class SwipecardView extends GetView<SwipecardController> {
                           borderRadius: BorderRadius.circular(20),
                           child: Stack(
                             children: [
-                          Image.asset(
-                            word.image,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
+                          word.imageUrl.isNotEmpty
+                              ? Image.network(
+                                  word.imageUrl,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/placeholder.png',
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    );
+                                  },
+                                )
+                              : Image.asset(
+                                  'assets/images/placeholder.png',
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
           
                           // Overlay animation for Learn mode
                           GetBuilder<SwipecardController>(
@@ -82,20 +116,35 @@ class SwipecardView extends GetView<SwipecardController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              word.word,
-                                              style: TextStyle(
-                                                fontSize: Responsive.isTablet(context) ? 40 : 24,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  word.traditional,
+                                                  style: TextStyle(
+                                                    fontSize: Responsive.isTablet(context) ? 40 : 24,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  word.pinyin,
+                                                  style: TextStyle(
+                                                    fontSize: Responsive.isTablet(context) ? 20 : 14,
+                                                    color: Colors.white70,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                             Row(
                                               children: [
-                                                Icon(
-                                                  Icons.volume_up,
-                                                  color: Colors.white,
-                                                  size: Responsive.isTablet(context) ? 36 : 22,
+                                                GestureDetector(
+                                                  onTap: controller.playWordAudio,
+                                                  child: Icon(
+                                                    Icons.volume_up,
+                                                    color: Colors.white,
+                                                    size: Responsive.isTablet(context) ? 36 : 22,
+                                                  ),
                                                 ),
                                                 SizedBox(width: 10),
                                                 Obx(
@@ -116,18 +165,18 @@ class SwipecardView extends GetView<SwipecardController> {
                                         ),
                                         const SizedBox(height: 8),
                                         Text(
-                                          "${word.type} • ${word.meaning}",
+                                          "${word.partOfSpeech} • ${word.english}",
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: Responsive.isTablet(context) ? 36 : 14,
+                                            fontSize: Responsive.isTablet(context) ? 18 : 14,
                                           ),
                                         ),
-                                        const SizedBox(height: 6),
+                                        const SizedBox(height: 8),
                                         Text(
-                                          word.example,
+                                          word.exampleSentence.english,
                                           style: TextStyle(
                                             color: Colors.white70,
-                                            fontSize: Responsive.isTablet(context) ? 34 : 14,
+                                            fontSize: Responsive.isTablet(context) ? 16 : 12,
                                           ),
                                         ),
                                       ],
@@ -148,14 +197,27 @@ class SwipecardView extends GetView<SwipecardController> {
                                     width: double.infinity,
                                     color: Colors.black.withValues(alpha: 0.6),
                                     padding: const EdgeInsets.all(8),
-                                    child: Text(
-                                      word.word,
-                                      style: TextStyle(
-                                        fontSize: Responsive.isTablet(context) ? 40 : 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          word.traditional,
+                                          style: TextStyle(
+                                            fontSize: Responsive.isTablet(context) ? 40 : 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          word.pinyin,
+                                          style: TextStyle(
+                                            fontSize: Responsive.isTablet(context) ? 20 : 14,
+                                            color: Colors.white70,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -169,25 +231,25 @@ class SwipecardView extends GetView<SwipecardController> {
                 );
               }),
           
-              const SizedBox(height: 20),
-          
-              // Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: Image.asset(
-                          'assets/images/left.png',
-                          height: Responsive.isTablet(context) ? 58 : 40,
-                          width: Responsive.isTablet(context) ? 58 : 40,
-                        ),
-                        onPressed: controller.markLearn,
-                      ),
-                      Text('no'.tr, style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.bold,)),
-                    ],
-                  ),
+                        const SizedBox(height: 20),
+                    
+                        // Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/left.png',
+                                    height: Responsive.isTablet(context) ? 58 : 40,
+                                    width: Responsive.isTablet(context) ? 58 : 40,
+                                  ),
+                                  onPressed: controller.markLearn,
+                                ),
+                                Text('no'.tr, style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.bold,)),
+                              ],
+                            ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
@@ -221,28 +283,28 @@ class SwipecardView extends GetView<SwipecardController> {
                 ],
               ),
           
-              const SizedBox(height: 20),
-          
-              // Progress
-              Obx(
-                () => LinearProgressIndicator(
-                  value: controller.progress.value,
-                  backgroundColor: primaryColor.withValues(alpha: 0.4),
-                  color: primaryColor,
-                  minHeight: 5,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Obx(
-                () => Text(
-                  "words".tr+": ${controller.currentIndex.value + 1}/${controller.words.length}",
-                  style: TextStyle(fontSize: Responsive.sp(context, 18)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+                        const SizedBox(height: 20),
+                    
+                        // Progress
+                        Obx(
+                          () => LinearProgressIndicator(
+                            value: controller.progress.value,
+                            backgroundColor: primaryColor.withOpacity(0.4),
+                            color: primaryColor,
+                            minHeight: 5,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Obx(
+                          () => Text(
+                            "words".tr+": ${controller.currentIndex.value + 1}/${controller.words.length}",
+                            style: TextStyle(fontSize: Responsive.sp(context, 18)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
     );
   }
 }

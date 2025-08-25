@@ -171,7 +171,7 @@ class SignupView extends GetView<SignupController> {
                             child: const Text(
                               'Sign In',
                               style: TextStyle(
-                                color: AppColors.secondaryColor,
+                                color: AppColors.primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

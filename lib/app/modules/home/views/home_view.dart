@@ -110,7 +110,7 @@ class HomeView extends GetView<HomeController> {
                 const SizedBox(height: 22),
 
                 // Greeting
-                HomeGreeting(userName: 'John'),
+                Obx(() => HomeGreeting(userName: controller.userName)),
                 const SizedBox(height: 28),
 
                 // Action Buttons
@@ -128,7 +128,7 @@ class HomeView extends GetView<HomeController> {
                       icon: Icons.quiz_rounded,
                       label: 'continuequiz'.tr,
                       onTap: () {
-                        Get.find<BottomnavController>().changeTabIndex(1);
+                        controller.continuePreviousQuiz();
                       },
                     ),
                     HomeActionButton(
@@ -142,7 +142,7 @@ class HomeView extends GetView<HomeController> {
                       icon: Icons.translate_rounded,
                       label: 'favoritewords'.tr,
                       onTap: () {
-                        Get.find<BottomnavController>().changeTabIndex(1);
+                        controller.navigateToFavorites();
                       },
                     ),
                   ],
@@ -150,69 +150,86 @@ class HomeView extends GetView<HomeController> {
                 const SizedBox(height: 32),
 
                 // Progress Card
-                HomeProgressCard(
-                  level: 'beginner'.tr,
-                  words: 3,
-                  totalWords: 10,
-                  onTap: () {},
+                Obx(() => controller.isLoading.value
+                    ? Container(
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: greyColor.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : HomeProgressCard(
+                        level: controller.currentLevelText,
+                        words: controller.wordsLearned.value,
+                        totalWords: controller.totalWords.value,
+                        onTap: () {
+                          controller.navigateToVocabulary();
+                        },
+                      ),
                 ),
                 const SizedBox(height: 28),
 
                 IntrinsicHeight(
-  child: Row(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      // Left side: Word of the Day (tall card)
-      Expanded(
-        flex: 1,
-        child: HomeInfoCard(
-          title: 'wordofday',
-          value: 'nǐ hǎo',
-          color: primaryColor,
-          watermark: '大',
-        ),
-      ),
-      const SizedBox(width: 5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Left side: Word of the Day (tall card)
+                      Expanded(
+                        flex: 1,
+                        child: Obx(() => HomeInfoCard(
+                          title: 'wordofday',
+                          value: controller.wordOfTheDayText,
+                          color: primaryColor,
+                          watermark: '大',
+                        )),
+                      ),
+                      const SizedBox(width: 5),
 
-      // Right side: Two stacked cards
-      Expanded(
-        flex: 1,
-        child: Column(
-          children: [
-            SizedBox(
-              // height: 126,
-              width: double.infinity,
-              child: HomeInfoCard(
-                title: 'lastwordreviewed',
-                value: 'xiè xiè',
-                color: const Color(0xFF6EC6C5),
-                watermark: '大',
-              ),
-            ),
-            const SizedBox(height: 5),
-            SizedBox(
-              // height: 126,
-              width: double.infinity,
-              child: HomeInfoCard(
-                title: 'timespenttoday',
-                value: '20 mins',
-                color: const Color(0xFF9CA6F5),
-                watermark: '大',
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  ),
-)
-,
+                      // Right side: Two stacked cards
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              // height: 126,
+                              width: double.infinity,
+                              child: Obx(() => HomeInfoCard(
+                                title: 'lastwordreviewed',
+                                value: controller.lastWordReviewedText,
+                                color: const Color(0xFF6EC6C5),
+                                watermark: '大',
+                              )),
+                            ),
+                            const SizedBox(height: 5),
+                            SizedBox(
+                              // height: 126,
+                              width: double.infinity,
+                              child: Obx(() => HomeInfoCard(
+                                title: 'timespenttoday',
+                                value: controller.timeSpentTodayText,
+                                color: const Color(0xFF9CA6F5),
+                                watermark: '大',
+                              )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
 
                 SizedBox(height: 28),
                 // Streak Card
-                HomeStreakCard(streakDays: 10, onTap: () {
-                  Get.find<BottomnavController>().changeTabIndex(1);
-                }),
+                Obx(() => HomeStreakCard(
+                  streakDays: controller.currentStreak.value,
+                  onTap: () {
+                    controller.navigateToVocabulary();
+                  },
+                )),
                 const SizedBox(height: 28),
                 // Advertise Card 
                 Container(

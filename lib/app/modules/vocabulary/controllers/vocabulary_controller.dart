@@ -1,46 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../models/level_model.dart';
+import '../../../models/category_model.dart';
+import '../../../models/user_progress_model.dart';
+import '../../../services/firebase_service.dart';
 
 class VocabularyController extends GetxController with GetTickerProviderStateMixin {
   late TabController tabController;
   final ScrollController categoryScrollController = ScrollController();
   var isSearching = false.obs;
 
+  // Firebase data observables
+  final RxList<LevelModel> levels = <LevelModel>[].obs;
+  final RxMap<String, List<CategoryModel>> categoriesByLevel = <String, List<CategoryModel>>{}.obs;
+  final Rx<UserProgressModel?> userProgress = Rx<UserProgressModel?>(null);
+  final RxBool isLoading = true.obs;
+  final RxString selectedLevelId = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    tabController = TabController(length: categories.length, vsync: this);
-    tabController.addListener(scrollToSelectedTab);
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    try {
+      isLoading.value = true;
+      
+      // Load levels
+      List<LevelModel> loadedLevels = await FirebaseService.getAllLevels();
+      levels.value = loadedLevels;
+      
+      if (loadedLevels.isNotEmpty) {
+        // Load categories for each level
+        for (LevelModel level in loadedLevels) {
+          List<CategoryModel> categories = await FirebaseService.getCategoriesByLevel(level.levelId);
+          categoriesByLevel[level.levelId] = categories;
+        }
+        
+        // Load user progress
+        String? userId = FirebaseService.currentUserId;
+        if (userId != null) {
+          UserProgressModel? progress = await FirebaseService.getUserProgress(userId);
+          userProgress.value = progress;
+          
+          // Set initial selected level
+          if (progress != null) {
+            selectedLevelId.value = progress.currentLevel;
+          } else if (loadedLevels.isNotEmpty) {
+            selectedLevelId.value = loadedLevels.first.levelId;
+          }
+        }
+        
+        // Initialize tab controller
+        tabController = TabController(length: loadedLevels.length, vsync: this);
+        tabController.addListener(scrollToSelectedTab);
+        
+        // Set initial tab index based on current level
+        int initialIndex = loadedLevels.indexWhere((level) => level.levelId == selectedLevelId.value);
+        if (initialIndex != -1) {
+          tabController.index = initialIndex;
+        }
+      }
+    } catch (e) {
+      print('Error loading vocabulary data: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void toggleSearch() {
     isSearching.value = !isSearching.value;
   }
 
-  final List<Category> categories = [
-    
-    Category(name: 'beginner'),
-    Category(name: 'preintermediate'),
-    Category(name: 'intermediate'),
-    Category(name: 'upperintermediate'),
-    Category(name: 'veteran'),
-  ];
-
-   void scrollToSelectedTab() {
+  void scrollToSelectedTab() {
     if (!categoryScrollController.hasClients) return;
 
-    // Approximate width of each tab - adjust based on your UI or measure dynamically
     const double tabWidth = 100.0;
-
-    // Calculate desired offset to make selected tab fully visible with some padding
     final double screenWidth = Get.width;
     final double tabCenter = tabController.index * tabWidth + tabWidth / 1.5;
-
-    // Scroll offset to center the tab (or keep it visible)
     double offset = tabCenter - (screenWidth / 2);
-
-    // Clamp offset to valid scroll range
     final maxScroll = categoryScrollController.position.maxScrollExtent;
     offset = offset.clamp(0, maxScroll);
 
@@ -51,112 +90,85 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
     );
   }
 
-  final List<Product> allProducts = [
-    Product(
-      name: 'Animals',
-      sellingPrice: 999,
-      category: Category(name: 'beginner'),
-      icon: Icons.pets,
-      progress: 0.75,
-    ),
-    Product(
-      name: 'Appearance',
-      sellingPrice: 29,
-      category: Category(name: 'beginner'),
-      icon: Icons.face,
-      progress: 0.50,
-    ),
-    Product(
-      name: 'Culture',
-      sellingPrice: 15,
-      category: Category(name: 'beginner'),
-      icon: Icons.museum,
-      progress: 0.25,
-    ),
-    Product(
-      name: 'Buildings',
-      sellingPrice: 499,
-      category: Category(name: 'beginner'),
-      icon: Icons.apartment,
-      progress: 0.90,
-    ),
-    Product(
-      name: 'Nature',
-      sellingPrice: 79,
-      category: Category(name: 'beginner'),
-      icon: Icons.nature,
-      progress: 0,
-    ),
-    Product(
-      name: 'Sports',
-      sellingPrice: 299,
-      category: Category(name: 'beginner'),
-      icon: Icons.sports,
-      progress: 0,
-    ),
-    Product(
-      name: 'Food',
-      sellingPrice: 199,
-      category: Category(name: 'beginner'),
-      icon: Icons.fastfood,
-      progress: 0,
-    ),
-    Product(
-      name: 'Clothes',
-      sellingPrice: 49,
-      category: Category(name: 'beginner'),
-      icon: Icons.checkroom,
-      progress: 0,
-    ),
-    Product(
-      name: 'Travel',
-      sellingPrice: 89,
-      category: Category(name: 'preintermediate'),
-      icon: Icons.travel_explore,
-      progress: 0.30,
-    ),
-    Product(
-      name: 'Technology',
-      sellingPrice: 599,
-      category: Category(name: 'preintermediate'),
-      icon: Icons.computer,
-      progress: 0.85,
-    ),
-    Product(
-      name: 'Health',
-      sellingPrice: 39,
-      category: Category(name: 'preintermediate'),
-      icon: Icons.health_and_safety,
-      progress: 0.55,
-    ),
-    Product(
-      name: 'Education',
-      sellingPrice: 69,
-      category: Category(name: 'preintermediate'),
-      icon: Icons.school,
-      progress: 0.45,
-    ),
-  ];
-}
+  void onTabChanged(int index) {
+    if (index < levels.length) {
+      selectedLevelId.value = levels[index].levelId;
+    }
+  }
 
-class Category {
-  final String name;
+  List<CategoryModel> getCategoriesForCurrentLevel() {
+    return categoriesByLevel[selectedLevelId.value] ?? [];
+  }
 
-  Category({required this.name});
-}
+  bool isCategoryUnlocked(String categoryId) {
+    if (userProgress.value == null) return false;
+    return userProgress.value!.categories[categoryId]?.isUnlocked ?? false;
+  }
 
-class Product {
-  final String name;
-  final double sellingPrice;
-  Category? category;
-  IconData? icon;
-  double? progress;
+  double getCategoryProgress(String categoryId) {
+    if (userProgress.value == null) return 0.0;
+    return userProgress.value!.categories[categoryId]?.completionPercentage ?? 0.0;
+  }
 
-  Product({
-    required this.name,
-    required this.sellingPrice,
-    this.category,
-    this.icon,
-    this.progress,
-  });
+  bool isLevelUnlocked(String levelId) {
+    if (userProgress.value == null) return false;
+    return userProgress.value!.unlockedLevels.contains(levelId);
+  }
+
+  void navigateToChooseActivity(CategoryModel category) {
+    if (!isCategoryUnlocked(category.categoryId)) {
+      Get.snackbar(
+        'locked'.tr,
+        'lockedinfo'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.white,
+        colorText: Colors.orange,
+      );
+      return;
+    }
+
+    Get.toNamed('/chooseactivity', arguments: {
+      'categoryId': category.categoryId,
+      'categoryName': category.name,
+      'levelId': category.levelId,
+    });
+  }
+
+  IconData getCategoryIcon(String categoryName) {
+    switch (categoryName.toLowerCase()) {
+      case 'animals':
+        return Icons.pets;
+      case 'appearance':
+        return Icons.face;
+      case 'culture':
+        return Icons.museum;
+      case 'buildings':
+        return Icons.apartment;
+      case 'nature':
+        return Icons.nature;
+      case 'sports':
+        return Icons.sports;
+      case 'food':
+        return Icons.fastfood;
+      case 'clothes':
+        return Icons.checkroom;
+      case 'travel':
+        return Icons.travel_explore;
+      case 'technology':
+        return Icons.computer;
+      case 'health':
+        return Icons.health_and_safety;
+      case 'education':
+        return Icons.school;
+      default:
+        return Icons.category;
+    }
+  }
+
+  @override
+  void onClose() {
+    tabController.dispose();
+    categoryScrollController.dispose();
+    super.onClose();
+  }
 }

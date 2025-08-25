@@ -2,128 +2,211 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
+import 'package:mandarinapp/app/models/word_model.dart';
+import 'package:mandarinapp/app/models/user_progress_model.dart';
+import 'package:mandarinapp/app/services/firebase_service.dart';
 
-class QuestionModel {
-  final String image;
+class FillBlankQuestion {
+  final String wordId;
+  final String imageUrl;
   final String questionText;
   final List<String> options;
   final int correctIndex;
+  final WordModel correctWord;
 
-  QuestionModel({
-    required this.image,
+  FillBlankQuestion({
+    required this.wordId,
+    required this.imageUrl,
     required this.questionText,
     required this.options,
     required this.correctIndex,
+    required this.correctWord,
   });
 }
 
 class FillblanksController extends GetxController with GetTickerProviderStateMixin {
-  String? activity;
-
+  // Game session data
+  String categoryId = '';
+  String levelId = '';
+  String categoryName = '';
+  
+  // Observable variables
   var currentIndex = 0.obs;
   var progress = 0.0.obs;
-
   var selectedOption = (-1).obs;
   var answerColor = <int, Color>{}.obs;
   var score = 0.obs;
+  var isLoading = true.obs;
+  
   final AudioPlayer _audioPlayer = AudioPlayer();
-
   late AnimationController swipeController;
   late Animation<Offset> swipeAnimation;
-final List<QuestionModel> questions = [
-  QuestionModel(
-    image: "assets/images/sheep.png",
-    questionText: "我喜歡 ______。\n(Wǒ xǐhuān ______.)",
-    options: ["狗 (gǒu)", "羊 (yáng)", "馬 (mǎ)", "魚 (yú)"],
-    correctIndex: 1,
-  ),
-  QuestionModel(
-    image: "assets/images/cat.jpg",
-    questionText: "我有一隻 ______。\n(Wǒ yǒu yī zhī ______.)",
-    options: ["狗 (gǒu)", "馬 (mǎ)", "貓 (māo)", "鳥 (niǎo)"],
-    correctIndex: 2,
-  ),
-  QuestionModel(
-    image: "assets/images/dog.png",
-    questionText: "他養了一隻 ______。\n(Tā yǎngle yī zhī ______.)",
-    options: ["魚 (yú)", "貓 (māo)", "狗 (gǒu)", "羊 (yáng)"],
-    correctIndex: 2,
-  ),
-  QuestionModel(
-    image: "assets/images/bird.jpg",
-    questionText: "天空有一隻 ______。\n(Tiānkōng yǒu yī zhī ______.)",
-    options: ["鳥 (niǎo)", "羊 (yáng)", "魚 (yú)", "馬 (mǎ)"],
-    correctIndex: 0,
-  ),
-  QuestionModel(
-    image: "assets/images/horse.png",
-    questionText: "他在騎 ______。\n(Tā zài qí ______.)",
-    options: ["貓 (māo)", "鳥 (niǎo)", "馬 (mǎ)", "羊 (yáng)"],
-    correctIndex: 2,
-  ),
-  QuestionModel(
-    image: "assets/images/fish.jfif",
-    questionText: "我喜歡吃 ______。\n(Wǒ xǐhuān chī ______.)",
-    options: ["鳥 (niǎo)", "魚 (yú)", "羊 (yáng)", "狗 (gǒu)"],
-    correctIndex: 1,
-  ),
-  QuestionModel(
-    image: "assets/images/lion.jpeg",
-    questionText: "動物園有一隻 ______。\n(Dòngwùyuán yǒu yī zhī ______.)",
-    options: ["狗 (gǒu)", "羊 (yáng)", "獅子 (shīzi)", "馬 (mǎ)"],
-    correctIndex: 2,
-  ),
-  QuestionModel(
-    image: "assets/images/elephant.jpg",
-    questionText: "我看到一頭 ______。\n(Wǒ kàndào yī tóu ______.)",
-    options: ["狗 (gǒu)", "大象 (dàxiàng)", "馬 (mǎ)", "羊 (yáng)"],
-    correctIndex: 1,
-  ),
-  QuestionModel(
-    image: "assets/images/tiger.jpg",
-    questionText: "叢林裡有一隻 ______。\n(Cónglín lǐ yǒu yī zhī ______.)",
-    options: ["老虎 (lǎohǔ)", "馬 (mǎ)", "羊 (yáng)", "狗 (gǒu)"],
-    correctIndex: 0,
-  ),
-  QuestionModel(
-    image: "assets/images/goat.jpg",
-    questionText: "山上有一隻 ______。\n(Shān shàng yǒu yī zhī ______.)",
-    options: ["狗 (gǒu)", "馬 (mǎ)", "魚 (yú)", "山羊 (shānyáng)"],
-    correctIndex: 3,
-  ),
-];
+  
+  // Game data
+  final RxList<FillBlankQuestion> questions = <FillBlankQuestion>[].obs;
+  final RxList<WordModel> allWords = <WordModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    activity = Get.arguments?['activity'];
+    
+    // Get arguments from navigation
+    final args = Get.arguments;
+    if (args != null) {
+      categoryId = args['categoryId'] ?? '';
+      levelId = args['levelId'] ?? '';
+      categoryName = args['categoryName'] ?? 'Fill Blanks';
+    }
+    
     swipeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     swipeAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(-2, 0))
         .animate(CurvedAnimation(parent: swipeController, curve: Curves.easeInOut));
-    updateProgress();
+    
+    loadGameData();
+  }
+  
+  Future<void> loadGameData() async {
+    try {
+      isLoading.value = true;
+      
+      // Load words for this category
+      List<WordModel> words = await FirebaseService.getRandomWordsByCategory(categoryId, 10);
+      allWords.value = words;
+      
+      if (words.isNotEmpty) {
+        // Generate fill blank questions from words
+        await generateFillBlankQuestions(words);
+        updateProgress();
+      }
+    } catch (e) {
+      print('Error loading fill blanks data: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  
+  Future<void> generateFillBlankQuestions(List<WordModel> words) async {
+    List<FillBlankQuestion> generatedQuestions = [];
+    
+    // Sample sentence templates for fill blanks
+    List<String> sentenceTemplates = [
+      "我喜歡 ______。\n(Wǒ xǐhuān ______.)",
+      "我有一隻 ______。\n(Wǒ yǒu yī zhī ______.)",
+      "他養了一隻 ______。\n(Tā yǎngle yī zhī ______.)",
+      "天空有一隻 ______。\n(Tiānkōng yǒu yī zhī ______.)",
+      "我看到一頭 ______。\n(Wǒ kàndào yī tóu ______.)",
+      "這是一隻 ______。\n(Zhè shì yī zhī ______.)",
+      "動物園有一隻 ______。\n(Dòngwùyuán yǒu yī zhī ______.)",
+      "我想要一隻 ______。\n(Wǒ xiǎng yào yī zhī ______.)",
+      "叢林裡有一隻 ______。\n(Cónglín lǐ yǒu yī zhī ______.)",
+      "山上有一隻 ______。\n(Shān shàng yǒu yī zhī ______.)",
+    ];
+    
+    for (int i = 0; i < words.length && i < 10; i++) {
+      WordModel correctWord = words[i];
+      
+      // Get 3 random incorrect options from other words
+      List<WordModel> otherWords = List.from(words);
+      otherWords.removeAt(i);
+      otherWords.shuffle();
+      
+      List<String> options = [];
+      List<WordModel> optionWords = [correctWord];
+      
+      // Add 3 incorrect options
+      for (int j = 0; j < 3 && j < otherWords.length; j++) {
+        optionWords.add(otherWords[j]);
+      }
+      
+      // Shuffle options
+      optionWords.shuffle();
+      
+      // Find correct index after shuffle
+      int correctIndex = optionWords.indexOf(correctWord);
+      
+      // Create option strings
+      for (WordModel word in optionWords) {
+        options.add('${word.traditional} (${word.pinyin})');
+      }
+      
+      // Use a random sentence template or the word's example sentence
+      String questionText = sentenceTemplates[i % sentenceTemplates.length];
+      if (correctWord.exampleSentence.traditional.isNotEmpty) {
+        // Replace the word with blank in the example sentence if available
+        questionText = correctWord.exampleSentence.traditional.replaceAll(correctWord.traditional, '______') + 
+                     '\n(' + correctWord.exampleSentence.pinyin.replaceAll(correctWord.pinyin, '______') + ')';
+      }
+      
+      generatedQuestions.add(FillBlankQuestion(
+        wordId: correctWord.wordId,
+        imageUrl: correctWord.imageUrl,
+        questionText: questionText,
+        options: options,
+        correctIndex: correctIndex,
+        correctWord: correctWord,
+      ));
+    }
+    
+    questions.value = generatedQuestions;
   }
 
-    void playSound(String filePath) async {
-    await _audioPlayer.stop();
-    await _audioPlayer.play(AssetSource(filePath));
+  void playSound(String filePath) async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource(filePath));
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
   }
 
   void selectOption(int index) async {
+    if (selectedOption.value != -1 || questions.isEmpty) return; // Prevent double tap
     selectedOption.value = index;
 
-    if (index == questions[currentIndex.value].correctIndex) {
+    bool isCorrect = index == questions[currentIndex.value].correctIndex;
+    
+    if (isCorrect) {
       answerColor[index] = Colors.lightGreen;
       playSound('audio/correct.mp3');
+      score.value += 1;
+      
+      // Update word progress
+      await updateWordProgress(true);
+      
       await Future.delayed(const Duration(milliseconds: 500));
       await swipeController.forward();
-      score.value += 1;
       nextQuestion();
       swipeController.reset();
     } else {
       answerColor[index] = Colors.red.shade200;
       playSound('audio/failure.mp3');
+      
+      // Update word progress
+      await updateWordProgress(false);
+      
       await Future.delayed(const Duration(seconds: 1));
-      answerColor.remove(index); 
+      answerColor.remove(index);
+      selectedOption.value = -1; // Allow retry
+    }
+  }
+  
+  Future<void> updateWordProgress(bool isCorrect) async {
+    if (questions.isEmpty || currentIndex.value >= questions.length) return;
+    
+    String? userId = FirebaseService.currentUserId;
+    if (userId != null) {
+      WordModel currentWord = questions[currentIndex.value].correctWord;
+      
+      WordProgress wordProgress = WordProgress(
+        knownStatus: isCorrect ? 'known' : 'learning',
+        lastReviewed: DateTime.now(),
+        reviewCount: 1,
+        correctAnswers: isCorrect ? 1 : 0,
+        totalAnswers: 1,
+        isFavorite: false,
+      );
+      
+      await FirebaseService.updateWordProgress(userId, categoryId, currentWord.wordId, wordProgress);
     }
   }
 
@@ -133,26 +216,58 @@ final List<QuestionModel> questions = [
     swipeController.reset();
   }
 
-  void nextQuestion() async{
-   
-      // Get.back if last question
-      if (currentIndex.value < questions.length - 1) {
-        currentIndex.value++;
-        selectedOption.value = -1;
-        answerColor.clear();
-        updateProgress();
-      } else {
-        print(score.value);
-        playSound('audio/levelup.mp3');
-        await Future.delayed(const Duration(milliseconds: 1500));
-        Get.toNamed(Routes.FILLSUCCESS, arguments: {'score': score.value}); // Redirect to success screen
-        // Get.back();
-      }
-    
+  void nextQuestion() async {
+    if (currentIndex.value < questions.length - 1) {
+      currentIndex.value++;
+      selectedOption.value = -1;
+      answerColor.clear();
+      updateProgress();
+    } else {
+      // Complete the game
+      await completeGame();
+    }
+  }
+  
+  Future<void> completeGame() async {
+    String? userId = FirebaseService.currentUserId;
+    if (userId != null) {
+      // Calculate final score
+      int finalScore = (score.value / questions.length * 100).round();
+      
+      // Update activity progress
+      ActivityProgress activityProgress = ActivityProgress(
+        isCompleted: true,
+        completedAt: DateTime.now(),
+        score: finalScore,
+        timeSpent: 10, // Approximate time spent
+      );
+      
+      await FirebaseService.updateActivityProgress(userId, categoryId, 'fillBlanks', activityProgress);
+      
+      playSound('audio/levelup.mp3');
+      await Future.delayed(const Duration(milliseconds: 1500));
+      
+      // Navigate to success screen
+      Get.toNamed(Routes.FILLSUCCESS, arguments: {
+        'score': finalScore,
+        'correctAnswers': score.value,
+        'totalQuestions': questions.length,
+        'categoryName': categoryName,
+      });
+    }
   }
 
   void updateProgress() {
-    progress.value = (currentIndex.value + 1) / questions.length;
+    if (questions.isNotEmpty) {
+      progress.value = (currentIndex.value + 1) / questions.length;
+    }
+  }
+  
+  FillBlankQuestion? get currentQuestion {
+    if (questions.isNotEmpty && currentIndex.value < questions.length) {
+      return questions[currentIndex.value];
+    }
+    return null;
   }
 
   @override

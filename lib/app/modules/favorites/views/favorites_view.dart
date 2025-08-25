@@ -49,70 +49,161 @@ class FavoritesView extends GetView<FavoritesController> {
 
               const SizedBox(height: 14),
               Expanded(
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: Responsive.isTablet(context) ? 4 : 3,
-                    childAspectRatio: 0.65,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemCount: controller.favorites.length,
-                  itemBuilder: (context, index) {
-                    final favorite = controller.favorites[index];
-                    return Column(
-                      children: [
-                        Container(
-                          height: Responsive.isTablet(context) ? 160 : 130,
-                          decoration: BoxDecoration(
-                            color: whiteColor,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withValues(alpha: 0.2),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Stack(
+                child: Obx(() => controller.isLoading.value
+                    ? Center(child: CircularProgressIndicator(color: primaryColor))
+                    : !controller.hasFavorites
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset(
-                                  favorite.image,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
+                                Icon(Icons.favorite_border, size: 64, color: Colors.grey),
+                                SizedBox(height: 16),
+                                Text(
+                                  'No favorite words yet',
+                                  style: TextStyle(fontSize: 18, color: Colors.grey),
                                 ),
-                                Container(
-                                  color: Colors.black.withValues(alpha: 0.6),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Center(
-                                    child: Text(
-                                      favorite.word,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: Responsive.sp(context, 14),
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Add words to favorites while learning',
+                                  style: TextStyle(fontSize: 14, color: Colors.grey),
                                 ),
                               ],
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          favorite.meaning,
-                          style: TextStyle(fontSize: Responsive.sp(context, 13)),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                          )
+                        : RefreshIndicator(
+                            onRefresh: controller.refreshFavorites,
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: Responsive.isTablet(context) ? 4 : 3,
+                                childAspectRatio: 0.65,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                              ),
+                              itemCount: controller.favoriteWords.length,
+                              itemBuilder: (context, index) {
+                                final word = controller.favoriteWords[index];
+                                return GestureDetector(
+                                  onLongPress: () {
+                                    Get.dialog(
+                                      AlertDialog(
+                                        title: Text('Remove from Favorites'),
+                                        content: Text('Remove "${word.traditional}" from favorites?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Get.back(),
+                                            child: Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.back();
+                                              controller.removeFromFavorites(word.wordId);
+                                            },
+                                            child: Text('Remove', style: TextStyle(color: Colors.red)),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: Responsive.isTablet(context) ? 160 : 130,
+                                        decoration: BoxDecoration(
+                                          color: whiteColor,
+                                          borderRadius: BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.2),
+                                              spreadRadius: 2,
+                                              blurRadius: 5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: Stack(
+                                            children: [
+                                              word.imageUrl.isNotEmpty
+                                                  ? Image.network(
+                                                      word.imageUrl,
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      height: double.infinity,
+                                                      errorBuilder: (context, error, stackTrace) {
+                                                        return Container(
+                                                          color: primaryColor.withOpacity(0.1),
+                                                          child: Icon(
+                                                            Icons.favorite,
+                                                            size: 48,
+                                                            color: primaryColor,
+                                                          ),
+                                                        );
+                                                      },
+                                                    )
+                                                  : Container(
+                                                      color: primaryColor.withOpacity(0.1),
+                                                      child: Icon(
+                                                        Icons.favorite,
+                                                        size: 48,
+                                                        color: primaryColor,
+                                                      ),
+                                                    ),
+                                              Container(
+                                                color: Colors.black.withOpacity(0.6),
+                                                padding: const EdgeInsets.all(12),
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        word.traditional,
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: Responsive.sp(context, 16),
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                      Text(
+                                                        word.pinyin,
+                                                        style: TextStyle(
+                                                          color: Colors.white70,
+                                                          fontSize: Responsive.sp(context, 12),
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 8,
+                                                right: 8,
+                                                child: Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        word.english,
+                                        style: TextStyle(fontSize: Responsive.sp(context, 13)),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          )),
               ),
             ],
           ),

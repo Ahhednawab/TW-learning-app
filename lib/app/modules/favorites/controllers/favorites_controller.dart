@@ -1,64 +1,82 @@
 import 'package:get/get.dart';
-
-class Favorite{
-  final String word;
-  final String meaning;
-  final String image;
-
-  Favorite({required this.word, required this.meaning, required this.image});
-
-  factory Favorite.fromJson(Map<String, dynamic> json) {
-    return Favorite(
-      word: json['word'],
-      meaning: json['meaning'],
-      image: json['image'],
-    );
-  }
-
-}
+import 'package:mandarinapp/app/models/word_model.dart';
+import 'package:mandarinapp/app/models/favorite_model.dart';
+import 'package:mandarinapp/app/services/firebase_service.dart';
 
 class FavoritesController extends GetxController {
-
-  List<Favorite> favorites = [
-    Favorite(
-      word: '大',
-      meaning: 'big',
-      image: 'assets/images/profile.png',
-    ),
-    Favorite(
-      word: '小',
-      meaning: 'small',
-      image: 'assets/images/profile.png',
-    ),
-    Favorite(
-      word: '天',
-      meaning: 'sky',
-      image: 'assets/images/profile.png',
-    ),
-    Favorite(
-      word: '地',
-      meaning: 'earth',
-      image: 'assets/images/profile.png',
-    ),
-    Favorite(
-      word: '在',
-      meaning: 'at',
-      image: 'assets/images/profile.png',
-    ),
-    Favorite(
-      word: '太',
-      meaning: 'too',
-      image: 'assets/images/profile.png',
-    ),
-    Favorite(
-      word: '太',
-      meaning: 'too',
-      image: 'assets/images/profile.png',
-    ),
-   ];
- 
+  // Observable variables
+  var isLoading = true.obs;
+  final RxList<WordModel> favoriteWords = <WordModel>[].obs;
+  final RxList<FavoriteModel> favorites = <FavoriteModel>[].obs;
+  
   @override
   void onInit() {
     super.onInit();
+    loadFavorites();
   }
+  
+  Future<void> loadFavorites() async {
+    try {
+      isLoading.value = true;
+      
+      String? userId = FirebaseService.currentUserId;
+      if (userId != null) {
+        // Load user's favorite words
+        List<FavoriteModel> userFavorites = await FirebaseService.getUserFavorites(userId);
+        favorites.value = userFavorites;
+        
+        // Load the actual word data for each favorite
+        List<WordModel> words = [];
+        for (FavoriteModel favorite in userFavorites) {
+          try {
+            // Get word details directly by wordId
+            WordModel? word = await FirebaseService.getWord(favorite.wordId);
+            if (word != null) {
+              words.add(word);
+            }
+          } catch (e) {
+            print('Error loading word ${favorite.wordId}: $e');
+          }
+        }
+        favoriteWords.value = words;
+      }
+    } catch (e) {
+      print('Error loading favorites: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  
+  Future<void> removeFromFavorites(String wordId) async {
+    try {
+      String? userId = FirebaseService.currentUserId;
+      if (userId != null) {
+        bool success = await FirebaseService.removeFromFavorites(userId, wordId);
+        if (success) {
+          // Remove from local lists
+          favorites.removeWhere((fav) => fav.wordId == wordId);
+          favoriteWords.removeWhere((word) => word.wordId == wordId);
+          
+          Get.snackbar(
+            'Success',
+            'Removed from favorites',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      }
+    } catch (e) {
+      print('Error removing from favorites: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to remove from favorites',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+  
+  Future<void> refreshFavorites() async {
+    await loadFavorites();
+  }
+  
+  bool get hasFavorites => favoriteWords.isNotEmpty;
 }

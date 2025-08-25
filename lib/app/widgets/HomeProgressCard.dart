@@ -3,8 +3,8 @@ import 'package:mandarinapp/app/constants/Colors.dart';
 
 Widget HomeProgressCard({
   required String level,
-  required int words,
-  required int totalWords,
+  required int? words,
+  required int? totalWords,
   required VoidCallback? onTap
 }) {
    return InkWell(
@@ -44,7 +44,7 @@ Widget HomeProgressCard({
                       ),
                       Container(
                         height: 6,
-                        width: (words / totalWords) * 120,
+                        width: (words ?? 0 / (totalWords ?? 0)) * 120,
                         decoration: BoxDecoration(
                           color: primaryColor,
                           borderRadius: BorderRadius.circular(3),
@@ -60,7 +60,7 @@ Widget HomeProgressCard({
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'Words $words/$totalWords',
+                  'Words ${words ?? 0}/${totalWords ?? 0}',
                   style: TextStyle(
                     color: greyColor,
                     fontSize: 13,

@@ -40,14 +40,16 @@ class ProfileView extends GetView<ProfileController> {
             // ),
             SizedBox(height: Responsive.isTablet(context) ? 66 : 48),
             // Profile header
-            ProfileHeader(
-              avatarUrl: 'assets/images/profile.png',
-              userName: 'John Steve',
-              learnedWords: 3,
-              onEdit: () {
-                Get.toNamed(Routes.EDITPROFILE);
-              },
-            ),
+            Obx(() => controller.isLoading.value
+                ? Center(child: CircularProgressIndicator(color: primaryColor))
+                : ProfileHeader(
+                    avatarUrl: 'assets/images/profile.png',
+                    userName: controller.currentUser.value?.profile.displayName ?? 'User',
+                    learnedWords: controller.totalWordsLearned.value,
+                    onEdit: () {
+                      Get.toNamed(Routes.EDITPROFILE);
+                    },
+                  )),
             const SizedBox(height: 16),
             // Divider
             Padding(
@@ -137,6 +139,13 @@ class ProfileView extends GetView<ProfileController> {
                       label: 'reportproblem'.tr,
                       trailing: null,
                       onTap: () {},
+                    ),
+                    Divider(height: 1, color: lightgreyColor),
+                    ProfileListTile(
+                      icon: Icons.logout,
+                      label: 'Logout',
+                      trailing: null,
+                      onTap: controller.logout,
                     ),
                   ],
                 ),

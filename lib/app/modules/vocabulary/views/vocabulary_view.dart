@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
+import 'package:mandarinapp/app/models/category_model.dart';
+import 'package:mandarinapp/app/models/level_model.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
 
@@ -14,140 +16,180 @@ class VocabularyView extends GetView<VocabularyController> {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: DefaultTabController(
-        length: controller.categories.length,
-        child: Scaffold(
+      child: Obx(()
+        => Scaffold(
           appBar: AppBar(
             backgroundColor: scaffoldColor,
             centerTitle: true,
+            automaticallyImplyLeading: false,
             title: Text(
               'vocabulary'.tr,
               style: TextStyle(fontSize: Responsive.sp(context, 20), fontWeight: FontWeight.bold),
             ),
             actions: [
-              IconButton(
-                onPressed: () {
-                  
-                },
-                icon: Icon(Icons.search, size: Responsive.isTablet(context) ? 26 : 24),
-              ),
+              // IconButton(
+              //   onPressed: () {
+              //     controller.toggleSearch();
+              //   },
+              //   icon: Icon(Icons.search, size: Responsive.isTablet(context) ? 26 : 24),
+              // ),
             ],
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(Responsive.isTablet(context) ? 56 : 48),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                controller: controller.categoryScrollController,
-                child: TabBar(
-                  isScrollable: true,
-                  controller: controller.tabController,
-                  tabAlignment: TabAlignment.start,
-                  indicatorColor: primaryColor,
-                  labelColor: primaryColor,
-                  dividerColor: Colors.transparent,
-                  tabs:
-                      controller.categories.map((category) {
-                        return Tab(child: Text(category.name.tr, style: TextStyle(fontSize: Responsive.sp(context, 14))));
-                      }).toList(),
-                ),
-              ),
-            ),
-          ),
-          body: TabBarView(
-            controller: controller.tabController,
-            children: [
-              ...controller.categories
-                  .map((category) => _buildCategoryTab(category))
-                  .toList(),
-            ],
-          ),
+            bottom:  controller.isLoading.value
+                ? PreferredSize(
+                    preferredSize: Size.fromHeight(4),
+                    child: LinearProgressIndicator(color: primaryColor),
+                  )
+                : controller.levels.isEmpty
+                    ? PreferredSize(preferredSize: Size.zero, child: SizedBox.shrink())
+                    : PreferredSize(
+                        preferredSize: Size.fromHeight(Responsive.isTablet(context) ? 56 : 48),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          controller: controller.categoryScrollController,
+                          child: TabBar(
+                            isScrollable: true,
+                            controller: controller.tabController,
+                            tabAlignment: TabAlignment.start,
+                            indicatorColor: primaryColor,
+                            labelColor: primaryColor,
+                            dividerColor: Colors.transparent,
+                            onTap: controller.onTabChanged,
+                            tabs: controller.levels.map((level) {
+                              return Tab(
+                                child: Text(
+                                  level.name.tr,
+                                  style: TextStyle(fontSize: Responsive.sp(context, 14)),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      )),
+          
+          body: Obx(() => controller.isLoading.value
+              ? Center(child: CircularProgressIndicator(color: primaryColor))
+              : controller.levels.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            'No levels available',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    )
+                  : TabBarView(
+                      controller: controller.tabController,
+                      children: controller.levels.map((level) => _buildLevelTab(level)).toList(),
+                    )),
         ),
       ),
     );
   }
 
-  Widget _buildCategoryTab(Category category) {
-    // Just filtering by category name for demo
-    final filteredProducts =
-        controller.allProducts.where((product) {
-          // You can add category field to Product and compare here
-          return product.category?.name == category.name;
-        }).toList();
-
-    if (filteredProducts.isEmpty) {
-      return Center(
-        child: Container(
-          height: Responsive.isTablet(Get.context!) ? 140 : 120,
-          width: double.infinity,
-          margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: primaryColor),
+  Widget _buildLevelTab(LevelModel level) {
+    return Obx(() {
+      List<CategoryModel> categories = controller.categoriesByLevel[level.levelId] ?? [];
+      bool isLevelUnlocked = controller.isLevelUnlocked(level.levelId);
+      
+      if (!isLevelUnlocked) {
+        return Center(
+          child: Container(
+            height: Responsive.isTablet(Get.context!) ? 140 : 120,
+            width: double.infinity,
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: primaryColor),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.lock_outline, size: Responsive.isTablet(Get.context!) ? 44 : 38, color: primaryColor),
+                const SizedBox(height: 8),
+                Text(
+                  'passquiz'.tr,
+                  style: TextStyle(fontSize: Responsive.sp(Get.context!, 16), fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
           ),
+        );
+      }
+
+      if (categories.isEmpty) {
+        return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock_outline, size: Responsive.isTablet(Get.context!) ? 44 : 38, color: primaryColor),
-              const SizedBox(height: 8),
+              Icon(Icons.category_outlined, size: 64, color: Colors.grey),
+              SizedBox(height: 16),
               Text(
-                'passquiz'.tr,
-                style: TextStyle(fontSize: Responsive.sp(Get.context!, 16), fontWeight: FontWeight.w500),
+                'No categories available',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
             ],
           ),
-        ),
-      );
-    }
+        );
+      }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: filteredProducts.length,
-      itemBuilder: (context, index) {
-        final product = filteredProducts[index];
-        return Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: ListTile(
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: Responsive.isTablet(context) ? 16 : 8,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            tileColor: Colors.white,
-            title: Text(
-              product.name,
-              style: TextStyle(fontSize: Responsive.sp(context, 16), fontWeight: FontWeight.w600),
-            ),
-            leading: Icon(
-              product.icon ?? Icons.category,
-              color: Colors.purple,
-              size: Responsive.isTablet(context) ? 38 : 24,
-            ),
-            // Displaying progress as a percentage with rounded progress
-            trailing:
-                product.progress == 0
-                    ? Icon(Icons.lock_outline, color: primaryColor, size: Responsive.isTablet(context) ? 32 : 20)
-                    : SizedBox(
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          bool isUnlocked = controller.isCategoryUnlocked(category.categoryId);
+          double progress = controller.getCategoryProgress(category.categoryId);
+          
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: ListTile(
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: Responsive.isTablet(context) ? 16 : 8,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              tileColor: Colors.white,
+              title: Text(
+                category.nameEn.isNotEmpty ? category.nameEn : category.name,
+                style: TextStyle(fontSize: Responsive.sp(context, 16), fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                '${category.totalWords} words',
+                style: TextStyle(fontSize: Responsive.sp(context, 12), color: Colors.grey[600]),
+              ),
+              leading: Icon(
+                controller.getCategoryIcon(category.name),
+                color: isUnlocked ? primaryColor : Colors.grey,
+                size: Responsive.isTablet(context) ? 38 : 24,
+              ),
+              trailing: !isUnlocked
+                  ? Icon(Icons.lock_outline, color: Colors.grey, size: Responsive.isTablet(context) ? 32 : 20)
+                  : SizedBox(
                       width: Responsive.isTablet(context) ? 44 : 30,
                       height: Responsive.isTablet(context) ? 44 : 30,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           CircularProgressIndicator(
-                            value: product.progress ?? 0.0,
+                            value: progress / 100,
                             backgroundColor: Colors.grey[200],
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              primaryColor,
-                            ),
+                            valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                             strokeWidth: Responsive.isTablet(context) ? 3.0 : 2.5,
                           ),
                           Text(
-                            '${((product.progress ?? 0.0) * 100).toInt()}%',
+                            '${progress.toInt()}%',
                             style: TextStyle(
                               fontSize: Responsive.sp(context, 10),
                               color: Colors.black54,
@@ -156,26 +198,11 @@ class VocabularyView extends GetView<VocabularyController> {
                         ],
                       ),
                     ),
-
-            onTap: () {
-              if (product.progress == 0) {
-                Get.snackbar(
-                  'locked'.tr,
-                  'lockedinfo'.tr,
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.white,
-                  colorText: primaryColor,
-                );
-                return;
-              }
-              Get.toNamed(
-                Routes.CHOOSEACTIVITY,
-                arguments: {'activity': category.name},
-              );
-            },
-          ),
-        );
-      },
-    );
+              onTap: () => controller.navigateToChooseActivity(category),
+            ),
+          );
+        },
+      );
+    });
   }
 }
