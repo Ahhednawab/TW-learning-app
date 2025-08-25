@@ -123,12 +123,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LOGIN,
-      page: () => const LoginView(),
+      page: () => LoginView(),
       binding: LoginBinding(),
     ),
     GetPage(
       name: _Paths.SIGNUP,
-      page: () => const SignupView(),
+      page: () => SignupView(),
       binding: SignupBinding(),
     ),
   ];

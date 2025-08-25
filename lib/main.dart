@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
@@ -5,11 +7,15 @@ import 'package:mandarinapp/app/constants/appconstants.dart';
 import 'package:mandarinapp/app/helper/language.dart' as di;
 import 'package:mandarinapp/app/helper/messages.dart';
 import 'package:mandarinapp/app/services/Localization.dart';
+import 'package:mandarinapp/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
+  
    // Initialize shared preferences
   final sharedPreferences = await SharedPreferences.getInstance();
 
@@ -30,7 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
-
+    final INITIAL = FirebaseAuth.instance.currentUser != null  ? Routes.BOTTOMNAV : Routes.LOGIN;
     return GetBuilder<LocalizationController>(
       builder: (localizeController) {
         return MediaQuery(
@@ -59,7 +65,7 @@ class MyApp extends StatelessWidget {
               AppConstants.languages[0].languageCode!,
               AppConstants.languages[0].countryCode,
             ),
-            initialRoute: AppPages.INITIAL,
+            initialRoute: INITIAL,
             getPages: AppPages.routes,
             defaultTransition: Transition.topLevel,
             transitionDuration: const Duration(milliseconds: 500),
