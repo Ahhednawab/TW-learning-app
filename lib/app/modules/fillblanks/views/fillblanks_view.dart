@@ -77,7 +77,7 @@ class FillblanksView extends GetView<FillblanksController> {
                                   height: double.infinity,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(
-                                      color: primaryColor.withOpacity(0.1),
+                                      color: primaryColor.withValues(alpha: 0.1),
                                       child: Icon(
                                         Icons.quiz,
                                         size: 64,
@@ -87,7 +87,7 @@ class FillblanksView extends GetView<FillblanksController> {
                                   },
                                 )
                               : Container(
-                                  color: primaryColor.withOpacity(0.1),
+                                  color: primaryColor.withValues(alpha: 0.1),
                                   child: Icon(
                                     Icons.quiz,
                                     size: 64,
@@ -163,7 +163,7 @@ class FillblanksView extends GetView<FillblanksController> {
                         Obx(
                           () => LinearProgressIndicator(
                             value: controller.progress.value,
-                            backgroundColor: primaryColor.withOpacity(0.4),
+                            backgroundColor: primaryColor.withValues(alpha: 0.4),
                             color: primaryColor,
                             minHeight: 5,
                           ),

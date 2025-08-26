@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../../models/user_model.dart';
 import '../../../models/word_model.dart';
 import '../../../models/daily_word_model.dart';

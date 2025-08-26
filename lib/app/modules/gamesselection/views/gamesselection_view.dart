@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
-import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
-
 import '../controllers/gamesselection_controller.dart';
 
 class GamesselectionView extends GetView<GamesselectionController> {
   const GamesselectionView({super.key});
   @override
   Widget build(BuildContext context) {
+    controller.loadGameData();
+    controller.getFillBlanksProgress();
+    controller.getCharacterMatchingProgress();
+    controller.getListeningProgress();
+    controller.getFIBProgressText();
+    controller.getCMText();
+    controller.getListeningText();
     return Scaffold(
       appBar: customAppBar(title: controller.categoryName.isNotEmpty ? controller.categoryName : 'Games'),
       body: Obx(() => controller.isLoading.value
@@ -39,14 +43,17 @@ class GamesselectionView extends GetView<GamesselectionController> {
                       'fillblanks'.tr,
                       style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.w600),
                     ),
-                    subtitle: Obx(() => Text(
-                      controller.getFillBlanksProgress(),
+                    subtitle: Text(
+                      controller.getFIBProgressText(),
                       style: TextStyle(
                         fontSize: 14,
                         color: primaryColor,
                         fontWeight: FontWeight.w600,
                       ),
-                    )),
+                    ),
+                    trailing: controller.getFillBlanksProgress()?.isCompleted == true 
+                        ? Icon(Icons.check_circle, color: Colors.green, size: 24)
+                        : null,
                     leading: Icon(Icons.checklist_sharp, size: 35,),
                     onTap: controller.navigateToFillBlanks,
                   ),
@@ -64,14 +71,17 @@ class GamesselectionView extends GetView<GamesselectionController> {
                       'charactermatching'.tr,
                       style: TextStyle(fontSize: Responsive.sp(context, 18),fontWeight: FontWeight.w600),
                     ),
-                    subtitle: Obx(() => Text(
-                      controller.getCharacterMatchingProgress(),
+                    subtitle: Text(
+                      controller.getCMText(),
                       style: TextStyle(
                         fontSize: 14,
                         color: primaryColor,
                         fontWeight: FontWeight.w600,
                       ),
-                    )),
+                    ),
+                    trailing: controller.getCharacterMatchingProgress()?.isCompleted == true 
+                        ? Icon(Icons.check_circle, color: Colors.green, size: 24)
+                        : null,
                     leading: Icon(Icons.circle_rounded, size: 35,),
                     onTap: controller.navigateToCharacterMatching,
                   ),
@@ -89,15 +99,18 @@ class GamesselectionView extends GetView<GamesselectionController> {
                       'listening'.tr,
                       style: TextStyle(fontSize:  Responsive.sp(context, 18),fontWeight: FontWeight.w600),
                     ),
-                    subtitle: Obx(() => Text(
-                      controller.getListeningProgress(),
+                    subtitle: Text(
+                      controller.getListeningText(),
                       style: TextStyle(
                         fontSize: 14,
                         color: primaryColor,
                         fontWeight: FontWeight.w600,
                       ),
-                    )),
+                    ),
                     leading: Icon(Icons.earbuds, size: 35,),
+                    trailing: controller.getListeningProgress()?.isCompleted == true
+                        ? Icon(Icons.check_circle, color: Colors.green, size: 24)
+                        : null,
                     onTap: controller.navigateToListening,
                   ),
                 ],

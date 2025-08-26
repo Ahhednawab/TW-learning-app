@@ -9,7 +9,7 @@ class SuccessView extends GetView {
   @override
   Widget build(BuildContext context) {
     // Get arguments from the navigation route
-    final score = Get.arguments['score'] as double;
+    final score = Get.arguments['score'] as int;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

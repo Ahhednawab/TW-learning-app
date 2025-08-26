@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
-import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
-
 import '../controllers/chooseactivity_controller.dart';
 
 class ChooseactivityView extends GetView<ChooseactivityController> {
   const ChooseactivityView({super.key});
   @override
   Widget build(BuildContext context) {
+    controller.loadData();
+    controller.getGamesProgress();
+    controller.getQuizProgress();
+    controller.getSwipeCardsProgress();
+    controller.getGamesProgressText();
+    controller.getQuizProgressText();
+    controller.getSwipeCardsProgressText();
     return Scaffold(
       appBar: customAppBar(title: controller.categoryName.isNotEmpty ? controller.categoryName : (controller.activity ?? 'chooseactivity')),
       body: Obx(() => controller.isLoading.value

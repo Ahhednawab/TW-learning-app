@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/models/category_model.dart';
 import 'package:mandarinapp/app/models/level_model.dart';
-import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
 
 import '../controllers/vocabulary_controller.dart';
@@ -85,7 +83,10 @@ class VocabularyView extends GetView<VocabularyController> {
                     )
                   : TabBarView(
                       controller: controller.tabController,
-                      children: controller.levels.map((level) => _buildLevelTab(level)).toList(),
+                      children: controller.levels.map((level) => RefreshIndicator(
+                        color: primaryColor,
+                        onRefresh: () => controller.loadData(),
+                        child: _buildLevelTab(level))).toList(),
                     )),
         ),
       ),

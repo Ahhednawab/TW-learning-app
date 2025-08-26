@@ -242,7 +242,7 @@ class FillblanksController extends GetxController with GetTickerProviderStateMix
         timeSpent: 10, // Approximate time spent
       );
       
-      await FirebaseService.updateActivityProgress(userId, categoryId, 'fillBlanks', activityProgress);
+      await FirebaseService.updateActivityProgressInGames(userId, categoryId, 'fillInBlanks', activityProgress);
       
       playSound('audio/levelup.mp3');
       await Future.delayed(const Duration(milliseconds: 1500));

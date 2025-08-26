@@ -72,7 +72,7 @@ class QuizView extends GetView<QuizController> {
                                       height: double.infinity,
                                       errorBuilder: (context, error, stackTrace) {
                                         return Container(
-                                          color: primaryColor.withOpacity(0.1),
+                                          color: primaryColor.withValues(alpha: 0.1),
                                           child: Icon(
                                             Icons.image_not_supported,
                                             size: 64,
@@ -82,7 +82,7 @@ class QuizView extends GetView<QuizController> {
                                       },
                                     )
                                   : Container(
-                                      color: primaryColor.withOpacity(0.1),
+                                      color: primaryColor.withValues(alpha: 0.1),
                                       child: Icon(
                                         Icons.quiz,
                                         size: 64,
@@ -166,7 +166,7 @@ class QuizView extends GetView<QuizController> {
                         // Progress bar
                         Obx(() => LinearProgressIndicator(
                               value: controller.progress.value,
-                              backgroundColor: primaryColor.withOpacity(0.4),
+                              backgroundColor: primaryColor.withValues(alpha: 0.4),
                               color: primaryColor,
                               minHeight: 5,
                             )),

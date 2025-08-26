@@ -266,6 +266,19 @@ class FirebaseService {
     }
   }
 
+    static Future<bool> updateActivityProgressInGames(String userId, String categoryId, String activityType, ActivityProgress activityProgress) async {
+    try {
+      await _firestore.collection('userProgress').doc(userId).update({
+        'categories.$categoryId.activities.games.$activityType': activityProgress.toMap(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      return true;
+    } catch (e) {
+      print('Error updating activity progress: $e');
+      return false;
+    }
+  }
+
   // Quiz Session Operations
   static Future<String?> createQuizSession(QuizSessionModel session) async {
     try {

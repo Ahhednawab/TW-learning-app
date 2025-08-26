@@ -154,7 +154,7 @@ class HomeView extends GetView<HomeController> {
                     ? Container(
                         height: 120,
                         decoration: BoxDecoration(
-                          color: greyColor.withOpacity(0.3),
+                          color: greyColor.withValues(alpha:0.3),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Center(

@@ -11,7 +11,7 @@ class SuccessView extends GetView {
     // Get arguments from the navigation route
     int score = 0;
     try {
-       score = Get.arguments['score'] as int;
+       score = Get.arguments['correctAnswers'] as int;
     } catch (e) {
       print("Error retrieving score: $e");
     }

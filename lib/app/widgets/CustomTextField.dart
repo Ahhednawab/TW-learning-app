@@ -19,7 +19,7 @@ Widget customTextField({
       labelStyle: const TextStyle(color: Colors.grey),
       border: UnderlineInputBorder(
         borderSide: BorderSide(
-          color: Colors.grey.withOpacity(0.5),
+          color: Colors.grey.withValues(alpha: 0.5),
           width: 0.5,
         ),
       ),

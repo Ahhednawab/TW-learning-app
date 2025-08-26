@@ -161,7 +161,7 @@ class ProfileController extends GetxController {
                     Divider(
                       indent: 10,
                       endIndent: 10,
-                      color: greyColor.withOpacity(0.5),
+                      color: greyColor.withValues(alpha:0.5),
                     ),
                   ],
                 );

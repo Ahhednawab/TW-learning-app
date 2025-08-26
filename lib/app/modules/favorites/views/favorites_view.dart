@@ -114,7 +114,7 @@ class FavoritesView extends GetView<FavoritesController> {
                                           borderRadius: BorderRadius.circular(20),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.grey.withOpacity(0.2),
+                                              color: Colors.grey.withValues(alpha: 0.2),
                                               spreadRadius: 2,
                                               blurRadius: 5,
                                             ),
@@ -132,7 +132,7 @@ class FavoritesView extends GetView<FavoritesController> {
                                                       height: double.infinity,
                                                       errorBuilder: (context, error, stackTrace) {
                                                         return Container(
-                                                          color: primaryColor.withOpacity(0.1),
+                                                          color: primaryColor.withValues(alpha: 0.1),
                                                           child: Icon(
                                                             Icons.favorite,
                                                             size: 48,
@@ -142,7 +142,7 @@ class FavoritesView extends GetView<FavoritesController> {
                                                       },
                                                     )
                                                   : Container(
-                                                      color: primaryColor.withOpacity(0.1),
+                                                      color: primaryColor.withValues(alpha: 0.1),
                                                       child: Icon(
                                                         Icons.favorite,
                                                         size: 48,
@@ -150,7 +150,7 @@ class FavoritesView extends GetView<FavoritesController> {
                                                       ),
                                                     ),
                                               Container(
-                                                color: Colors.black.withOpacity(0.6),
+                                                color: Colors.black.withValues(alpha: 0.6),
                                                 padding: const EdgeInsets.all(12),
                                                 child: Center(
                                                   child: Column(

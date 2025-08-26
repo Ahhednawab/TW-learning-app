@@ -5,7 +5,6 @@ import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/models/quiz_session_model.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
 import 'package:mandarinapp/app/services/firebase_service.dart';
-import 'dart:math';
 
 
 class QuizController extends GetxController {
@@ -195,14 +194,14 @@ class QuizController extends GetxController {
       String? userId = FirebaseService.currentUserId;
       if (userId != null) {
         // Update the specific question in the session
-        QuizQuestion updatedQuestion = QuizQuestion.forSession(
-          wordId: questions[currentIndex.value].wordId,
-          question: questions[currentIndex.value].description,
-          options: questions[currentIndex.value].options,
-          correctAnswer: questions[currentIndex.value].correctIndex,
-          userAnswer: selectedIndex,
-          isCorrect: isCorrect,
-        );
+        // QuizQuestion updatedQuestion = QuizQuestion.forSession(
+        //   wordId: questions[currentIndex.value].wordId,
+        //   question: questions[currentIndex.value].description,
+        //   options: questions[currentIndex.value].options,
+        //   correctAnswer: questions[currentIndex.value].correctIndex,
+        //   userAnswer: selectedIndex,
+        //   isCorrect: isCorrect,
+        // );
         
         await FirebaseService.updateQuizSession(
           QuizSessionModel(sessionId: currentSessionId!, userId: userId, categoryId: categoryId, activityType: 'quiz', questions: [], status: 'in-progress', score: correctCount.value, totalQuestions: questions.length, currentQuestionIndex: currentIndex.value, startedAt: sessionStartTime!, timeSpent: 0)

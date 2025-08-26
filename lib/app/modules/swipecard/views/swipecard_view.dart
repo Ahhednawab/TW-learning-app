@@ -80,7 +80,7 @@ class SwipecardView extends GetView<SwipecardController> {
                                   height: double.infinity,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
-                                      'assets/images/placeholder.png',
+                                      'assets/images/splash1.png',
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,
@@ -88,7 +88,7 @@ class SwipecardView extends GetView<SwipecardController> {
                                   },
                                 )
                               : Image.asset(
-                                  'assets/images/placeholder.png',
+                                  'assets/images/splash1.png',
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   height: double.infinity,
@@ -289,7 +289,7 @@ class SwipecardView extends GetView<SwipecardController> {
                         Obx(
                           () => LinearProgressIndicator(
                             value: controller.progress.value,
-                            backgroundColor: primaryColor.withOpacity(0.4),
+                            backgroundColor: primaryColor.withValues(alpha: 0.4),
                             color: primaryColor,
                             minHeight: 5,
                           ),

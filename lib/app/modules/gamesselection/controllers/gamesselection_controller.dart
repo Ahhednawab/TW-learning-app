@@ -39,6 +39,7 @@ class GamesselectionController extends GetxController {
         // Load user progress for this category
         UserProgressModel? progress = await FirebaseService.getUserProgress(userId);
         userProgress.value = progress;
+        print(userProgress.value!.categories[categoryId]?.activities.games.fillInBlanks.isCompleted);
       }
     } catch (e) {
       print('Error loading game data: $e');
@@ -48,28 +49,43 @@ class GamesselectionController extends GetxController {
   }
   
   // Get progress for Fill Blanks game
-  String getFillBlanksProgress() {
-    // if (userProgress.value?.categories[categoryId]?.activities['fillBlanks']?.isCompleted == true) {
-    //   return 'Completed';
-    // }
-    return '0/10'; // Default for fill blanks
+   String getFIBProgressText() {
+    ActivityProgress? progress = getFillBlanksProgress();
+    if (progress == null) return '0/10';
+    return progress.isCompleted ? '10/10' : '${(progress.score * 10 / 100).round()}/10';
+  }
+
+
+  ActivityProgress? getFillBlanksProgress() {
+    if (userProgress.value == null || categoryId.isEmpty) return null;
+    return userProgress.value!.categories[categoryId]?.activities.games.fillInBlanks;
   }
   
   // Get progress for Character Matching game
-  String getCharacterMatchingProgress() {
-    // if (userProgress.value?.categories[categoryId]?.activities['characterMatching']?.isCompleted == true) {
-    //   return 'Completed';
-    // }
-    return '0/3'; // Default for character matching
+  ActivityProgress? getCharacterMatchingProgress() {
+    if (userProgress.value == null || categoryId.isEmpty) return null;
+    return userProgress.value!.categories[categoryId]?.activities.games.characterMatching;
   }
+   String getCMText() {
+    ActivityProgress? progress = getCharacterMatchingProgress();
+    if (progress == null) return '0/10';
+    return progress.isCompleted ? '10/10' : '${(progress.score * 10 / 100).round()}/10';
+  }
+
+
   
   // Get progress for Listening game
-  String getListeningProgress() {
-    // if (userProgress.value?.categories[categoryId]?.activities['listening']?.isCompleted == true) {
-    //   return 'Completed';
-    // }
-    return '0/3'; // Default for listening
+  ActivityProgress? getListeningProgress() {
+    if (userProgress.value == null || categoryId.isEmpty) return null;
+    return userProgress.value!.categories[categoryId]?.activities.games.listening;
   }
+  String getListeningText() {
+    ActivityProgress? progress = getListeningProgress();
+    if (progress == null) return '0/10';
+    return progress.isCompleted ? '10/10' : '${(progress.score * 10 / 100).round()}/10';
+  }
+
+
   
   // Navigation methods
   void navigateToFillBlanks() {

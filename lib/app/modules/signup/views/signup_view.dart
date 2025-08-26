@@ -53,6 +53,7 @@ class SignupView extends GetView<SignupController> {
                           if (p0!.isEmpty) {
                             return 'Please enter your name';
                           }
+                          return null;
                         },
                       ),
                       const SizedBox(height: 20),
@@ -74,7 +75,7 @@ class SignupView extends GetView<SignupController> {
                           labelStyle: const TextStyle(color: Colors.grey),
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.grey.withOpacity(0.5),
+                              color: Colors.grey.withValues(alpha: 0.5),
                               width: 0.5,
                             ),
                           ),
@@ -110,6 +111,7 @@ class SignupView extends GetView<SignupController> {
                             if (p0!.isEmpty) {
                               return 'Please enter your password';
                             }
+                            return null;
                           },
                           onTap: () {
                             controller.toggleObscureText();
