@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
@@ -189,31 +190,58 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
   }
   
   Future<void> completeGame() async {
-    String? userId = FirebaseService.currentUserId;
-    if (userId != null) {
-      // Calculate final score
-      int finalScore = gameRounds.isNotEmpty ? (score.value / (gameRounds.length * 4) * 100).round() : 0;
+    try {
+      String? userId = FirebaseService.currentUserId;
       
-      // Update activity progress
-      ActivityProgress activityProgress = ActivityProgress(
-        isCompleted: true,
-        completedAt: DateTime.now(),
-        score: finalScore,
-        timeSpent: 5, // Approximate time spent
-      );
+      if (userId != null) {
+        // Update character matching game completion with automatic unlocking
+        await FirebaseService.updateActivityCompletion(
+          userId,
+          categoryId,
+          'games', // activity type
+          score.value,
+          0, // timeSpent - could be tracked if needed
+          gameType: 'characterMatching',
+        );
+      }
       
-      await FirebaseService.updateActivityProgressInGames(userId, categoryId, 'characterMatching', activityProgress);
-      
-      playSound('audio/levelup.mp3');
-      await Future.delayed(const Duration(milliseconds: 1500));
-      
+      // Show completion dialog
+      // Get.dialog(
+      //   AlertDialog(
+      //     title: const Text('Game Complete!'),
+      //     content: Column(
+      //       mainAxisSize: MainAxisSize.min,
+      //       children: [
+      //         Text('Score: ${score.value}/${gameRounds.length * 4}'),
+      //         const SizedBox(height: 8),
+      //         Text(
+      //           'Great job! Keep practicing to unlock more content.',
+      //           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+      //         ),
+      //       ],
+      //     ),
+      //     actions: [
+      //       TextButton(
+      //         onPressed: () {
+      //           Get.back(); // Close dialog
+      //           Get.back(); // Return to games selection
+      //         },
+      //         child: const Text('OK'),
+      //       ),
+      //     ],
+      //   ),
+      // );
       // Navigate to success screen
-      Get.offNamed('/success', arguments: {
-        'score': finalScore,
-        'correctAnswers': score.value,
-        'totalQuestions': gameRounds.length * 4,
-        'categoryName': categoryName,
-      });
+        Get.offNamed('/success', arguments: {
+          'score': score.value,
+          'correctAnswers': matchesFound.value,
+          'totalQuestions': gameRounds.length * 4,
+          'categoryName': categoryName,
+        });
+      
+    } catch (e) {
+      print('Error completing game: $e');
+      Get.back();
     }
   }
 

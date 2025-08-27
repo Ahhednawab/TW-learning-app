@@ -234,15 +234,15 @@ class FillblanksController extends GetxController with GetTickerProviderStateMix
       // Calculate final score
       int finalScore = (score.value / questions.length * 100).round();
       
-      // Update activity progress
-      ActivityProgress activityProgress = ActivityProgress(
-        isCompleted: true,
-        completedAt: DateTime.now(),
-        score: finalScore,
-        timeSpent: 10, // Approximate time spent
+      // Update fill blanks game completion with automatic unlocking
+      await FirebaseService.updateActivityCompletion(
+        userId,
+        categoryId,
+        'games', // activity type
+        finalScore,
+        10, // timeSpent - approximate time spent
+        gameType: 'fillInBlanks',
       );
-      
-      await FirebaseService.updateActivityProgressInGames(userId, categoryId, 'fillInBlanks', activityProgress);
       
       playSound('audio/levelup.mp3');
       await Future.delayed(const Duration(milliseconds: 1500));

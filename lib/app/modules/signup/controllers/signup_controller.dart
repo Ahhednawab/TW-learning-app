@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/services/Snackbarservice.dart';
+import 'package:mandarinapp/app/services/firebase_service.dart';
 
 class SignupController extends GetxController {
   RxBool obscureText = false.obs;
@@ -123,55 +124,17 @@ class SignupController extends GetxController {
       final firstCategory = categoriesQuery.docs.first;
       final firstCategoryId = firstCategory.id;
 
-      // Create userProgress document with first category unlocked
+      // Create userProgress document with basic structure
       await firestore.collection('userProgress').doc(uid).set({
         'currentLevel': firstLevelId,
         'unlockedLevels': [firstLevelId],
         'lastQuizAttempt': null,
-        'categories': {
-          firstCategoryId: {
-            'isUnlocked': true, // ✅ First category is unlocked
-            'completionPercentage': 0,
-            'activities': {
-              'swipeCards': {
-                'isCompleted': false,
-                'completedAt': null,
-                'score': 0,
-                'timeSpent': 0,
-              },
-              'quiz': {
-                'isCompleted': false,
-                'completedAt': null,
-                'score': 0,
-                'attempts': 0,
-                'timeSpent': 0,
-              },
-              'games': {
-                'fillInBlanks': {
-                  'isCompleted': false,
-                  'completedAt': null,
-                  'score': 0,
-                  'timeSpent': 0,
-                },
-                'characterMatching': {
-                  'isCompleted': false,
-                  'completedAt': null,
-                  'score': 0,
-                  'timeSpent': 0,
-                },
-                'listening': {
-                  'isCompleted': false,
-                  'completedAt': null,
-                  'score': 0,
-                  'timeSpent': 0,
-                },
-              },
-            },
-            'wordsProgress': {}, // Will be populated as user encounters words
-          },
-        },
+        'categories': {},
         'updatedAt': FieldValue.serverTimestamp(),
       });
+
+      // Initialize first category using Firebase service method
+      await FirebaseService.initializeCategoryProgress(uid, firstCategoryId);
 
     } catch (e) {
       // If userProgress creation fails, we should clean up the user document

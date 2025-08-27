@@ -38,7 +38,7 @@ class ProfileView extends GetView<ProfileController> {
             //     ],
             //   ),
             // ),
-            SizedBox(height: Responsive.isTablet(context) ? 66 : 48),
+            SizedBox(height: Responsive.isTablet(context) ? 66 : 58),
             // Profile header
             Obx(() => controller.isLoading.value
                 ? Center(child: CircularProgressIndicator(color: primaryColor))

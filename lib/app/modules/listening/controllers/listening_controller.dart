@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
-import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
+import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/services/firebase_service.dart';
 
 class ListeningQuestion {
@@ -278,33 +278,25 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
       String? userId = FirebaseService.currentUserId;
       
       if (userId != null) {
- 
-        ActivityProgress activityProgress = ActivityProgress(
-          isCompleted: true,
-          completedAt: DateTime.now(),
-          score: score.value,
-          timeSpent: 5, // Approximate time spent
+        // Update listening game completion with automatic unlocking
+        await FirebaseService.updateActivityCompletion(
+          userId,
+          categoryId,
+          'games', // activity type
+          score.value,
+          0, // timeSpent - could be tracked if needed
+          gameType: 'listening',
         );
-        
-        await FirebaseService.updateActivityProgressInGames(userId, categoryId, 'listening', activityProgress);
       }
       
       // Show completion dialog
-      Get.dialog(
-        AlertDialog(
-          title: const Text('Game Complete!'),
-          content: Text('Score: ${score.value}/${questions.length}'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back(); // Close dialog
-                Get.back(); // Return to games selection
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+      // Navigate to success screen
+        Get.offNamed('/success', arguments: {
+          'score': score.value,
+          'correctAnswers': score.value,
+          'totalQuestions': questions.length,
+          'categoryName': categoryName,
+        });
       
     } catch (e) {
       print('Error completing game: $e');

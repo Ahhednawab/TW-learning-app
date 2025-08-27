@@ -463,8 +463,113 @@ class FirebaseService {
     }
   }
 
+  // Check if a category is fully completed (all activities done)
+  static Future<bool> isCategoryCompleted(String userId, String categoryId) async {
+    try {
+      UserProgressModel? progress = await getUserProgress(userId);
+      if (progress == null || !progress.categories.containsKey(categoryId)) {
+        return false;
+      }
+
+      CategoryProgress categoryProgress = progress.categories[categoryId]!;
+      Activities activities = categoryProgress.activities;
+
+      // Check if all activities are completed
+      return activities.swipeCards.isCompleted &&
+             activities.quiz.isCompleted &&
+             activities.games.fillInBlanks.isCompleted &&
+             activities.games.characterMatching.isCompleted &&
+             activities.games.listening.isCompleted;
+    } catch (e) {
+      print('Error checking category completion: $e');
+      return false;
+    }
+  }
+
+  // Check if a level is fully completed (all categories done)
+  static Future<bool> isLevelCompleted(String userId, String levelId) async {
+    try {
+      List<CategoryModel> categories = await getCategoriesByLevel(levelId);
+      
+      for (CategoryModel category in categories) {
+        bool isCompleted = await isCategoryCompleted(userId, category.categoryId);
+        if (!isCompleted) {
+          return false;
+        }
+      }
+      
+      return categories.isNotEmpty; // Level is completed if it has categories and all are done
+    } catch (e) {
+      print('Error checking level completion: $e');
+      return false;
+    }
+  }
+
+  // Initialize a new category in user's progress
+  static Future<bool> initializeCategoryProgress(String userId, String categoryId) async {
+    try {
+      Map<String, dynamic> categoryProgressData = {
+        'isUnlocked': true,
+        'completionPercentage': 0,
+        'activities': {
+          'swipeCards': {
+            'isCompleted': false,
+            'completedAt': null,
+            'score': 0,
+            'timeSpent': 0,
+          },
+          'quiz': {
+            'isCompleted': false,
+            'completedAt': null,
+            'score': 0,
+            'attempts': 0,
+            'timeSpent': 0,
+          },
+          'games': {
+            'fillInBlanks': {
+              'isCompleted': false,
+              'completedAt': null,
+              'score': 0,
+              'timeSpent': 0,
+            },
+            'characterMatching': {
+              'isCompleted': false,
+              'completedAt': null,
+              'score': 0,
+              'timeSpent': 0,
+            },
+            'listening': {
+              'isCompleted': false,
+              'completedAt': null,
+              'score': 0,
+              'timeSpent': 0,
+            },
+          },
+        },
+        'wordsProgress': {},
+      };
+
+      await _firestore.collection('userProgress').doc(userId).update({
+        'categories.$categoryId': categoryProgressData,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      return true;
+    } catch (e) {
+      print('Error initializing category progress: $e');
+      return false;
+    }
+  }
+
   static Future<bool> unlockNextCategory(String userId, String currentCategoryId) async {
     try {
+      // First check if current category is completed
+      bool isCompleted = await isCategoryCompleted(userId, currentCategoryId);
+      if (!isCompleted) {
+        print('Current category not completed yet');
+        return false;
+      }
+
       // Get current category to find next one
       CategoryModel? currentCategory = await getCategory(currentCategoryId);
       if (currentCategory == null) return false;
@@ -476,18 +581,19 @@ class FirebaseService {
       // Find current category index
       int currentIndex = categories.indexWhere((cat) => cat.categoryId == currentCategoryId);
       if (currentIndex == -1 || currentIndex >= categories.length - 1) {
-        // This is the last category in the level, unlock next level
+        // This is the last category in the level, check if we can unlock next level
         return await unlockNextLevel(userId, currentCategory.levelId);
       }
 
-      // Unlock next category
+      // Initialize and unlock next category
       String nextCategoryId = categories[currentIndex + 1].categoryId;
-      await _firestore.collection('userProgress').doc(userId).update({
-        'categories.$nextCategoryId.isUnlocked': true,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-
-      return true;
+      bool success = await initializeCategoryProgress(userId, nextCategoryId);
+      
+      if (success) {
+        print('Successfully unlocked next category: $nextCategoryId');
+      }
+      
+      return success;
     } catch (e) {
       print('Error unlocking next category: $e');
       return false;
@@ -496,6 +602,13 @@ class FirebaseService {
 
   static Future<bool> unlockNextLevel(String userId, String currentLevelId) async {
     try {
+      // First check if current level is completed
+      bool isCompleted = await isLevelCompleted(userId, currentLevelId);
+      if (!isCompleted) {
+        print('Current level not completed yet');
+        return false;
+      }
+
       // Get all levels
       List<LevelModel> levels = await getAllLevels();
       levels.sort((a, b) => a.order.compareTo(b.order));
@@ -503,6 +616,7 @@ class FirebaseService {
       // Find current level index
       int currentIndex = levels.indexWhere((level) => level.levelId == currentLevelId);
       if (currentIndex == -1 || currentIndex >= levels.length - 1) {
+        print('No next level available');
         return false; // No next level
       }
 
@@ -510,24 +624,108 @@ class FirebaseService {
       String nextLevelId = levels[currentIndex + 1].levelId;
       await _firestore.collection('userProgress').doc(userId).update({
         'unlockedLevels': FieldValue.arrayUnion([nextLevelId]),
+        'currentLevel': nextLevelId,
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      // Unlock first category of next level
+      // Initialize and unlock first category of next level
       List<CategoryModel> nextLevelCategories = await getCategoriesByLevel(nextLevelId);
       if (nextLevelCategories.isNotEmpty) {
         nextLevelCategories.sort((a, b) => a.order.compareTo(b.order));
         String firstCategoryId = nextLevelCategories.first.categoryId;
         
-        await _firestore.collection('userProgress').doc(userId).update({
-          'categories.$firstCategoryId.isUnlocked': true,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
+        bool success = await initializeCategoryProgress(userId, firstCategoryId);
+        if (success) {
+          print('Successfully unlocked next level: $nextLevelId with first category: $firstCategoryId');
+        }
+        return success;
       }
 
       return true;
     } catch (e) {
       print('Error unlocking next level: $e');
+      return false;
+    }
+  }
+
+  // Check and trigger unlocking after activity completion
+  static Future<bool> checkAndUnlockProgress(String userId, String categoryId, String activityType, {String? gameType}) async {
+    try {
+      // Mark the activity as completed first
+      String activityPath = gameType != null 
+          ? 'categories.$categoryId.activities.games.$gameType'
+          : 'categories.$categoryId.activities.$activityType';
+      
+      await _firestore.collection('userProgress').doc(userId).update({
+        '$activityPath.isCompleted': true,
+        '$activityPath.completedAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Check if category is now completed
+      bool categoryCompleted = await isCategoryCompleted(userId, categoryId);
+      if (categoryCompleted) {
+        print('Category $categoryId completed! Attempting to unlock next category/level...');
+        
+        // Update category completion percentage
+        await _firestore.collection('userProgress').doc(userId).update({
+          'categories.$categoryId.completionPercentage': 100,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+        
+        // Try to unlock next category or level
+        bool unlocked = await unlockNextCategory(userId, categoryId);
+        if (unlocked) {
+          print('Successfully unlocked next progression!');
+          return true;
+        } else {
+          print('No next category/level to unlock or requirements not met');
+        }
+      }
+      
+      return true;
+    } catch (e) {
+      print('Error checking and unlocking progress: $e');
+      return false;
+    }
+  }
+
+  // Update activity completion with score and automatic unlocking
+  static Future<bool> updateActivityCompletion(
+    String userId, 
+    String categoryId, 
+    String activityType, 
+    int score, 
+    int timeSpent, {
+    String? gameType,
+    int attempts = 1,
+  }) async {
+    try {
+      String activityPath = gameType != null 
+          ? 'categories.$categoryId.activities.games.$gameType'
+          : 'categories.$categoryId.activities.$activityType';
+      
+      Map<String, dynamic> updateData = {
+        '$activityPath.isCompleted': true,
+        '$activityPath.completedAt': FieldValue.serverTimestamp(),
+        '$activityPath.score': score,
+        '$activityPath.timeSpent': timeSpent,
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+      
+      // Add attempts field for quiz activities
+      if (activityType == 'quiz') {
+        updateData['$activityPath.attempts'] = attempts;
+      }
+      
+      await _firestore.collection('userProgress').doc(userId).update(updateData);
+      
+      // Check and trigger unlocking
+      await checkAndUnlockProgress(userId, categoryId, activityType, gameType: gameType);
+      
+      return true;
+    } catch (e) {
+      print('Error updating activity completion: $e');
       return false;
     }
   }

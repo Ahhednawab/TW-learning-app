@@ -267,15 +267,15 @@ class QuizController extends GetxController {
           QuizSessionModel(sessionId: currentSessionId!, userId: userId, categoryId: categoryId, activityType: 'quiz', questions: [], status: 'completed', score: finalScore, totalQuestions: questions.length, currentQuestionIndex: currentIndex.value, startedAt: sessionStartTime!, timeSpent: timeSpent)
         );
         
-        // Update activity progress
-        ActivityProgress activityProgress = ActivityProgress(
-          isCompleted: true,
-          completedAt: DateTime.now(),
-          score: finalScore,
-          timeSpent: timeSpent,
+        // Update quiz completion with automatic unlocking
+        await FirebaseService.updateActivityCompletion(
+          userId,
+          categoryId,
+          'quiz', // activity type
+          finalScore,
+          timeSpent,
+          attempts: 1,
         );
-        
-        await FirebaseService.updateActivityProgress(userId, categoryId, 'quiz', activityProgress);
         
         // Navigate to success screen
         Get.offNamed('/success', arguments: {

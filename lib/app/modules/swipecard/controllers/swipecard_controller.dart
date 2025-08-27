@@ -203,31 +203,25 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
       // Calculate score based on known words
       int score = (knownCount.value / words.length * 100).round();
       
-      ActivityProgress activityProgress = ActivityProgress(
-        isCompleted: true,
-        completedAt: DateTime.now(),
-        score: score,
-        timeSpent: 5, // Approximate time spent
+      // Update swipe cards completion with automatic unlocking
+      await FirebaseService.updateActivityCompletion(
+        userId,
+        categoryId,
+        'swipeCards', // activity type
+        score,
+        5, // timeSpent - approximate time spent
       );
-      
-      await FirebaseService.updateActivityProgress(userId, categoryId, 'swipeCards', activityProgress);
       
       // Show completion dialog
-      Get.dialog(
-        AlertDialog(
-          title: Text('Activity Complete!'),
-          content: Text('You completed ${knownCount.value} out of ${words.length} words correctly.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back(); // Close dialog
-                Get.back(); // Go back to choose activity
-              },
-              child: Text('Continue'),
-            ),
-          ],
-        ),
-      );
+      // 
+      // Navigate to success screen
+        Get.offNamed('/success', arguments: {
+          'score': score,
+          'correctAnswers': knownCount.value,
+          'totalQuestions': words.length,
+          'categoryName': categoryName,
+        });
+
     }
   }
 
