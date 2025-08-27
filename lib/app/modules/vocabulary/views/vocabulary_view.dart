@@ -166,10 +166,10 @@ class VocabularyView extends GetView<VocabularyController> {
                 category.nameEn.isNotEmpty ? category.nameEn : category.name,
                 style: TextStyle(fontSize: Responsive.sp(context, 16), fontWeight: FontWeight.w600),
               ),
-              subtitle: Text(
-                '${category.totalWords} words',
-                style: TextStyle(fontSize: Responsive.sp(context, 12), color: Colors.grey[600]),
-              ),
+              // subtitle: Text(
+              //   '${category.totalWords} words',
+              //   style: TextStyle(fontSize: Responsive.sp(context, 12), color: Colors.grey[600]),
+              // ),
               leading: Icon(
                 controller.getCategoryIcon(category.name),
                 color: isUnlocked ? primaryColor : Colors.grey,

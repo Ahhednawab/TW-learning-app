@@ -1,83 +1,117 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
+import 'package:mandarinapp/app/models/word_model.dart';
+import 'package:mandarinapp/app/models/user_progress_model.dart';
+import 'package:mandarinapp/app/services/firebase_service.dart';
 
-class CharactermatchingController extends GetxController with GetTickerProviderStateMixin{
-  String? activity;
+class CharacterMatchingPair {
+  final String wordId;
+  final String imageUrl;
+  final String traditional;
+  final String english;
+  final WordModel word;
 
+  CharacterMatchingPair({
+    required this.wordId,
+    required this.imageUrl,
+    required this.traditional,
+    required this.english,
+    required this.word,
+  });
+}
+
+class CharactermatchingController extends GetxController with GetTickerProviderStateMixin {
+  // Game session data
+  String categoryId = '';
+  String levelId = '';
+  String categoryName = '';
+  
+  // Observable variables
   var currentIndex = 0.obs;
   var matchesFound = 0.obs;
   var progress = 0.0.obs;
+  var score = 0.obs;
+  var isLoading = true.obs;
 
   var selectedLeft = (-1).obs;
   var selectedRight = (-1).obs;
 
-  // Tracks which images are revealed
-  var revealed = <bool>[false, false, false, false].obs;
+  // Tracks which pairs are matched
+  var revealed = <bool>[].obs;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  // 3 questions: images, Chinese, English
-  final List<Map<String, dynamic>> questions =  [
-    {
-      "images": [
-        "assets/images/sheep.png",
-        "assets/images/horse.png",
-        "assets/images/dog.png",
-        "assets/images/fish.jfif",
-      ],
-      "chinese": ["羊", "馬", "狗", "魚"],
-      "english": ["Sheep", "Horse", "Dog", "Fish"],
-      "map": {
-        0: 0, // Sheep
-        1: 1, // Horse
-        2: 2, // Dog
-        3: 3, // Fish
-      }
-    },
-    {
-      "images": [
-        "assets/images/cat.jpg",
-        "assets/images/monkey.webp",
-        "assets/images/bird.jpg",
-        "assets/images/cow.webp",
-      ],
-      "chinese": ["貓", "猴子", "鳥", "牛"],
-      "english": ["Cat", "Monkey", "Bird", "Cow"],
-      "map": {
-        0: 0,
-        1: 1,
-        2: 2,
-        3: 3,
-      }
-    },
-    {
-      "images": [
-        "assets/images/pig.jpg",
-        "assets/images/goat.jpg",
-        "assets/images/duck.jpg",
-        "assets/images/chicken.webp",
-      ],
-      "chinese": ["豬", "山羊", "鴨子", "雞"],
-      "english": ["Pig", "Goat", "Duck", "Chicken"],
-      "map": {
-        0: 0,
-        1: 1,
-        2: 2,
-        3: 3,
-      }
-    },
-  ];
+  // Game data
+  final RxList<List<CharacterMatchingPair>> gameRounds = <List<CharacterMatchingPair>>[].obs;
+  final RxList<WordModel> allWords = <WordModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    activity = Get.arguments['activity'] ?? '';
-    resetQuestion();
+    
+    // Get arguments from navigation
+    final args = Get.arguments;
+    if (args != null) {
+      categoryId = args['categoryId'] ?? '';
+      levelId = args['levelId'] ?? '';
+      categoryName = args['categoryName'] ?? 'Character Matching';
+    }
+    
+    loadGameData();
+  }
+  
+  Future<void> loadGameData() async {
+    try {
+      isLoading.value = true;
+      
+      // Load words for this category
+      List<WordModel> words = await FirebaseService.getWordsByCategory(categoryId);
+      words.shuffle(); // Randomize the order
+      allWords.value = words.take(12).toList(); // Take first 12 words
+      
+      if (words.isNotEmpty) {
+        // Generate character matching rounds from words
+        await generateMatchingRounds(words);
+        resetQuestion();
+      }
+    } catch (e) {
+      print('Error loading character matching data: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  
+  Future<void> generateMatchingRounds(List<WordModel> words) async {
+    List<List<CharacterMatchingPair>> rounds = [];
+    
+    // Create 3 rounds with 4 pairs each
+    for (int round = 0; round < 3 && round * 4 < words.length; round++) {
+      List<CharacterMatchingPair> pairs = [];
+      
+      for (int i = 0; i < 4 && (round * 4 + i) < words.length; i++) {
+        WordModel word = words[round * 4 + i];
+        pairs.add(CharacterMatchingPair(
+          wordId: word.wordId,
+          imageUrl: word.imageUrl,
+          traditional: word.traditional,
+          english: word.english,
+          word: word,
+        ));
+      }
+      
+      rounds.add(pairs);
+    }
+    
+    gameRounds.value = rounds;
+    revealed.value = List.filled(4, false);
   }
 
-
-     void playSound(String filePath) async {
-    await _audioPlayer.stop();
-    await _audioPlayer.play(AssetSource(filePath));
+  void playSound(String filePath) async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource(filePath));
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
   }
 
   void selectLeft(int index) {
@@ -90,53 +124,121 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
     checkMatch();
   }
 
-  void checkMatch() {
-    if (selectedLeft.value != -1 && selectedRight.value != -1) {
-      var map = questions[currentIndex.value]["map"] as Map<int, int>;
-      if (map[selectedLeft.value] == selectedRight.value) {
-        // Correct
+  void checkMatch() async {
+    if (selectedLeft.value != -1 && selectedRight.value != -1 && gameRounds.isNotEmpty) {
+      List<CharacterMatchingPair> currentRound = gameRounds[currentIndex.value];
+      
+      // Check if the selected left image matches the selected right text
+      if (selectedLeft.value == selectedRight.value && selectedLeft.value < currentRound.length) {
+        // Correct match
         revealed[selectedLeft.value] = true;
         matchesFound.value++;
         selectedLeft.value = -1;
         selectedRight.value = -1;
+        score.value++;
         playSound('audio/correct.mp3');
-        if (matchesFound.value == 4) {
-          nextQuestion();
+        
+        // Update word progress
+        // await updateWordProgress(currentRound[selectedLeft.value].word, true);
+        
+        if (matchesFound.value == currentRound.length) {
+          await Future.delayed(Duration(milliseconds: 1000));
+          await nextQuestion();
         }
       } else {
-        // Wrong — reset after short delay
+        // Wrong match
         playSound('audio/failure.mp3');
-        Future.delayed(Duration(milliseconds: 300), () {
+        
+        // Update word progress for incorrect answer
+        if (selectedLeft.value < currentRound.length) {
+          await updateWordProgress(currentRound[selectedLeft.value].word, false);
+        }
+        
+        Future.delayed(Duration(milliseconds: 800), () {
           selectedLeft.value = -1;
           selectedRight.value = -1;
         });
       }
     }
   }
-
-  void nextQuestion() {
-    if (currentIndex.value < questions.length - 1) {
-      currentIndex.value++;
-      resetQuestion();
-    } else {
-      // End — go back or show result
-      Get.back();
+  
+  Future<void> updateWordProgress(WordModel word, bool isCorrect) async {
+    String? userId = FirebaseService.currentUserId;
+    if (userId != null) {
+      WordProgress wordProgress = WordProgress(
+        knownStatus: isCorrect ? 'known' : 'learning',
+        lastReviewed: DateTime.now(),
+        reviewCount: 1,
+        correctAnswers: isCorrect ? 1 : 0,
+        totalAnswers: 1,
+        isFavorite: false,
+      );
+      
+      await FirebaseService.updateWordProgress(userId, categoryId, word.wordId, wordProgress);
     }
   }
 
-  void passQuestion() {
-    nextQuestion();
+  Future<void> nextQuestion() async {
+    if (currentIndex.value < gameRounds.length - 1) {
+      currentIndex.value++;
+      resetQuestion();
+    } else {
+      // Complete the game
+      await completeGame();
+    }
+  }
+  
+  Future<void> completeGame() async {
+    String? userId = FirebaseService.currentUserId;
+    if (userId != null) {
+      // Calculate final score
+      int finalScore = gameRounds.isNotEmpty ? (score.value / (gameRounds.length * 4) * 100).round() : 0;
+      
+      // Update activity progress
+      ActivityProgress activityProgress = ActivityProgress(
+        isCompleted: true,
+        completedAt: DateTime.now(),
+        score: finalScore,
+        timeSpent: 5, // Approximate time spent
+      );
+      
+      await FirebaseService.updateActivityProgressInGames(userId, categoryId, 'characterMatching', activityProgress);
+      
+      playSound('audio/levelup.mp3');
+      await Future.delayed(const Duration(milliseconds: 1500));
+      
+      // Navigate to success screen
+      Get.offNamed('/success', arguments: {
+        'score': finalScore,
+        'correctAnswers': score.value,
+        'totalQuestions': gameRounds.length * 4,
+        'categoryName': categoryName,
+      });
+    }
+  }
+
+  void passQuestion() async {
+    await nextQuestion();
   }
 
   void resetQuestion() {
-    revealed.value = [false, false, false, false];
-    matchesFound.value = 0;
-    selectedLeft.value = -1;
-    selectedRight.value = -1;
-    progress.value = (currentIndex.value) / questions.length;
+    if (gameRounds.isNotEmpty && currentIndex.value < gameRounds.length) {
+      revealed.value = List.filled(gameRounds[currentIndex.value].length, false);
+      matchesFound.value = 0;
+      selectedLeft.value = -1;
+      selectedRight.value = -1;
+      progress.value = (currentIndex.value + 1) / gameRounds.length;
+    }
+  }
+  
+  List<CharacterMatchingPair> get currentRound {
+    if (gameRounds.isNotEmpty && currentIndex.value < gameRounds.length) {
+      return gameRounds[currentIndex.value];
+    }
+    return [];
   }
 
-   @override
+  @override
   void onClose() {
     _audioPlayer.dispose();
     super.onClose();

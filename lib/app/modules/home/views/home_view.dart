@@ -97,14 +97,14 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.notifications_none_rounded,
-                        color: blackColor,
-                        size: 28,
-                      ),
-                      onPressed: () {},
-                    ),
+                    // IconButton(
+                    //   icon: const Icon(
+                    //     Icons.notifications_none_rounded,
+                    //     color: blackColor,
+                    //     size: 28,
+                    //   ),
+                    //   onPressed: () {},
+                    // ),
                   ],
                 ),
                 const SizedBox(height: 22),

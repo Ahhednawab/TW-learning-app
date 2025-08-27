@@ -10,167 +10,248 @@ class ListeningView extends GetView<ListeningController> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController answerController = TextEditingController();
-
     return Scaffold(
-      appBar: customAppBar(title: controller.activity ?? 'gamesselection'),
-      body: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                child: Text(
-                  'listening.animals'.tr,
+      appBar: customAppBar(title: controller.categoryName),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.questions.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                const SizedBox(height: 16),
+                Text(
+                  'No questions available',
                   style: TextStyle(
                     fontSize: Responsive.sp(context, 18),
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
+                    color: Colors.grey[600],
                   ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Get.back(),
+                  child: const Text('Go Back'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final question = controller.questions[controller.currentIndex.value];
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Progress bar
+              LinearProgressIndicator(
+                value: controller.progress.value,
+                backgroundColor: primaryColor.withValues(alpha: 0.3),
+                valueColor: const AlwaysStoppedAnimation<Color>(primaryColor),
+                minHeight: 6,
+              ),
+              const SizedBox(height: 10),
+
+              // Progress text
+              Text(
+                'Question ${controller.currentIndex.value + 1} of ${controller.questions.length}',
+                style: TextStyle(
+                  fontSize: Responsive.sp(context, 14),
+                  color: Colors.grey[600],
                 ),
               ),
               const SizedBox(height: 20),
 
-              // Animal card
-              Align(
-                child: Obx(() {
-                  final q = controller.questions[controller.currentIndex.value];
-                  return SizedBox(
-                    width: Responsive.wp(0.85),
-                    child: AspectRatio(
-                      aspectRatio: 4 / 5,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withValues(alpha: 0.2),
-                              spreadRadius: 2,
-                              blurRadius: 5,
+              // Image with audio button
+              Expanded(
+                flex: 3,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withValues(alpha: 0.2),
+                        spreadRadius: 2,
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Stack(
+                      children: [
+                        // Image
+                        if (question.imageUrl.isNotEmpty)
+                          Image.network(
+                            question.imageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.image_not_supported,
+                                  size: 64,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                          )
+                        else
+                          Container(
+                            color: Colors.grey[200],
+                            child: const Icon(
+                              Icons.image,
+                              size: 64,
+                              color: Colors.grey,
                             ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Stack(
-                            children: [
-                              Image.asset(
-                                q["image"]!,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  controller.playSound(q["audio"]!);
-                                },
+                          ),
+
+                        // Audio button overlay
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Center(
+                              child: GestureDetector(
+                                onTap: controller.playAudio,
                                 child: Container(
-                                  color: Colors.black.withValues(alpha: 0.6),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.volume_up,
-                                      color: Colors.white,
-                                      size: Responsive.isTablet(context) ? 92 : 80,
-                                    ),
+                                  width: 80,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    controller.isPlaying.value 
+                                        ? Icons.volume_up 
+                                        : Icons.play_arrow,
+                                    size: 40,
+                                    color: primaryColor,
                                   ),
                                 ),
                               ),
-                            ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Instructions
+              Text(
+                'Listen and select the correct English translation:',
+                style: TextStyle(
+                  fontSize: Responsive.sp(context, 16),
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[700],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+
+              // Answer options
+              Expanded(
+                flex: 2,
+                child: ListView.builder(
+                  itemCount: question.options.length,
+                  itemBuilder: (context, index) {
+                    Color? backgroundColor;
+                    if (controller.answerColor.containsKey(index)) {
+                      backgroundColor = controller.answerColor[index];
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: backgroundColor ?? whiteColor,
+                            side: BorderSide(
+                              color: backgroundColor != null 
+                                  ? Colors.transparent 
+                                  : primaryColor.withValues(alpha: 0.3),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: backgroundColor != null ? 0 : 1,
+                          ),
+                          onPressed: controller.selectedOption.value == -1
+                              ? () => controller.selectOption(index)
+                              : null,
+                          child: Text(
+                            question.options[index],
+                            style: TextStyle(
+                              fontSize: Responsive.sp(context, 16),
+                              color: backgroundColor != null 
+                                  ? Colors.black87 
+                                  : primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  },
+                ),
               ),
+
               const SizedBox(height: 20),
 
-              // Answer field
-              Align(
-                child: Obx(
-                  () => SizedBox(
-                    height: Responsive.isTablet(context) ? 48 : 44,
-                    width: Responsive.wp(0.6),
-                    child: TextFormField(
-                      controller: answerController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: controller.textFieldColor.value,
-                        hintText: 'answer'.tr,
-                        suffixIcon: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            controller.checkAnswer(answerController.text);
-                            answerController.clear();
-                          },
-                          icon: const Icon(Icons.send, color: primaryColor),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 6,
-                          horizontal: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
+              // Score and pass button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Score: ${controller.score.value}/${controller.questions.length}',
+                    style: TextStyle(
+                      fontSize: Responsive.sp(context, 16),
+                      fontWeight: FontWeight.w500,
+                      color: primaryColor,
                     ),
                   ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Progress bar
-              Obx(
-                () => LinearProgressIndicator(
-                  value: controller.progress.value,
-                  backgroundColor: primaryColor.withValues(alpha: 0.4),
-                  color: primaryColor,
-                  minHeight: 5,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // Correct answers text
-              Obx(
-                () => Text(
-                  "correctanswers".tr+": ${controller.correctCount.value}/${controller.questions.length}",
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // Pass button
-              Align(
-                alignment: Alignment.bottomRight,
-                child: SizedBox(
-                  height: Responsive.isTablet(context) ? 40 : 34,
-                  child: ElevatedButton(
+                  ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: whiteColor,
-                      side: const BorderSide(color: primaryColor),
+                      backgroundColor: Colors.grey[200],
+                      side: BorderSide(color: Colors.grey[400]!),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () {
-                      controller.nextQuestion();
-                    },
+                    onPressed: controller.selectedOption.value == -1
+                        ? controller.passQuestion
+                        : null,
                     child: Text(
-                      'pass'.tr,
-                      style: TextStyle(color: blackColor, fontSize: Responsive.sp(context, 14)),
+                      'Pass',
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: Responsive.sp(context, 14),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }
