@@ -22,13 +22,13 @@ Widget ProfileHeader({
           ),
           child: CircleAvatar(
             radius: 38,
-            backgroundColor: Colors.transparent,
-            backgroundImage:
-                avatarUrl != null ? AssetImage(avatarUrl) : null,
-            child:
-                avatarUrl == null
-                    ? Icon(Icons.person, color: Color(0xFF1CA6A6), size: 54)
-                    : null,
+            backgroundColor: primaryColor,
+            // backgroundImage:
+            //     avatarUrl != null ? AssetImage(avatarUrl) : null,
+            child:Text('${avatarUrl}', style: TextStyle(color: whiteColor, fontSize: 44)),
+                // avatarUrl == null
+                //     ? Icon(Icons.person, color: Color(0xFF1CA6A6), size: 54)
+                //     : null,
           ),
         ),
         const SizedBox(width: 18),
@@ -46,15 +46,15 @@ Widget ProfileHeader({
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                'learned'.tr+ ' $learnedWords ' +'words'.tr.toLowerCase(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: primaryColor,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(height: 4),
+              // Text(
+              //   'learned'.tr+ ' $learnedWords ' +'words'.tr.toLowerCase(),
+              //   style: const TextStyle(
+              //     fontSize: 16,
+              //     color: primaryColor,
+              //     fontWeight: FontWeight.w400,
+              //   ),
+              // ),
+              // const SizedBox(height: 4),
               GestureDetector(
                 onTap: onEdit,
                 child: Text(

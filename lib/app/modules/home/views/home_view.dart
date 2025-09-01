@@ -37,16 +37,17 @@ class HomeView extends GetView<HomeController> {
                         // Navigate to profile
                         Get.find<BottomnavController>().changeTabIndex(3);
                       },
-                      child: const CircleAvatar(
+                      child:  CircleAvatar(
                         radius: 24,
                         backgroundColor: primaryColor,
-                        // child: Icon(Icons.person, color: whiteColor, size: 36),
-                        backgroundImage: AssetImage(
-                          'assets/images/profile.png',
-                        ),
+                        child: Text('${controller.userName[0]}', style: TextStyle(color: whiteColor, fontSize: 24)),
+                        // Icon(Icons.person, color: whiteColor, size: 36),
+                        // backgroundImage: AssetImage(
+                        //   'assets/images/profile.png',
+                        // ),
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    // const SizedBox(width: 14),
                     Expanded(
                       child: Center(
                         child: PopupMenuButton<String>(
@@ -154,11 +155,13 @@ class HomeView extends GetView<HomeController> {
                     ? Container(
                         height: 120,
                         decoration: BoxDecoration(
-                          color: greyColor.withValues(alpha:0.3),
+                          color: greyColor.withValues(alpha:0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
                         ),
                       )
                     : HomeProgressCard(

@@ -206,34 +206,9 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
       }
       
       // Show completion dialog
-      // Get.dialog(
-      //   AlertDialog(
-      //     title: const Text('Game Complete!'),
-      //     content: Column(
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         Text('Score: ${score.value}/${gameRounds.length * 4}'),
-      //         const SizedBox(height: 8),
-      //         Text(
-      //           'Great job! Keep practicing to unlock more content.',
-      //           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-      //         ),
-      //       ],
-      //     ),
-      //     actions: [
-      //       TextButton(
-      //         onPressed: () {
-      //           Get.back(); // Close dialog
-      //           Get.back(); // Return to games selection
-      //         },
-      //         child: const Text('OK'),
-      //       ),
-      //     ],
-      //   ),
-      // );
       // Navigate to success screen
         Get.offNamed('/success', arguments: {
-          'score': score.value,
+          'score': matchesFound.value,
           'correctAnswers': matchesFound.value,
           'totalQuestions': gameRounds.length * 4,
           'categoryName': categoryName,

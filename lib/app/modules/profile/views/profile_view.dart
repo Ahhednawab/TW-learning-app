@@ -43,7 +43,7 @@ class ProfileView extends GetView<ProfileController> {
             Obx(() => controller.isLoading.value
                 ? Center(child: CircularProgressIndicator(color: primaryColor))
                 : ProfileHeader(
-                    avatarUrl: 'assets/images/profile.png',
+                    avatarUrl: controller.currentUser.value?.profile.displayName[0],
                     userName: controller.currentUser.value?.profile.displayName ?? 'User',
                     learnedWords: controller.totalWordsLearned.value,
                     onEdit: () {

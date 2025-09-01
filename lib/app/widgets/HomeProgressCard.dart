@@ -5,73 +5,59 @@ Widget HomeProgressCard({
   required String level,
   required int? words,
   required int? totalWords,
-  required VoidCallback? onTap
+  required VoidCallback? onTap,
 }) {
-   return InkWell(
-      borderRadius: BorderRadius.circular(18),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: Color(0xFFE9FFFD),
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.menu_book_rounded, color: Color(0xFF61CBC2), size: 28),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    level,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: blackColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Stack(
-                    children: [
-                      Container(
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: lightgreyColor,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                      Container(
-                        height: 6,
-                        width: (words ?? 0 / (totalWords ?? 0)) * 120,
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+  print((words ?? 0) / (totalWords ?? 1).toDouble());
+  return InkWell(
+    borderRadius: BorderRadius.circular(18),
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Color(0xFFE9FFFD),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.menu_book_rounded, color: Color(0xFF61CBC2), size: 28),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Words ${words ?? 0}/${totalWords ?? 0}',
+                  level,
                   style: TextStyle(
-                    color: greyColor,
-                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: blackColor,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Icon(Icons.arrow_forward_ios_rounded, color: greyColor, size: 18),
+                LinearProgressIndicator(
+                  value: ((words ?? 0) / (totalWords ?? 1)).clamp(0.0, 1.0),
+                  minHeight: 6,
+                  color: primaryColor,
+                  backgroundColor: lightgreyColor,
+                  borderRadius: BorderRadius.circular(3),
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'Words ${words ?? 0}/${totalWords ?? 0}',
+                style: TextStyle(color: greyColor, fontSize: 13),
+              ),
+              const SizedBox(height: 8),
+              Icon(Icons.arrow_forward_ios_rounded, color: greyColor, size: 18),
+            ],
+          ),
+        ],
       ),
-    );
+    ),
+  );
 }
