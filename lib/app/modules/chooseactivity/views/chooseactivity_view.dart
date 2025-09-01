@@ -9,13 +9,7 @@ class ChooseactivityView extends GetView<ChooseactivityController> {
   const ChooseactivityView({super.key});
   @override
   Widget build(BuildContext context) {
-    controller.loadData();
-    controller.getGamesProgress();
-    controller.getQuizProgress();
-    controller.getSwipeCardsProgress();
-    controller.getGamesProgressText();
-    controller.getQuizProgressText();
-    controller.getSwipeCardsProgressText();
+
     return Scaffold(
       appBar: customAppBar(title: controller.categoryName.isNotEmpty ? controller.categoryName : (controller.activity ?? 'chooseactivity')),
       body: Obx(() => controller.isLoading.value

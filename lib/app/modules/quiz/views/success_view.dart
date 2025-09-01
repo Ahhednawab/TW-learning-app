@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
+import 'package:mandarinapp/app/modules/chooseactivity/controllers/chooseactivity_controller.dart';
 
 class SuccessView extends GetView {
   const SuccessView({super.key});
@@ -18,6 +19,13 @@ class SuccessView extends GetView {
           IconButton(
             onPressed: () {
               Get.back();
+              // Refresh games selection screen
+              try {
+                final controller2 = Get.find<ChooseactivityController>();
+                controller2.refreshData();
+              } catch (e) {
+                print('Choose activity controller not found: $e');
+              }
             },
             icon: const Icon(Icons.close),
           )

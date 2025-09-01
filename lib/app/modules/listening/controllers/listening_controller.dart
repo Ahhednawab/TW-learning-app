@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
 import 'package:mandarinapp/app/models/word_model.dart';
+import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/services/firebase_service.dart';
 
 class ListeningQuestion {
@@ -104,7 +105,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
       
       // Generate 4 options including the correct answer
       List<String> options = generateOptions(word, gameWords);
-      int correctIndex = options.indexOf(word.english);
+      int correctIndex = options.indexOf(word.simplified);
       
       questions.add(ListeningQuestion(
         wordId: word.wordId,
@@ -183,27 +184,32 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
 
   // Handle option selection
   Future<void> selectOption(int index) async {
-    if (selectedOption.value != -1 || questions.isEmpty) return; // Prevent double tap
+    if (questions.isEmpty) return;
     
-    selectedOption.value = index;
     ListeningQuestion question = questions[currentIndex.value];
     bool isCorrect = index == question.correctIndex;
     
     if (isCorrect) {
+      selectedOption.value = index;
       answerColor[index] = const Color(0xFFD0F0C0); // green
       await playSound('audio/correct.mp3');
       score.value++;
+      
+      // Update word progress
+      await updateWordProgress(isCorrect);
+      
+      // Delay before moving to next question
+      Future.delayed(const Duration(milliseconds: 1500), nextQuestion);
     } else {
+      // Wrong answer - highlight in red but don't proceed
       answerColor[index] = const Color(0xFFF4C2C2); // red
-      answerColor[question.correctIndex] = const Color(0xFFD0F0C0); // show correct
       await playSound('audio/failure.mp3');
+      
+      // Clear the red highlight after a short delay to allow retry
+      Future.delayed(const Duration(milliseconds: 800), () {
+        answerColor.remove(index);
+      });
     }
-    
-    // Update word progress
-    await updateWordProgress(isCorrect);
-    
-    // Delay before moving to next question
-    Future.delayed(const Duration(milliseconds: 1500), nextQuestion);
   }
 
   // Update word progress in Firestore
@@ -291,7 +297,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
       
       // Show completion dialog
       // Navigate to success screen
-        Get.offNamed('/success', arguments: {
+        Get.offNamed(Routes.FILLSUCCESS, arguments: {
           'score': score.value,
           'correctAnswers': score.value,
           'totalQuestions': questions.length,

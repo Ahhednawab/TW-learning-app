@@ -37,10 +37,13 @@ class HomeView extends GetView<HomeController> {
                         // Navigate to profile
                         Get.find<BottomnavController>().changeTabIndex(3);
                       },
-                      child:  CircleAvatar(
+                      child: CircleAvatar(
                         radius: 24,
                         backgroundColor: primaryColor,
-                        child: Text('${controller.userName[0]}', style: TextStyle(color: whiteColor, fontSize: 24)),
+                        child: Text(
+                          '${controller.userName[0].toUpperCase()}',
+                          style: TextStyle(color: whiteColor, fontSize: 24),
+                        ),
                         // Icon(Icons.person, color: whiteColor, size: 36),
                         // backgroundImage: AssetImage(
                         //   'assets/images/profile.png',
@@ -62,7 +65,9 @@ class HomeView extends GetView<HomeController> {
                             print('Selected language: $value');
                             // You can update state or use GetX controller here if needed
                             // controller.selectedLanguage!.value = value;
-                            Get.find<LocalizationController>().setLanguage(Locale(value));
+                            Get.find<LocalizationController>().setLanguage(
+                              Locale(value),
+                            );
                             controller.selectedLanguage?.value = value;
                           },
                           itemBuilder:
@@ -151,27 +156,36 @@ class HomeView extends GetView<HomeController> {
                 const SizedBox(height: 32),
 
                 // Progress Card
-                Obx(() => controller.isLoading.value
-                    ? Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: greyColor.withValues(alpha:0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: primaryColor,
+                Obx(
+                  () =>
+                      controller.isLoading.value
+                          ? Container(
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: greyColor.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: primaryColor,
+                              ),
+                            ),
+                          )
+                          : FutureBuilder<String>(
+                            future: controller.getLevelName(),
+                            builder: (context, snapshot) {
+                              final levelName = snapshot.data ?? 'Loading';
+
+                              return HomeProgressCard(
+                                level: levelName,
+                                words: controller.wordsLearned.value,
+                                totalWords: controller.totalWords.value,
+                                onTap: () {
+                                  controller.navigateToVocabulary();
+                                },
+                              );
+                            },
                           ),
-                        ),
-                      )
-                    : HomeProgressCard(
-                        level: controller.currentLevelText,
-                        words: controller.wordsLearned.value,
-                        totalWords: controller.totalWords.value,
-                        onTap: () {
-                          controller.navigateToVocabulary();
-                        },
-                      ),
                 ),
                 const SizedBox(height: 28),
 
@@ -182,12 +196,14 @@ class HomeView extends GetView<HomeController> {
                       // Left side: Word of the Day (tall card)
                       Expanded(
                         flex: 1,
-                        child: Obx(() => HomeInfoCard(
-                          title: 'wordofday',
-                          value: controller.wordOfTheDayText,
-                          color: primaryColor,
-                          watermark: '大',
-                        )),
+                        child: Obx(
+                          () => HomeInfoCard(
+                            title: 'wordofday',
+                            value: controller.wordOfTheDayText,
+                            color: primaryColor,
+                            watermark: '大',
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 5),
 
@@ -199,23 +215,27 @@ class HomeView extends GetView<HomeController> {
                             SizedBox(
                               // height: 126,
                               width: double.infinity,
-                              child: Obx(() => HomeInfoCard(
-                                title: 'lastwordreviewed',
-                                value: controller.lastWordReviewedText,
-                                color: const Color(0xFF6EC6C5),
-                                watermark: '大',
-                              )),
+                              child: Obx(
+                                () => HomeInfoCard(
+                                  title: 'lastwordreviewed',
+                                  value: controller.lastWordReviewedText,
+                                  color: const Color(0xFF6EC6C5),
+                                  watermark: '大',
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 5),
                             SizedBox(
                               // height: 126,
                               width: double.infinity,
-                              child: Obx(() => HomeInfoCard(
-                                title: 'timespenttoday',
-                                value: controller.timeSpentTodayText,
-                                color: const Color(0xFF9CA6F5),
-                                watermark: '大',
-                              )),
+                              child: Obx(
+                                () => HomeInfoCard(
+                                  title: 'timespenttoday',
+                                  value: '${controller.timeSpentInMillis.value ~/ 60000} min',
+                                  color: const Color(0xFF9CA6F5),
+                                  watermark: '大',
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -224,22 +244,23 @@ class HomeView extends GetView<HomeController> {
                   ),
                 ),
 
-
                 SizedBox(height: 28),
                 // Streak Card
-                Obx(() => HomeStreakCard(
-                  streakDays: controller.currentStreak.value,
-                  onTap: () {
-                    controller.navigateToVocabulary();
-                  },
-                )),
+                Obx(
+                  () => HomeStreakCard(
+                    streakDays: controller.currentStreak.value,
+                    onTap: () {
+                      controller.navigateToVocabulary();
+                    },
+                  ),
+                ),
                 const SizedBox(height: 28),
-                // Advertise Card 
+                // Advertise Card
                 Container(
                   height: Responsive.hp(0.1),
                   margin: const EdgeInsets.symmetric(horizontal: 14),
                   decoration: BoxDecoration(
-                  color: greyColor,
+                    color: greyColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Center(

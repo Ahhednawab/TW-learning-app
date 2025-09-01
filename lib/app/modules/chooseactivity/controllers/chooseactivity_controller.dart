@@ -20,6 +20,16 @@ class ChooseactivityController extends GetxController {
     loadData();
   }
 
+  void refreshData(){
+    loadData();
+    getGamesProgress();
+    getQuizProgress();
+    getSwipeCardsProgress();
+    getGamesProgressText();
+    getQuizProgressText();
+    getSwipeCardsProgressText();
+  }
+
   void loadArguments() {
     try {
       final args = Get.arguments as Map<String, dynamic>?;

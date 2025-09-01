@@ -29,6 +29,18 @@ class GamesselectionController extends GetxController {
     
     loadGameData();
   }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // Refresh data when screen becomes active
+    loadGameData();
+  }
+
+  // Method to refresh data when returning from activities
+  void refreshProgress() {
+    loadGameData();
+  }
   
   Future<void> loadGameData() async {
     try {

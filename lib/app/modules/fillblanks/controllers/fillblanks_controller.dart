@@ -248,7 +248,7 @@ class FillblanksController extends GetxController with GetTickerProviderStateMix
       await Future.delayed(const Duration(milliseconds: 1500));
       
       // Navigate to success screen
-      Get.toNamed(Routes.FILLSUCCESS, arguments: {
+      Get.offNamed(Routes.FILLSUCCESS, arguments: {
         'score': finalScore,
         'correctAnswers': score.value,
         'totalQuestions': questions.length,

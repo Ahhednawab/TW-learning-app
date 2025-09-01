@@ -18,6 +18,7 @@ abstract class Routes {
   static const LISTENING = _Paths.LISTENING;
   static const QUIZ = _Paths.QUIZ;
   static const SUCCESS = _Paths.SUCCESS;
+  static const QUIZFAILURE = _Paths.QUIZFAILURE;
   static const FAVORITES = _Paths.FAVORITES;
   static const FILLSUCCESS = _Paths.FILLSUCCESS;
   static const LOGIN = _Paths.LOGIN;
@@ -41,6 +42,7 @@ abstract class _Paths {
   static const LISTENING = '/listening';
   static const QUIZ = '/quiz';
   static const SUCCESS = '/success';
+  static const QUIZFAILURE = '/quiz-failure';
   static const FILLSUCCESS = '/fillsuccess';
   static const FAVORITES = '/favorites';
   static const LOGIN = '/login';

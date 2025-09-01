@@ -1,11 +1,11 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/models/quiz_session_model.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
+import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/services/firebase_service.dart';
-
+import 'package:mandarinapp/app/routes/app_pages.dart';
 
 class QuizController extends GetxController {
   // Quiz session data
@@ -267,23 +267,34 @@ class QuizController extends GetxController {
           QuizSessionModel(sessionId: currentSessionId!, userId: userId, categoryId: categoryId, activityType: 'quiz', questions: [], status: 'completed', score: finalScore, totalQuestions: questions.length, currentQuestionIndex: currentIndex.value, startedAt: sessionStartTime!, timeSpent: timeSpent)
         );
         
-        // Update quiz completion with automatic unlocking
-        await FirebaseService.updateActivityCompletion(
-          userId,
-          categoryId,
-          'quiz', // activity type
-          finalScore,
-          timeSpent,
-          attempts: 1,
-        );
-        
-        // Navigate to success screen
-        Get.offNamed('/success', arguments: {
-          'score': finalScore,
-          'correctAnswers': correctCount.value,
-          'totalQuestions': questions.length,
-          'categoryName': categoryName,
-        });
+        // Check if score meets 80% requirement
+        if (finalScore >= 80) {
+          // Update quiz completion with automatic unlocking
+          await FirebaseService.updateActivityCompletion(
+            userId,
+            categoryId,
+            'quiz', // activity type
+            finalScore,
+            timeSpent,
+            attempts: 1,
+          );
+          
+          // Navigate to success screen
+          Get.offNamed('/success', arguments: {
+            'score': finalScore,
+            'correctAnswers': correctCount.value,
+            'totalQuestions': questions.length,
+            'categoryName': categoryName,
+          });
+        } else {
+          // Navigate to failure screen
+          Get.offNamed(Routes.QUIZFAILURE, arguments: {
+            'score': finalScore,
+            'correctAnswers': correctCount.value,
+            'totalQuestions': questions.length,
+            'categoryName': categoryName,
+          });
+        }
       }
     }
   }

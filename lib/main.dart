@@ -7,6 +7,7 @@ import 'package:mandarinapp/app/constants/appconstants.dart';
 import 'package:mandarinapp/app/helper/language.dart' as di;
 import 'package:mandarinapp/app/helper/messages.dart';
 import 'package:mandarinapp/app/services/Localization.dart';
+import 'package:mandarinapp/app/services/streak_service.dart';
 import 'package:mandarinapp/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app/routes/app_pages.dart';

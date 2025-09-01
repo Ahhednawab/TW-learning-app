@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:mandarinapp/app/modules/vocabulary/controllers/vocabulary_controller.dart';
 import '../models/user_model.dart';
 import '../models/level_model.dart';
 import '../models/category_model.dart';
@@ -590,6 +592,8 @@ class FirebaseService {
       bool success = await initializeCategoryProgress(userId, nextCategoryId);
       
       if (success) {
+        final controller = Get.find<VocabularyController>();
+                controller.loadData();
         print('Successfully unlocked next category: $nextCategoryId');
       }
       
@@ -636,6 +640,8 @@ class FirebaseService {
         
         bool success = await initializeCategoryProgress(userId, firstCategoryId);
         if (success) {
+          final controller = Get.find<VocabularyController>();
+          controller.loadData();
           print('Successfully unlocked next level: $nextLevelId with first category: $firstCategoryId');
         }
         return success;

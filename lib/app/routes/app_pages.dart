@@ -26,6 +26,7 @@ import '../modules/profile/views/profile_view.dart';
 import '../modules/quiz/bindings/quiz_binding.dart';
 import '../modules/quiz/views/quiz_view.dart';
 import '../modules/quiz/views/success_view.dart';
+import '../modules/quiz/views/failure_view.dart';
 import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
@@ -111,6 +112,10 @@ class AppPages {
     GetPage(
       name: _Paths.SUCCESS,
       page: () => const SuccessView(),
+    ),
+    GetPage(
+      name: _Paths.QUIZFAILURE,
+      page: () => const QuizFailureView(),
     ),
     GetPage(
       name: _Paths.FAVORITES,

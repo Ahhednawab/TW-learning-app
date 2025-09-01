@@ -83,6 +83,27 @@ class WordModel {
     );
   }
 
+  factory WordModel.fromJson(Map<String, dynamic> json) {
+  return WordModel(
+    wordId: json['wordId'] ?? '',
+    categoryId: json['categoryId'] ?? '',
+    levelId: json['levelId'] ?? '',
+    traditional: json['traditional'] ?? '',
+    simplified: json['simplified'] ?? '',
+    pinyin: json['pinyin'] ?? '',
+    english: json['english'] ?? '',
+    partOfSpeech: json['partOfSpeech'] ?? '',
+    exampleSentence: ExampleSentence.fromMap(json['exampleSentence'] ?? {}),
+    audioUrl: json['audioUrl'] ?? '',
+    imageUrl: json['imageUrl'] ?? '',
+    difficulty: json['difficulty'] ?? 1,
+    tags: List<String>.from(json['tags'] ?? []),
+    isActive: json['isActive'] ?? true,
+    createdAt: DateTime.parse(json['createdAt']),
+  );
+}
+
+
   Map<String, dynamic> toMap() {
     return {
       'categoryId': categoryId,
@@ -101,4 +122,27 @@ class WordModel {
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
+
+
+
+  Map<String, dynamic> toJson() {
+  return {
+    'wordId': wordId,
+    'categoryId': categoryId,
+    'levelId': levelId,
+    'traditional': traditional,
+    'simplified': simplified,
+    'pinyin': pinyin,
+    'english': english,
+    'partOfSpeech': partOfSpeech,
+    'exampleSentence': exampleSentence.toMap(),
+    'audioUrl': audioUrl,
+    'imageUrl': imageUrl,
+    'difficulty': difficulty,
+    'tags': tags,
+    'isActive': isActive,
+    'createdAt': createdAt.toIso8601String(), // ✅ JSON-safe
+  };
+}
+
 }

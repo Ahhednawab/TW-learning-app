@@ -3,21 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
+import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/services/firebase_service.dart';
 
 class CharacterMatchingPair {
   final String wordId;
   final String imageUrl;
   final String traditional;
+  final String simplified;
   final String english;
   final WordModel word;
+  final int originalIndex; // Track original position for image revealing
 
   CharacterMatchingPair({
     required this.wordId,
     required this.imageUrl,
     required this.traditional,
+    required this.simplified,
     required this.english,
     required this.word,
+    required this.originalIndex,
   });
 }
 
@@ -34,16 +39,25 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
   var score = 0.obs;
   var isLoading = true.obs;
 
-  var selectedLeft = (-1).obs;
-  var selectedRight = (-1).obs;
+  var selectedChinese = (-1).obs;  // Selected Chinese word index
+  var selectedEnglish = (-1).obs;  // Selected English word index
 
-  // Tracks which pairs are matched
+  // Tracks which pairs are matched/revealed
   var revealed = <bool>[].obs;
+  var matchedPairs = <int>[].obs; // Stores indices of matched pairs
+  
+  // For showing wrong answer feedback
+  var wrongAnswerFeedback = false.obs;
+  var wrongChineseIndex = (-1).obs;
+  var wrongEnglishIndex = (-1).obs;
+
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Game data
   final RxList<List<CharacterMatchingPair>> gameRounds = <List<CharacterMatchingPair>>[].obs;
   final RxList<WordModel> allWords = <WordModel>[].obs;
+  final RxList<String> chineseOptions = <String>[].obs; // Chinese characters in order
+  final RxList<String> englishOptions = <String>[].obs; // English translations shuffled
 
   @override
   void onInit() {
@@ -94,8 +108,10 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
           wordId: word.wordId,
           imageUrl: word.imageUrl,
           traditional: word.traditional,
+          simplified: word.simplified,
           english: word.english,
           word: word,
+          originalIndex: i, // Track original position for image revealing
         ));
       }
       
@@ -104,6 +120,29 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
     
     gameRounds.value = rounds;
     revealed.value = List.filled(4, false);
+    
+    // Generate options for the first round
+    if (rounds.isNotEmpty) {
+      generateRoundOptions();
+    }
+  }
+
+  // Generate Chinese and English options for current round
+  void generateRoundOptions() {
+    if (gameRounds.isNotEmpty && currentIndex.value < gameRounds.length) {
+      List<CharacterMatchingPair> currentRound = gameRounds[currentIndex.value];
+      
+      // Chinese characters remain in order
+      chineseOptions.value = currentRound.map((pair) => pair.simplified).toList();
+      
+      // English translations are shuffled
+      List<String> englishList = currentRound.map((pair) => pair.english).toList();
+      englishList.shuffle();
+      englishOptions.value = englishList;
+      
+      print('Chinese options: ${chineseOptions.value}');
+      print('English options: ${englishOptions.value}');
+    }
   }
 
   void playSound(String filePath) async {
@@ -115,53 +154,107 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
     }
   }
 
-  void selectLeft(int index) {
-    selectedLeft.value = index;
+  void selectChinese(int index) {
+    if (matchedPairs.contains(index)) return; // Can't select already matched items
+    selectedChinese.value = index;
+    print('Selected Chinese: $index - ${chineseOptions[index]}');
     checkMatch();
   }
 
-  void selectRight(int index) {
-    selectedRight.value = index;
+  void selectEnglish(int index) {
+    if (isEnglishMatched(index)) return; // Can't select already matched items
+    selectedEnglish.value = index;
+    print('Selected English: $index - ${englishOptions[index]}');
     checkMatch();
+  }
+
+  // Check if this English option is already matched
+  bool isEnglishMatched(int englishIndex) {
+    String englishWord = englishOptions[englishIndex];
+    List<CharacterMatchingPair> currentRound = gameRounds[currentIndex.value];
+    
+    for (int i = 0; i < currentRound.length; i++) {
+      if (matchedPairs.contains(i) && currentRound[i].english == englishWord) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void checkMatch() async {
-    if (selectedLeft.value != -1 && selectedRight.value != -1 && gameRounds.isNotEmpty) {
-      List<CharacterMatchingPair> currentRound = gameRounds[currentIndex.value];
-      
-      // Check if the selected left image matches the selected right text
-      if (selectedLeft.value == selectedRight.value && selectedLeft.value < currentRound.length) {
-        // Correct match
-        revealed[selectedLeft.value] = true;
-        matchesFound.value++;
-        selectedLeft.value = -1;
-        selectedRight.value = -1;
-        score.value++;
-        playSound('audio/correct.mp3');
-        
-        // Update word progress
-        // await updateWordProgress(currentRound[selectedLeft.value].word, true);
-        
-        if (matchesFound.value == currentRound.length) {
-          await Future.delayed(Duration(milliseconds: 1000));
-          await nextQuestion();
-        }
-      } else {
-        // Wrong match
-        playSound('audio/failure.mp3');
-        
-        // Update word progress for incorrect answer
-        if (selectedLeft.value < currentRound.length) {
-          await updateWordProgress(currentRound[selectedLeft.value].word, false);
-        }
-        
-        Future.delayed(Duration(milliseconds: 800), () {
-          selectedLeft.value = -1;
-          selectedRight.value = -1;
-        });
-      }
+  if (selectedChinese.value == -1 || selectedEnglish.value == -1 || gameRounds.isEmpty) {
+    return;
+  }
+  
+  List<CharacterMatchingPair> currentRound = gameRounds[currentIndex.value];
+  
+  // Get the selected Chinese and English words
+  String selectedChineseWord = chineseOptions[selectedChinese.value];
+  String selectedEnglishWord = englishOptions[selectedEnglish.value];
+  
+  print('Checking match: Chinese="${selectedChineseWord}" vs English="${selectedEnglishWord}"');
+  
+  // Find the matching pair in current round
+  CharacterMatchingPair? matchingPair;
+  for (var pair in currentRound) {
+    if (pair.simplified == selectedChineseWord && pair.english == selectedEnglishWord) {
+      matchingPair = pair;
+      break;
     }
   }
+  
+  if (matchingPair != null) {
+    // Correct match!
+    int pairIndex = selectedChinese.value; // Chinese index corresponds to image position
+    
+    revealed[pairIndex] = true;
+    revealed.refresh(); // ADD THIS LINE - Force reactive update
+    matchedPairs.add(pairIndex);
+    matchesFound.value++;
+    score.value++;
+    
+    print('Correct match! Revealed image at index $pairIndex');
+    
+    // Clear selections
+    selectedChinese.value = -1;
+    selectedEnglish.value = -1;
+    
+    playSound('audio/correct.mp3');
+    
+    // Update word progress
+    await updateWordProgress(matchingPair.word, true);
+    
+    // Check if all pairs in this round are matched
+    if (matchesFound.value == currentRound.length) {
+      await Future.delayed(Duration(milliseconds: 1500));
+      await nextQuestion();
+    }
+  } else {
+    // Wrong match - show red feedback
+    wrongAnswerFeedback.value = true;
+    wrongChineseIndex.value = selectedChinese.value;
+    wrongEnglishIndex.value = selectedEnglish.value;
+    
+    print('Wrong match!');
+    
+    playSound('audio/failure.mp3');
+    
+    // Update word progress for incorrect answer (use first word as reference)
+    if (currentRound.isNotEmpty) {
+      await updateWordProgress(currentRound[selectedChinese.value].word, false);
+    }
+    
+    // Reset after showing red feedback
+    Future.delayed(Duration(milliseconds: 1000), () {
+      wrongAnswerFeedback.value = false;
+      wrongChineseIndex.value = -1;
+      wrongEnglishIndex.value = -1;
+      selectedChinese.value = -1;
+      selectedEnglish.value = -1;
+    });
+  }
+}
+
   
   Future<void> updateWordProgress(WordModel word, bool isCorrect) async {
     String? userId = FirebaseService.currentUserId;
@@ -183,6 +276,7 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
     if (currentIndex.value < gameRounds.length - 1) {
       currentIndex.value++;
       resetQuestion();
+      generateRoundOptions(); // Generate new options for the new round
     } else {
       // Complete the game
       await completeGame();
@@ -205,14 +299,13 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
         );
       }
       
-      // Show completion dialog
       // Navigate to success screen
-        Get.offNamed('/success', arguments: {
-          'score': matchesFound.value,
-          'correctAnswers': matchesFound.value,
-          'totalQuestions': gameRounds.length * 4,
-          'categoryName': categoryName,
-        });
+      Get.offNamed(Routes.FILLSUCCESS, arguments: {
+        'score': score.value,
+        'correctAnswers': score.value,
+        'totalQuestions': gameRounds.length * 4,
+        'categoryName': categoryName,
+      });
       
     } catch (e) {
       print('Error completing game: $e');
@@ -227,9 +320,13 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
   void resetQuestion() {
     if (gameRounds.isNotEmpty && currentIndex.value < gameRounds.length) {
       revealed.value = List.filled(gameRounds[currentIndex.value].length, false);
+      matchedPairs.clear();
       matchesFound.value = 0;
-      selectedLeft.value = -1;
-      selectedRight.value = -1;
+      selectedChinese.value = -1;
+      selectedEnglish.value = -1;
+      wrongAnswerFeedback.value = false;
+      wrongChineseIndex.value = -1;
+      wrongEnglishIndex.value = -1;
       progress.value = (currentIndex.value + 1) / gameRounds.length;
     }
   }
