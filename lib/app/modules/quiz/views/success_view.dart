@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
@@ -18,7 +17,6 @@ class SuccessView extends GetView {
         actions: [
           IconButton(
             onPressed: () {
-              Get.back();
               // Refresh games selection screen
               try {
                 final controller2 = Get.find<ChooseactivityController>();
@@ -26,6 +24,7 @@ class SuccessView extends GetView {
               } catch (e) {
                 print('Choose activity controller not found: $e');
               }
+              Get.back();
             },
             icon: const Icon(Icons.close),
           )
@@ -54,18 +53,18 @@ class SuccessView extends GetView {
                         'badgeearned'.tr,
                         style: TextStyle(fontSize: Responsive.sp(context, 18), fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 15),
                       CircleAvatar(
                         backgroundColor: primaryColor,
                         radius: Responsive.isTablet(context) ? 34 : 30,
                         backgroundImage: AssetImage('assets/images/congrats.png'),
                       ),
                       
-                      SizedBox(height: 5),
-                      Text(
-                        'imu'.tr,
-                        style: TextStyle(fontSize: Responsive.sp(context, 12)),
-                      ),
+                    //   SizedBox(height: 5),
+                    //   Text(
+                    //     'imu'.tr,
+                    //     style: TextStyle(fontSize: Responsive.sp(context, 12)),
+                    //   ),
                     ],
                   )
                 ),

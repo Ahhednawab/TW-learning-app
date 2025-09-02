@@ -143,7 +143,7 @@ class ProfileView extends GetView<ProfileController> {
                     Divider(height: 1, color: lightgreyColor),
                     ProfileListTile(
                       icon: Icons.logout,
-                      label: 'Logout',
+                      label: 'logout'.tr,
                       trailing: null,
                       onTap: controller.logout,
                     ),

@@ -54,6 +54,18 @@ class FirebaseService {
     }
   }
 
+  static Future<bool> updateFCMToken(String userId, String fcmToken) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'profile.fcmToken': fcmToken,
+      });
+      return true;
+    } catch (e) {
+      print('Error updating FCM token: $e');
+      return false;
+    }
+  }
+
   static Future<bool> updateUserSettings(String userId, UserSettings settings) async {
     try {
       await _firestore.collection('users').doc(userId).update({
@@ -87,6 +99,25 @@ class FirebaseService {
     } catch (e) {
       print('Error updating daily stats: $e');
       return false;
+    }
+  }
+
+  //  Notifications Operations
+  static Future<List<Map<String, dynamic>>> getNotifications() async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .collection('notifications')
+          .orderBy('createdAt', descending: true)
+          .get();
+      
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      print('Error getting notifications: $e');
+      return [];
     }
   }
 

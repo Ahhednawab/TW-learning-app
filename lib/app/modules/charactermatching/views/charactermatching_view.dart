@@ -178,7 +178,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                           );
                         }),
 
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 10),
 
                         // Matching columns
                         Obx(() {
@@ -270,7 +270,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                                 style: TextStyle(
                                                   fontSize: Responsive.sp(
                                                     context,
-                                                    isTablet ? 18 : 16,
+                                                    isTablet ? 18 : 14,
                                                   ),
                                                   color: textColor,
                                                   fontWeight:

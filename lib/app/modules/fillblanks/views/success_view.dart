@@ -11,8 +11,10 @@ class SuccessView extends GetView {
   Widget build(BuildContext context) {
     // Get arguments from the navigation route
     int score = 0;
+    int totalQuestions = 0;
     try {
        score = Get.arguments['correctAnswers'] as int;
+       totalQuestions = Get.arguments['totalQuestions'] as int;
     } catch (e) {
       print("Error retrieving score: $e");
     }
@@ -84,11 +86,11 @@ class SuccessView extends GetView {
                         ),
                       ),
 
-                      SizedBox(height: 5),
-                      Text(
-                        'imu'.tr,
-                        style: TextStyle(fontSize: Responsive.sp(context, 12)),
-                      ),
+                      // SizedBox(height: 5),
+                      // Text(
+                      //   'imu'.tr,
+                      //   style: TextStyle(fontSize: Responsive.sp(context, 12)),
+                      // ),
                     ],
                   ),
                 ),
@@ -110,7 +112,7 @@ class SuccessView extends GetView {
 
                       SizedBox(height: 5),
                       Text(
-                        '${'yougot'.tr} $score ${'outof'.tr} 10 \n${'correctanswers'.tr}',
+                        '${'yougot'.tr} $score ${'outof'.tr} $totalQuestions \n${'correctanswers'.tr}',
                         style: TextStyle(
                           fontSize: Responsive.sp(context, 16),
                         ),
@@ -118,7 +120,7 @@ class SuccessView extends GetView {
                       ),
                       SizedBox(height: 5),
                        Text(
-                        '$score/10',
+                        '$score/$totalQuestions',
                         style: TextStyle(
                           fontSize: Responsive.isTablet(context) ? 42 : 24,
                           fontWeight: FontWeight.bold,

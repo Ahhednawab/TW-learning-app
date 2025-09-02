@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/models/level_model.dart';
+import 'package:mandarinapp/app/services/Localization.dart';
+import 'package:mandarinapp/app/services/messaging_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/user_model.dart';
 import '../../../models/word_model.dart';
@@ -11,7 +14,7 @@ import '../../../services/streak_service.dart';
 import '../../../services/word_of_day_service.dart';
 import '../../bottomnav/controllers/bottomnav_controller.dart';
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver{
   final count = 0.obs;
   RxString? selectedLanguage = 'en'.obs;
 
@@ -46,27 +49,50 @@ class HomeController extends GetxController {
 
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     loadUserData();
+    WidgetsBinding.instance.addObserver(this);
     initializeStreakTracking();
     _initializeSessionTime();
+    await fcmToken();
+    // set selected language 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    selectedLanguage!.value = LocalizationController(sharedPreferences: prefs).locale.languageCode;
   }
+
+    @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+
+    @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      // Save the time when app is backgrounded
+      prefs.setInt('last_opened', DateTime.now().millisecondsSinceEpoch);
+    }
+  }
+
 
    Future<void> _initializeSessionTime() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int lastOpened = prefs.getInt('last_opened') ?? 0;
   int now = DateTime.now().millisecondsSinceEpoch;
 
-  // If the session start time is missing or older than today, reset it
-  if (lastOpened == 0 || DateTime.fromMillisecondsSinceEpoch(lastOpened).day != DateTime.now().day) {
-    prefs.setInt('last_opened', now); // Save new session start time
-    timeSpentInMillis.value = 0; // Reset time spent to 0 for the first time
-  } else {
-    // Calculate elapsed time
+  if (lastOpened != 0) {
     int elapsed = now - lastOpened;
-    timeSpentInMillis.value = elapsed; // Update time spent in milliseconds
+    if (elapsed < Duration(hours: 1).inMilliseconds) {
+      // Only count time if the app was backgrounded recently (e.g. under 1 hour)
+      timeSpentInMillis.value += elapsed;
+    }
   }
+
+  // Always update last opened time to now
+  prefs.setInt('last_opened', now);
 }
 
 
@@ -141,6 +167,40 @@ class HomeController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+
+  
+  Future<void> fcmToken() async {
+    try {
+      final fcm = await FirebaseMessagingService().getFCMToken();
+      print('FCM Token: $fcm');
+      // get user id
+      String? userId = FirebaseService.currentUserId;
+      
+      // update fcm token in database
+      FirebaseService.updateFCMToken(userId!, fcm);
+      print('successful notification:');
+      } catch (error) {
+      // Handle error
+      print('Error FCM: $error');
+    } finally {}
+  }
+
+   Future<void> removeFcm() async {
+    try {
+      // remove fcm token from database
+      String? userId = FirebaseService.currentUserId;
+      FirebaseService.updateUserProfile(userId!, UserProfile.fromMap({
+        'fcmToken': '',
+      }));
+      
+      print('successful notification: removed');
+      
+    } catch (error) {
+      // Handle error
+      print('Error: $error');
+    } finally {}
   }
 
   Future<void> refreshData() async {

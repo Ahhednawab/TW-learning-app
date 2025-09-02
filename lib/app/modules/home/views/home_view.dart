@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/modules/bottomnav/controllers/bottomnav_controller.dart';
+import 'package:mandarinapp/app/routes/app_pages.dart';
 import 'package:mandarinapp/app/services/Localization.dart';
 import 'package:mandarinapp/app/widgets/HomeActionButton.dart';
 import 'package:mandarinapp/app/widgets/HomeGreeting.dart';
@@ -37,17 +38,19 @@ class HomeView extends GetView<HomeController> {
                         // Navigate to profile
                         Get.find<BottomnavController>().changeTabIndex(3);
                       },
-                      child: CircleAvatar(
-                        radius: 24,
-                        backgroundColor: primaryColor,
-                        child: Text(
-                          '${controller.userName[0].toUpperCase()}',
-                          style: TextStyle(color: whiteColor, fontSize: 24),
+                      child: Obx(
+                        () => CircleAvatar(
+                          radius: 24,
+                          backgroundColor: primaryColor,
+                          child: Text(
+                            '${controller.userName[0].toUpperCase()}',
+                            style: TextStyle(color: whiteColor, fontSize: 24),
+                          ),
+                          // Icon(Icons.person, color: whiteColor, size: 36),
+                          // backgroundImage: AssetImage(
+                          //   'assets/images/profile.png',
+                          // ),
                         ),
-                        // Icon(Icons.person, color: whiteColor, size: 36),
-                        // backgroundImage: AssetImage(
-                        //   'assets/images/profile.png',
-                        // ),
                       ),
                     ),
                     // const SizedBox(width: 14),
@@ -103,14 +106,16 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                     ),
-                    // IconButton(
-                    //   icon: const Icon(
-                    //     Icons.notifications_none_rounded,
-                    //     color: blackColor,
-                    //     size: 28,
-                    //   ),
-                    //   onPressed: () {},
-                    // ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: blackColor,
+                        size: 28,
+                      ),
+                      onPressed: () {
+                        Get.toNamed(Routes.NOTIFICATIONS);
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 22),
@@ -225,18 +230,31 @@ class HomeView extends GetView<HomeController> {
                               ),
                             ),
                             const SizedBox(height: 5),
-                            SizedBox(
-                              // height: 126,
-                              width: double.infinity,
-                              child: Obx(
-                                () => HomeInfoCard(
-                                  title: 'timespenttoday',
-                                  value: '${controller.timeSpentInMillis.value ~/ 60000} min',
-                                  color: const Color(0xFF9CA6F5),
-                                  watermark: '大',
-                                ),
-                              ),
-                            ),
+                          SizedBox(
+  width: double.infinity,
+  child: Obx(
+    () {
+      final int millis = controller.timeSpentInMillis.value;
+      final int minutes = millis ~/ 60000;
+
+      String displayValue;
+      if (minutes >= 60) {
+        final double hours = minutes / 60;
+        displayValue = '${hours.toStringAsFixed(1)} h';
+      } else {
+        displayValue = '$minutes min';
+      }
+
+      return HomeInfoCard(
+        title: 'timespenttoday',
+        value: displayValue,
+        color: const Color(0xFF9CA6F5),
+        watermark: '大',
+      );
+    },
+  ),
+),
+
                           ],
                         ),
                       ),

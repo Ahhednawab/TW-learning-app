@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
 import 'package:mandarinapp/app/models/user_model.dart';
+import 'package:mandarinapp/app/modules/home/controllers/home_controller.dart';
+import 'package:mandarinapp/app/services/Snackbarservice.dart';
 import 'package:mandarinapp/app/services/firebase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -174,7 +176,8 @@ class ProfileController extends GetxController {
             child: ElevatedButton(
               onPressed: () async {
                 await saveLanguageSetting();
-                Get.back();
+                // Get.back();
+                Navigator.pop(Get.context!);
               },
               child: Text(
                 "setlanguage".tr,
@@ -228,11 +231,7 @@ class ProfileController extends GetxController {
       Locale newLocale = Locale(selectedLanguage.value);
       Get.updateLocale(newLocale);
       
-      Get.snackbar(
-        'Success',
-        'Language updated successfully',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      SnackbarService.showSuccess(title: "Success", message: "Language updated successfully");
     } catch (e) {
       print('Error saving language setting: $e');
     }
@@ -250,20 +249,22 @@ class ProfileController extends GetxController {
   void logout() {
     Get.dialog(
       AlertDialog(
-        title: Text('Logout'),
-        content: Text('Are you sure you want to logout?'),
+        backgroundColor: Colors.white,
+        title: Text('logout'.tr),
+        content: Text('areyousurelogout'.tr),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Cancel'),
+            child: Text('no'.tr),
           ),
           TextButton(
             onPressed: () async {
               Get.back();
               await FirebaseService.signout();
+              await Get.find<HomeController>().removeFcm();
               Get.offAllNamed('/login');
             },
-            child: Text('Logout', style: TextStyle(color: Colors.red)),
+            child: Text('yes'.tr, style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
