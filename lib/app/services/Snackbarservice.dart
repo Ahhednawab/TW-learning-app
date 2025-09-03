@@ -48,7 +48,7 @@ class SnackbarService {
       borderWidth: 0,
       dismissDirection: DismissDirection.horizontal,
       snackPosition: SnackPosition.TOP,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 1, milliseconds: 400),
     );
   }
 }

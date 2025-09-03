@@ -57,7 +57,6 @@ class SignupController extends GetxController {
         );
       }
     } catch (e) {
-      // Get.snackbar("Error", e.toString());
     } finally {
       loader.value = false;
     }

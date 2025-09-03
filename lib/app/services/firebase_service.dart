@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/modules/vocabulary/controllers/vocabulary_controller.dart';
+import 'package:mandarinapp/app/services/Snackbarservice.dart';
 import '../models/user_model.dart';
 import '../models/level_model.dart';
 import '../models/category_model.dart';
@@ -626,6 +627,7 @@ class FirebaseService {
         final controller = Get.find<VocabularyController>();
                 controller.loadData();
         print('Successfully unlocked next category: $nextCategoryId');
+        SnackbarService.showSuccess(title: 'Success', message: 'Successfully unlocked next category');
       }
       
       return success;
@@ -674,6 +676,7 @@ class FirebaseService {
           final controller = Get.find<VocabularyController>();
           controller.loadData();
           print('Successfully unlocked next level: $nextLevelId with first category: $firstCategoryId');
+          SnackbarService.showSuccess(title: 'Success', message: 'Successfully unlocked next level');
         }
         return success;
       }

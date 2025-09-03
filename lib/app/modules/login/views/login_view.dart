@@ -28,8 +28,8 @@ class LoginView extends GetView<LoginController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-                      Center(child: Image.asset('assets/images/splash1.png', height: 220,fit: BoxFit.cover,)),
-                      const SizedBox(height: 50),
+                      Center(child: Image.asset('assets/images/splash1.png', height: 220, width: 220,fit: BoxFit.cover,)),
+                      const SizedBox(height: 20),
                       const Text(
                         'Sign In',
                         style: TextStyle(
@@ -39,7 +39,7 @@ class LoginView extends GetView<LoginController> {
                       ),
                       const SizedBox(height: 6),
                       const Text(
-                        'Let’s sign in to your account and start your calorie management',
+                        'Let’s sign in to your account and start your learning journey',
                         style: TextStyle(
                           fontSize: 16,
                           color: AppColors.greyColor,
@@ -152,6 +152,7 @@ class LoginView extends GetView<LoginController> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),

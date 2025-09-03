@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
@@ -101,12 +102,12 @@ class ListeningView extends GetView<ListeningController> {
                               children: [
                                 // Image
                                 if (question.imageUrl.isNotEmpty)
-                                  Image.network(
-                                    question.imageUrl,
+                                  CachedNetworkImage(
+                                    imageUrl: question.imageUrl,
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                     height: double.infinity,
-                                    errorBuilder: (context, error, stackTrace) {
+                                    errorWidget: (context, error, stackTrace) {
                                       return Container(
                                         color: Colors.grey[200],
                                         child: const Icon(
@@ -165,7 +166,7 @@ class ListeningView extends GetView<ListeningController> {
 
                         // Instructions
                         Text(
-                          'Listen and select the correct English translation:',
+                          'Listen and select the correct word:',
                           style: TextStyle(
                             fontSize: Responsive.sp(context, 16),
                             fontWeight: FontWeight.w500,

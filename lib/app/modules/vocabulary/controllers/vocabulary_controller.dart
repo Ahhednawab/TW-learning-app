@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mandarinapp/app/services/Snackbarservice.dart';
 import '../../../models/level_model.dart';
 import '../../../models/category_model.dart';
 import '../../../models/user_progress_model.dart';
@@ -106,8 +107,43 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
   }
 
   double getCategoryProgress(String categoryId) {
+    return calculateCategoryProgress(categoryId);
+  }
+
+  // Local calculation of category progress based on userProgress data
+  double calculateCategoryProgress(String categoryId) {
     if (userProgress.value == null) return 0.0;
-    return userProgress.value!.categories[categoryId]?.completionPercentage ?? 0.0;
+    
+    final categoryProgress = userProgress.value!.categories[categoryId];
+    if (categoryProgress == null) return 0.0;
+    
+    // Calculate progress based on activities completion
+    final activities = categoryProgress.activities;
+    
+    int completedActivities = 0;
+    int totalActivities = 0;
+    
+    // Check swipeCards
+    totalActivities++;
+    if (activities.swipeCards.isCompleted) completedActivities++;
+    
+    // Check quiz
+    totalActivities++;
+    if (activities.quiz.isCompleted) completedActivities++;
+    
+    // Check games
+    final games = activities.games;
+    totalActivities++;
+    if (games.fillInBlanks.isCompleted) completedActivities++;
+    
+    totalActivities++;
+    if (games.characterMatching.isCompleted) completedActivities++;
+    
+    totalActivities++;
+    if (games.listening.isCompleted) completedActivities++;
+    
+    if (totalActivities == 0) return 0.0;
+    return (completedActivities / totalActivities) * 100;
   }
 
   bool isLevelUnlocked(String levelId) {
@@ -117,13 +153,7 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
 
   void navigateToChooseActivity(CategoryModel category) {
     if (!isCategoryUnlocked(category.categoryId)) {
-      Get.snackbar(
-        'locked'.tr,
-        'lockedinfo'.tr,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.white,
-        colorText: Colors.orange,
-      );
+      SnackbarService.showError(title: 'locked'.tr, message: 'lockedinfo'.tr);
       return;
     }
 

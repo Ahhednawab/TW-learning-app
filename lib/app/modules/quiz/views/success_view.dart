@@ -10,7 +10,19 @@ class SuccessView extends GetView {
   Widget build(BuildContext context) {
     // Get arguments from the navigation route
     final score = Get.arguments['score'] as int;
-    return Scaffold(
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          // Refresh games selection screen when user navigates back
+          try {
+            final controller2 = Get.find<ChooseactivityController>();
+            controller2.refreshData();
+          } catch (e) {
+            print('Choose activity controller not found: $e');
+          }
+        }
+      },
+      child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: secondaryColor,
@@ -92,6 +104,7 @@ class SuccessView extends GetView {
             ),
           ],
         )
+      ),
       ),
     );
   }

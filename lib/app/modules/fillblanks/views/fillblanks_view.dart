@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
@@ -29,7 +30,7 @@ class FillblanksView extends GetView<FillblanksController> {
                   ),
                 )
               : Padding(
-                  padding: const EdgeInsets.all(14.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -54,7 +55,7 @@ class FillblanksView extends GetView<FillblanksController> {
                   child: SizedBox(
                     width: Responsive.wp(0.85),
                     child: AspectRatio(
-                      aspectRatio: 4 / 5,
+                      aspectRatio: 4.5 / 5,
                       child: Container(
                         decoration: BoxDecoration(
                           color: whiteColor,
@@ -70,12 +71,12 @@ class FillblanksView extends GetView<FillblanksController> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: question.imageUrl.isNotEmpty
-                              ? Image.network(
-                                  question.imageUrl,
+                              ? CachedNetworkImage(
+                                  imageUrl: question.imageUrl,
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   height: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
+                                  errorWidget: (context, error, stackTrace) {
                                     return Container(
                                       color: primaryColor.withValues(alpha: 0.1),
                                       child: Icon(

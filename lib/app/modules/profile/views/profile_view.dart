@@ -133,13 +133,13 @@ class ProfileView extends GetView<ProfileController> {
                       trailing: null,
                       onTap: () {},
                     ),
-                    Divider(height: 1, color: lightgreyColor),
-                    ProfileListTile(
-                      icon: Icons.edit_document,
-                      label: 'reportproblem'.tr,
-                      trailing: null,
-                      onTap: () {},
-                    ),
+                    // Divider(height: 1, color: lightgreyColor),
+                    // ProfileListTile(
+                    //   icon: Icons.edit_document,
+                    //   label: 'reportproblem'.tr,
+                    //   trailing: null,
+                    //   onTap: () {},
+                    // ),
                     Divider(height: 1, color: lightgreyColor),
                     ProfileListTile(
                       icon: Icons.logout,

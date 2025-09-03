@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/swipecard_controller.dart';
@@ -73,12 +74,12 @@ class SwipecardView extends GetView<SwipecardController> {
                           child: Stack(
                             children: [
                           word.imageUrl.isNotEmpty
-                              ? Image.network(
-                                  word.imageUrl,
+                              ? CachedNetworkImage(
+                                  imageUrl: word.imageUrl,
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   height: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
+                                  errorWidget: (context, error, stackTrace) {
                                     return Image.asset(
                                       'assets/images/splash1.png',
                                       fit: BoxFit.cover,

@@ -27,8 +27,8 @@ class SignupView extends GetView<SignupController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-                      Center(child: Image.asset('assets/images/splash1.png', height: 120)),
-                      const SizedBox(height: 50),
+                      Center(child: Image.asset('assets/images/splash1.png', height: 160, width: 160, fit: BoxFit.cover,)),
+                      const SizedBox(height: 10),
                       const Text(
                         'Sign Up',
                         style: TextStyle(
@@ -38,7 +38,7 @@ class SignupView extends GetView<SignupController> {
                       ),
                       const SizedBox(height: 6),
                       const Text(
-                        'Let’s sign up to your account and start your calorie management',
+                        'Let’s sign up to your account and start your learning journey',
                         style: TextStyle(
                           fontSize: 16,
                           color: AppColors.greyColor,
@@ -180,6 +180,7 @@ class SignupView extends GetView<SignupController> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),

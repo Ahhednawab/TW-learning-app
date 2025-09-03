@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
@@ -125,12 +126,12 @@ class FavoritesView extends GetView<FavoritesController> {
                                           child: Stack(
                                             children: [
                                               word.imageUrl.isNotEmpty
-                                                  ? Image.network(
-                                                      word.imageUrl,
+                                                  ? CachedNetworkImage(
+                                                      imageUrl: word.imageUrl,
                                                       fit: BoxFit.cover,
                                                       width: double.infinity,
                                                       height: double.infinity,
-                                                      errorBuilder: (context, error, stackTrace) {
+                                                      errorWidget: (context, error, stackTrace) {
                                                         return Container(
                                                           color: primaryColor.withValues(alpha: 0.1),
                                                           child: Icon(

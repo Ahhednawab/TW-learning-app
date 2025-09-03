@@ -262,6 +262,7 @@ class ProfileController extends GetxController {
               Get.back();
               await FirebaseService.signout();
               await Get.find<HomeController>().removeFcm();
+              await Get.find<HomeController>().removeTimeSpent();
               Get.offAllNamed('/login');
             },
             child: Text('yes'.tr, style: TextStyle(color: Colors.red)),

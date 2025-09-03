@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/models/favorite_model.dart';
+import 'package:mandarinapp/app/services/Snackbarservice.dart' show SnackbarService;
 import 'package:mandarinapp/app/services/firebase_service.dart';
 
 class FavoritesController extends GetxController {
@@ -57,20 +58,15 @@ class FavoritesController extends GetxController {
           favorites.removeWhere((fav) => fav.wordId == wordId);
           favoriteWords.removeWhere((word) => word.wordId == wordId);
           
-          Get.snackbar(
-            'Success',
-            'Removed from favorites',
-            snackPosition: SnackPosition.BOTTOM,
+          SnackbarService.showSuccess(
+            title: 'Success',
+            message: 'Removed from favorites',
           );
         }
       }
     } catch (e) {
       print('Error removing from favorites: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to remove from favorites',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      SnackbarService.showError(title: 'Error', message: 'Failed to remove from favorites');
     }
   }
   

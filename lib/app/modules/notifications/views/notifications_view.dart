@@ -13,7 +13,16 @@ class NotificationsView extends GetView<NotificationsController> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
-        child: AppBar(title: Text("Notification"), centerTitle: true),
+        child: AppBar(
+          title: Text("Notification", style: TextStyle(color: blackColor, fontSize: 20, fontWeight: FontWeight.bold)), 
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
+          backgroundColor: secondaryColor,
+          leading: IconButton(
+            onPressed: () {
+            Get.back();
+          }, icon: Icon(Icons.arrow_back_ios_new_rounded, color: blackColor)),
+          ),
       ),
       body: Obx(() {
         if (controller.notifications.isEmpty) {

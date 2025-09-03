@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
@@ -65,12 +66,12 @@ class QuizView extends GetView<QuizController> {
                           child: Stack(
                             children: [
                               question.imageUrl.isNotEmpty
-                                  ? Image.network(
-                                      question.imageUrl,
+                                  ? CachedNetworkImage(
+                                      imageUrl: question.imageUrl,
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,
-                                      errorBuilder: (context, error, stackTrace) {
+                                      errorWidget: (context, error, stackTrace) {
                                         return Container(
                                           color: primaryColor.withValues(alpha: 0.1),
                                           child: Icon(
@@ -96,10 +97,11 @@ class QuizView extends GetView<QuizController> {
                                   child: SizedBox(
                                     width: Responsive.clamp(cardMaxWidth * 0.6, min: 160, max: 360),
                                     child: Text(
-                                      question.description,
+                                      question.description.toUpperCase(),
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: Responsive.sp(context, isTablet ? 16 : 14),
+                                        fontSize: Responsive.sp(context, isTablet ? 26 : 16),
+                                        fontWeight: FontWeight.bold,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),

@@ -7,6 +7,14 @@ Widget HomeProgressCard({
   required int? totalWords,
   required VoidCallback? onTap,
 }) {
+  double getProgress(int? words, int? totalWords) {
+    final total = (totalWords ?? 0);
+    if (total == 0) return 0.0;
+    return ((words ?? 0) / total).clamp(0.0, 1.0);
+  }
+
+  print(getProgress(words, totalWords));
+
   print((words ?? 0) / (totalWords ?? 1).toDouble());
   return InkWell(
     borderRadius: BorderRadius.circular(18),
@@ -35,7 +43,7 @@ Widget HomeProgressCard({
                 ),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(
-                  value: ((words ?? 0) / (totalWords ?? 1)).clamp(0.0, 1.0),
+                  value: getProgress(words, totalWords),
                   minHeight: 6,
                   color: primaryColor,
                   backgroundColor: lightgreyColor,

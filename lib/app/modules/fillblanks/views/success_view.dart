@@ -18,7 +18,25 @@ class SuccessView extends GetView {
     } catch (e) {
       print("Error retrieving score: $e");
     }
-    return Scaffold(
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          // Refresh games selection screen when user navigates back
+          try {
+            final controller = Get.find<GamesselectionController>();
+            controller.refreshProgress();
+          } catch (e) {
+            print('Games selection controller not found: $e');
+          }
+          try {
+            final controller2 = Get.find<ChooseactivityController>();
+            controller2.refreshData();
+          } catch (e) {
+            print('Choose activity controller not found: $e');
+          }
+        }
+      },
+      child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: secondaryColor,
@@ -135,6 +153,7 @@ class SuccessView extends GetView {
             ),
           ],
         ),
+      ),
       ),
     );
   }

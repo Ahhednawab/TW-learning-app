@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/constants/Colors.dart';
@@ -100,12 +101,12 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                       children: [
                                         // Image
                                         pair.imageUrl.isNotEmpty
-                                            ? Image.network(
-                                              pair.imageUrl,
+                                            ? CachedNetworkImage(
+                                              imageUrl: pair.imageUrl,
                                               fit: BoxFit.cover,
                                               width: double.infinity,
                                               height: double.infinity,
-                                              errorBuilder: (
+                                              errorWidget: (
                                                 context,
                                                 error,
                                                 stackTrace,

@@ -45,7 +45,7 @@ class HomeController extends GetxController with WidgetsBindingObserver{
   String get userName => currentUser.value?.profile.displayName ?? 'User';
   String get currentLevelText => currentLevel.value.isNotEmpty ? 'Level ${getLevelName()}' : 'Level 1';
   String get wordOfTheDayText => wordOfTheDay.value?.pinyin ?? 'xiè xiè';
-  String get lastWordReviewedText => lastWordReviewed.value?.english ?? 'nǐ hǎo';
+  String get lastWordReviewedText => lastWordReviewed.value?.pinyin ?? 'nǐ hǎo';
 
 
   @override
@@ -106,19 +106,46 @@ class HomeController extends GetxController with WidgetsBindingObserver{
     
     // Load streak and time data
     currentStreak.value = await StreakService.getLearningStreak();
-  
+    // timeSpentToday.value = await StreakService.getTimeSpentToday(); // Commented out as timeSpentToday is not defined
     
     // Load word of the day
     WordModel? todayWord = await WordOfDayService.getWordOfDay();
     wordOfTheDay.value = todayWord;
     
-    // Load last word reviewed
-    Map<String, dynamic>? lastReviewed = await WordOfDayService.getLastWordReviewed();
-    if (lastReviewed != null) {
-      lastWordReviewed.value = lastReviewed['word'] as WordModel?;
-    }
+    // Load last word reviewed from userProgress
+    await loadLastWordReviewed();
     } catch (e) {
       print('Error initializing streak tracking: $e');
+    }
+  }
+
+  Future<void> loadLastWordReviewed() async {
+    try {
+      if (userProgress.value != null) {
+        String? lastWordId;
+        DateTime? lastReviewTime;
+        
+        // Find the most recently reviewed word across all categories
+        for (CategoryProgress categoryProgress in userProgress.value!.categories.values) {
+          categoryProgress.wordsProgress.forEach((wordId, wordProgress) {
+            if (lastReviewTime == null || wordProgress.lastReviewed.isAfter(lastReviewTime!)) {
+              lastReviewTime = wordProgress.lastReviewed;
+              lastWordId = wordId;
+              print('Last word reviewed: $lastWordId');
+            }
+          });
+        }
+
+        
+        // Fetch the word details if found
+        if (lastWordId != null) {
+          WordModel? word = await FirebaseService.getWord(lastWordId!);
+          lastWordReviewed.value = word;
+          print('Last word reviewed: ${lastWordReviewed.value}');
+        }
+      }
+    } catch (e) {
+      print('Error loading last word reviewed: $e');
     }
   }
 
@@ -226,6 +253,14 @@ class HomeController extends GetxController with WidgetsBindingObserver{
 
   void navigateToProfile() {
     Get.find<BottomnavController>().changeTabIndex(3);
+  }
+
+  Future<void> removeTimeSpent() async {
+    timeSpentInMillis.value = 0;
+    // remove time spent from shared preferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('last_opened');
+    
   }
 
   Future<void> continuePreviousQuiz() async {

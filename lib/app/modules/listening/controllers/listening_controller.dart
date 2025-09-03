@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
 import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
+import 'package:mandarinapp/app/services/Snackbarservice.dart';
 import 'package:mandarinapp/app/services/firebase_service.dart';
 
 class ListeningQuestion {
@@ -77,7 +78,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
       List<WordModel> words = await FirebaseService.getWordsByCategory(categoryId);
       
       if (words.isEmpty) {
-        Get.snackbar('Error', 'No words found for this category');
+        SnackbarService.showError(title: 'Error', message: 'No words found for this category');
         Get.back();
         return;
       }
@@ -86,7 +87,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
       generateQuestions();
       
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load game data: $e');
+      SnackbarService.showError(title: 'Error', message: 'Failed to load game data: $e');
       Get.back();
     } finally {
       isLoading.value = false;

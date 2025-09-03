@@ -114,6 +114,7 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
       WordModel currentWord = words[currentIndex.value];
       if (currentWord.audioUrl.isNotEmpty) {
         try {
+          print('Playing audio: ${currentWord.audioUrl}');
           await _audioPlayer.stop();
           await _audioPlayer.play(UrlSource(currentWord.audioUrl));
         } catch (e) {
@@ -216,7 +217,7 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
       // 
       // Navigate to success screen
         Get.offNamed('/success', arguments: {
-          'score': score,
+          'score': 100,
           'correctAnswers': knownCount.value,
           'totalQuestions': words.length,
           'categoryName': categoryName,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mandarinapp/app/constants/Colors.dart';
+import '../controllers/editprofile_controller.dart';
 import 'package:mandarinapp/app/widgets/CustomAppBar.dart';
 import 'package:mandarinapp/app/widgets/EditProfileSection.dart';
-import '../controllers/editprofile_controller.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
+import 'package:mandarinapp/app/constants/colors.dart';
 
 class EditprofileView extends GetView<EditprofileController> {
   const EditprofileView({super.key});
@@ -29,59 +29,62 @@ class EditprofileView extends GetView<EditprofileController> {
                       shape: BoxShape.circle,
                       border: Border.all(color: primaryColor, width: 1),
                     ),
-                    child: CircleAvatar(
+                    child: Obx(() => CircleAvatar(
                       radius: Responsive.isTablet(context) ? 60 : 48,
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: AssetImage('assets/images/profile.png'),
-                    ),
+                      backgroundColor: primaryColor,
+                      child: Text(
+                        controller.userInitial,
+                        style: TextStyle(
+                          fontSize: Responsive.isTablet(context) ? 32 : 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )),
                   ),
-                  Positioned(
-                    bottom: 4,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () {
-                        // Handle edit avatar action
-                      },
-                      child: Icon(Icons.edit_square, size: Responsive.isTablet(context) ? 20 : 16, color: greyColor),
-                    ),
-                  ),
+                  // Positioned(
+                  //   bottom: 4,
+                  //   right: 8,
+                  //   child: GestureDetector(
+                  //     onTap: () {
+                  //       // Handle edit avatar action
+                  //     },
+                  //     child: Icon(Icons.edit_square, size: Responsive.isTablet(context) ? 20 : 16, color: greyColor),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-            EditableInfoSection(
+            Obx(() => EditableInfoSection(
               label: 'name',
-              value: 'John Steve',
+              value: controller.userName,
               textColor: blackColor,
-              onEdit: () {
-                // Handle edit name action
-              },
-            ),
+              onEdit: controller.showEditNameBottomSheet,
+            )),
             const SizedBox(height: 16),
-            EditableInfoSection(
+            Obx(() => EditableInfoSection(
               label: 'email',
-              value: 'johnsteve@yahoo.com',
+              value: controller.userEmail,
               textColor: blackColor,
-              onEdit: () {
-                // Handle edit email action
-              },
-            ),
-            const SizedBox(height: 16),
-            EditableInfoSection(
-              label: 'age',
-              value: '25 years',
-              textColor: blackColor,
-              onEdit: () {
-                // Handle edit age action
-              },
-            ),
-            const SizedBox(height: 16),
-            EditableInfoSection(
-              label: 'gender',
-              value: 'Male',
-              textColor: blackColor,
-              onEdit: () {},
-            ),
+              onEdit: controller.showEditEmailBottomSheet,
+            )),
+            // const SizedBox(height: 16),
+            // EditableInfoSection(
+            //   label: 'age',
+            //   value: '25 years',
+            //   textColor: blackColor,
+            //   onEdit: () {
+            //     // Handle edit age action
+            //   },
+            // ),
+            // const SizedBox(height: 16),
+            // EditableInfoSection(
+            //   label: 'gender',
+            //   value: 'Male',
+            //   textColor: blackColor,
+            //   onEdit: () {},
+            // ),
           ],
         ),
       ),
