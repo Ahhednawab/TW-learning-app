@@ -158,15 +158,18 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
       await _audioPlayer.stop();
       
       if (question.audioUrl.isNotEmpty) {
+        await _audioPlayer.setVolume(1.0);
         await _audioPlayer.play(UrlSource(question.audioUrl));
       } else {
         // Fallback to asset audio if available
+        await _audioPlayer.setVolume(0.4);
         await _audioPlayer.play(AssetSource('audio/dog.mp3'));
       }
       
     } catch (e) {
       print('Error playing audio: $e');
       // Play fallback sound
+      await _audioPlayer.setVolume(0.4);
       await _audioPlayer.play(AssetSource('audio/dog.mp3'));
     } finally {
       isPlaying.value = false;
@@ -176,6 +179,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
   // Play feedback sound
   Future<void> playSound(String filePath) async {
     try {
+      await _audioPlayer.setVolume(0.4);
       await _audioPlayer.stop();
       await _audioPlayer.play(AssetSource(filePath));
     } catch (e) {

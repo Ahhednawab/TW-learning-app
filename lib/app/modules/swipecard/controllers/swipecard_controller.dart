@@ -115,6 +115,7 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
       if (currentWord.audioUrl.isNotEmpty) {
         try {
           print('Playing audio: ${currentWord.audioUrl}');
+          await _audioPlayer.setVolume(1.0);
           await _audioPlayer.stop();
           await _audioPlayer.play(UrlSource(currentWord.audioUrl));
         } catch (e) {
@@ -131,6 +132,7 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
 
   void playSound(String filePath) async {
     try {
+      await _audioPlayer.setVolume(0.4);
       await _audioPlayer.stop();
       await _audioPlayer.play(AssetSource(filePath));
     } catch (e) {

@@ -147,6 +147,7 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
 
   void playSound(String filePath) async {
     try {
+      await _audioPlayer.setVolume(0.4);
       await _audioPlayer.stop();
       await _audioPlayer.play(AssetSource(filePath));
     } catch (e) {

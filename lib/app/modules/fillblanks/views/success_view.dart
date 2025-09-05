@@ -70,7 +70,7 @@ class SuccessView extends GetView {
             Text(
               'practiceresults'.tr,
               style: TextStyle(
-                fontSize: Responsive.sp(context, 24),
+                fontSize: Responsive.sp(context, 26),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -79,7 +79,7 @@ class SuccessView extends GetView {
               children: [
                 Image.asset(
                   'assets/images/ticket.png',
-                  width: Responsive.wp(0.75),
+                  width: Responsive.wp(0.90),
                 ),
                 Positioned(
                   bottom: 60,
@@ -91,14 +91,14 @@ class SuccessView extends GetView {
                       Text(
                         'badgeearned'.tr,
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 18),
+                          fontSize: Responsive.sp(context, 22),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 20),
                       CircleAvatar(
                         backgroundColor: primaryColor,
-                        radius: Responsive.isTablet(context) ? 34 : 30,
+                        radius: Responsive.isTablet(context) ? 38 : 34,
                         backgroundImage: AssetImage(
                           'assets/images/congrats.png',
                         ),
@@ -122,7 +122,7 @@ class SuccessView extends GetView {
                       Text(
                         'congratulations'.tr,
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 18),
+                          fontSize: Responsive.sp(context, 26),
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -132,7 +132,7 @@ class SuccessView extends GetView {
                       Text(
                         '${'yougot'.tr} $score ${'outof'.tr} $totalQuestions \n${'correctanswers'.tr}',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 16),
+                          fontSize: Responsive.sp(context, 18),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -140,7 +140,7 @@ class SuccessView extends GetView {
                        Text(
                         '$score/$totalQuestions',
                         style: TextStyle(
-                          fontSize: Responsive.isTablet(context) ? 42 : 24,
+                          fontSize: Responsive.isTablet(context) ? 42 : 38,
                           fontWeight: FontWeight.bold,
                           color: primaryColor,
                         ),

@@ -11,6 +11,7 @@ import '../models/user_progress_model.dart';
 import '../models/quiz_session_model.dart';
 import '../models/daily_word_model.dart';
 import '../models/favorite_model.dart';
+import '../models/notification_model.dart';
 
 class FirebaseService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -104,21 +105,44 @@ class FirebaseService {
   }
 
   //  Notifications Operations
-  static Future<List<Map<String, dynamic>>> getNotifications() async {
+  static Future<List<NotificationModel>> getNotifications() async {
     try {
       QuerySnapshot snapshot = await _firestore
           .collection('users')
           .doc(currentUserId)
           .collection('notifications')
-          .orderBy('createdAt', descending: true)
+          .orderBy('sentAt', descending: true)
           .get();
       
       return snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
+          .map((doc) => NotificationModel.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
       print('Error getting notifications: $e');
       return [];
+    }
+  }
+
+  static Future<bool> markNotificationAsRead(String fcmToken, int notificationIndex) async {
+    try {
+      // Query for the notification document with matching fcmToken and notificationIndex
+      QuerySnapshot snapshot = await _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .collection('notifications')
+          .where('fcmToken', isEqualTo: fcmToken)
+          .where('notificationIndex', isEqualTo: notificationIndex)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        await snapshot.docs.first.reference.update({'status': 'read'});
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error marking notification as read: $e');
+      return false;
     }
   }
 
@@ -603,6 +627,7 @@ class FirebaseService {
         print('Current category not completed yet');
         return false;
       }
+      
 
       // Get current category to find next one
       CategoryModel? currentCategory = await getCategory(currentCategoryId);

@@ -152,6 +152,7 @@ class FillblanksController extends GetxController with GetTickerProviderStateMix
 
   void playSound(String filePath) async {
     try {
+      await _audioPlayer.setVolume(0.4);
       await _audioPlayer.stop();
       await _audioPlayer.play(AssetSource(filePath));
     } catch (e) {

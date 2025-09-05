@@ -54,7 +54,7 @@ class QuizFailureView extends GetView {
               children: [
                 Image.asset(
                   'assets/images/ticket.png',
-                  width: Responsive.wp(0.75),
+                  width: Responsive.wp(0.90),
                 ),
                 Positioned(
                   bottom: 60,
@@ -66,7 +66,7 @@ class QuizFailureView extends GetView {
                       Text(
                         'Try Again!',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 18),
+                          fontSize: Responsive.sp(context, 20),
                           fontWeight: FontWeight.bold,
                           color: Colors.red[600],
                         ),
@@ -81,11 +81,11 @@ class QuizFailureView extends GetView {
                           size: Responsive.isTablet(context) ? 40 : 30,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 10),
                       Text(
                         'Need 80% to pass',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 12),
+                          fontSize: Responsive.sp(context, 18),
                           color: Colors.red[600],
                         ),
                       ),
@@ -102,7 +102,7 @@ class QuizFailureView extends GetView {
                       Text(
                         'Keep Practicing!',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 18),
+                          fontSize: Responsive.sp(context, 24),
                           fontWeight: FontWeight.bold,
                           color: Colors.red[600],
                         ),
@@ -112,7 +112,7 @@ class QuizFailureView extends GetView {
                       Text(
                         'You got $correctAnswers out of ${Get.arguments['totalQuestions'] ?? 10} \ncorrect answers',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 16),
+                          fontSize: Responsive.sp(context, 18),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -120,7 +120,7 @@ class QuizFailureView extends GetView {
                       Text(
                         '$score%',
                         style: TextStyle(
-                          fontSize: Responsive.isTablet(context) ? 42 : 24,
+                          fontSize: Responsive.isTablet(context) ? 42 : 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.red[600],
                         ),
@@ -151,7 +151,7 @@ class QuizFailureView extends GetView {
                 'Try Again',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: Responsive.sp(context, 16),
+                  fontSize: Responsive.sp(context, 18),
                   fontWeight: FontWeight.bold,
                 ),
               ),

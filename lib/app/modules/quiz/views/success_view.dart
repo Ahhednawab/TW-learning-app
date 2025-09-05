@@ -48,12 +48,12 @@ class SuccessView extends GetView {
           children: [
             Text(
               'practiceresults'.tr,
-              style: TextStyle(fontSize: Responsive.sp(context, 24), fontWeight: FontWeight.bold,),
+              style: TextStyle(fontSize: Responsive.sp(context, 25), fontWeight: FontWeight.bold,),
             ),
             SizedBox(height: 20),
             Stack(
               children: [
-                Image.asset('assets/images/ticket.png', width: Responsive.wp(0.75)),
+                Image.asset('assets/images/ticket.png', width: Responsive.wp(0.90)),
                 Positioned(
                   bottom: 60,
                   right: 0,
@@ -63,9 +63,9 @@ class SuccessView extends GetView {
                     children: [
                       Text(
                         'badgeearned'.tr,
-                        style: TextStyle(fontSize: Responsive.sp(context, 18), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: Responsive.sp(context, 22), fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 15),
+                      SizedBox(height: 20),
                       CircleAvatar(
                         backgroundColor: primaryColor,
                         radius: Responsive.isTablet(context) ? 34 : 30,
@@ -89,13 +89,13 @@ class SuccessView extends GetView {
                     children: [
                       Text(
                         'scored'.tr,
-                        style: TextStyle(fontSize: Responsive.sp(context, 18), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: Responsive.sp(context, 22), fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),                      
                       SizedBox(height: 5),
                       Text(
                         '${score.toStringAsFixed(0)}%',
-                        style: TextStyle(fontSize: Responsive.sp(context, 22), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: Responsive.sp(context, 32), fontWeight: FontWeight.bold),
                       ),
                     ],
                   )
