@@ -37,6 +37,7 @@ class FillblanksController extends GetxController with GetTickerProviderStateMix
   var answerColor = <int, Color>{}.obs;
   var score = 0.obs;
   var isLoading = true.obs;
+  var isCompletingActivity = false.obs;
   
   final AudioPlayer _audioPlayer = AudioPlayer();
   late AnimationController swipeController;
@@ -230,31 +231,39 @@ class FillblanksController extends GetxController with GetTickerProviderStateMix
   }
   
   Future<void> completeGame() async {
-    String? userId = FirebaseService.currentUserId;
-    if (userId != null) {
-      // Calculate final score
-      int finalScore = (score.value / questions.length * 100).round();
+    try {
+      isCompletingActivity.value = true;
       
-      // Update fill blanks game completion with automatic unlocking
-      await FirebaseService.updateActivityCompletion(
-        userId,
-        categoryId,
-        'games', // activity type
-        finalScore,
-        10, // timeSpent - approximate time spent
-        gameType: 'fillInBlanks',
-      );
-      
-      playSound('audio/levelup.mp3');
-      await Future.delayed(const Duration(milliseconds: 1500));
-      
-      // Navigate to success screen
-      Get.offNamed(Routes.FILLSUCCESS, arguments: {
-        'score': finalScore,
-        'correctAnswers': score.value,
-        'totalQuestions': questions.length,
-        'categoryName': categoryName,
-      });
+      String? userId = FirebaseService.currentUserId;
+      if (userId != null) {
+        // Calculate final score
+        int finalScore = (score.value / questions.length * 100).round();
+        
+        // Update fill blanks game completion with automatic unlocking
+        await FirebaseService.updateActivityCompletion(
+          userId,
+          categoryId,
+          'games', // activity type
+          finalScore,
+          10, // timeSpent - approximate time spent
+          gameType: 'fillInBlanks',
+        );
+        
+        playSound('audio/levelup.mp3');
+        await Future.delayed(const Duration(milliseconds: 1500));
+        
+        // Navigate to success screen
+        Get.offNamed(Routes.FILLSUCCESS, arguments: {
+          'score': finalScore,
+          'correctAnswers': score.value,
+          'totalQuestions': questions.length,
+          'categoryName': categoryName,
+        });
+      }
+    } catch (e) {
+      print('Error completing fill blanks game: $e');
+    } finally {
+      isCompletingActivity.value = false;
     }
   }
 

@@ -12,6 +12,7 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
   
   final RxList<WordModel> words = <WordModel>[].obs;
   final RxBool isLoading = true.obs;
+  final RxBool isCompletingActivity = false.obs;
   final RxBool isLiked = false.obs;
   final RxInt currentIndex = 0.obs;
   final RxDouble progress = 0.0.obs;
@@ -201,30 +202,35 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
   }
 
   Future<void> completeActivity() async {
-    String? userId = FirebaseService.currentUserId;
-    if (userId != null) {
-      // Calculate score based on known words
-      int score = (knownCount.value / words.length * 100).round();
+    try {
+      isCompletingActivity.value = true;
       
-      // Update swipe cards completion with automatic unlocking
-      await FirebaseService.updateActivityCompletion(
-        userId,
-        categoryId,
-        'swipeCards', // activity type
-        score,
-        5, // timeSpent - approximate time spent
-      );
-      
-      // Show completion dialog
-      // 
-      // Navigate to success screen
+      String? userId = FirebaseService.currentUserId;
+      if (userId != null) {
+        // Calculate score based on known words
+        int score = (knownCount.value / words.length * 100).round();
+        
+        // Update swipe cards completion with automatic unlocking
+        await FirebaseService.updateActivityCompletion(
+          userId,
+          categoryId,
+          'swipeCards', // activity type
+          score,
+          5, // timeSpent - approximate time spent
+        );
+        
+        // Navigate to success screen
         Get.offNamed('/success', arguments: {
           'score': 100,
           'correctAnswers': knownCount.value,
           'totalQuestions': words.length,
           'categoryName': categoryName,
         });
-
+      }
+    } catch (e) {
+      print('Error completing activity: $e');
+    } finally {
+      isCompletingActivity.value = false;
     }
   }
 

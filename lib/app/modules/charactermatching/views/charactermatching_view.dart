@@ -14,27 +14,27 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
     final bool isTablet = Responsive.isTablet(context);
     return Scaffold(
       appBar: customAppBar(title: controller.categoryName),
-      body: Obx(
-        () =>
-            controller.isLoading.value
-                ? Center(child: CircularProgressIndicator(color: primaryColor))
-                : controller.gameRounds.isEmpty
-                ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
-                      Text('No words available for this category'),
-                      SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => Get.back(),
-                        child: Text('Go Back'),
-                      ),
-                    ],
-                  ),
-                )
-                : Padding(
+      body: Stack(
+        children: [
+          Obx(() => controller.isLoading.value
+              ? Center(child: CircularProgressIndicator(color: primaryColor))
+              : controller.gameRounds.isEmpty
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                    SizedBox(height: 16),
+                    Text('No words available for this category'),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => Get.back(),
+                      child: Text('Go Back'),
+                    ),
+                  ],
+                ),
+              )
+              : Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SingleChildScrollView(
                     child: Column(
@@ -448,7 +448,43 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                       ],
                     ),
                   ),
-                ),
+                )),
+          
+          // Completion Loading Overlay
+          Obx(() => controller.isCompletingActivity.value
+              ? Container(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: primaryColor,
+                          strokeWidth: 3,
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Completing Activity...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Please wait while we save your progress',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : SizedBox.shrink()),
+        ],
       ),
     );
   }

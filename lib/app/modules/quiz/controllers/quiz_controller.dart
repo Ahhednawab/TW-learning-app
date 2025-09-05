@@ -19,6 +19,7 @@ class QuizController extends GetxController {
   var correctCount = 0.obs;
   var selectedOption = (-1).obs;
   var isLoading = true.obs;
+  var isCompletingQuiz = false.obs;
   
   final AudioPlayer _audioPlayer = AudioPlayer();
   
@@ -256,47 +257,55 @@ class QuizController extends GetxController {
   }
   
   Future<void> completeQuiz() async {
-    if (currentSessionId != null && sessionStartTime != null) {
-      String? userId = FirebaseService.currentUserId;
-      if (userId != null) {
-        // Calculate final score and time
-        int finalScore = (correctCount.value / questions.length * 100).round();
-        int timeSpent = DateTime.now().difference(sessionStartTime!).inMinutes;
-        
-        // Update quiz session as completed
-        await FirebaseService.updateQuizSession(
-          QuizSessionModel(sessionId: currentSessionId!, userId: userId, categoryId: categoryId, activityType: 'quiz', questions: [], status: 'completed', score: finalScore, totalQuestions: questions.length, currentQuestionIndex: currentIndex.value, startedAt: sessionStartTime!, timeSpent: timeSpent)
-        );
-        
-        // Check if score meets 80% requirement
-        if (finalScore >= 80) {
-          // Update quiz completion with automatic unlocking
-          await FirebaseService.updateActivityCompletion(
-            userId,
-            categoryId,
-            'quiz', // activity type
-            finalScore,
-            timeSpent,
-            attempts: 1,
+    try {
+      isCompletingQuiz.value = true;
+      
+      if (currentSessionId != null && sessionStartTime != null) {
+        String? userId = FirebaseService.currentUserId;
+        if (userId != null) {
+          // Calculate final score and time
+          int finalScore = (correctCount.value / questions.length * 100).round();
+          int timeSpent = DateTime.now().difference(sessionStartTime!).inMinutes;
+          
+          // Update quiz session as completed
+          await FirebaseService.updateQuizSession(
+            QuizSessionModel(sessionId: currentSessionId!, userId: userId, categoryId: categoryId, activityType: 'quiz', questions: [], status: 'completed', score: finalScore, totalQuestions: questions.length, currentQuestionIndex: currentIndex.value, startedAt: sessionStartTime!, timeSpent: timeSpent)
           );
           
-          // Navigate to success screen
-          Get.offNamed('/success', arguments: {
-            'score': finalScore,
-            'correctAnswers': correctCount.value,
-            'totalQuestions': questions.length,
-            'categoryName': categoryName,
-          });
-        } else {
-          // Navigate to failure screen
-          Get.offNamed(Routes.QUIZFAILURE, arguments: {
-            'score': finalScore,
-            'correctAnswers': correctCount.value,
-            'totalQuestions': questions.length,
-            'categoryName': categoryName,
-          });
+          // Check if score meets 80% requirement
+          if (finalScore >= 80) {
+            // Update quiz completion with automatic unlocking
+            await FirebaseService.updateActivityCompletion(
+              userId,
+              categoryId,
+              'quiz', // activity type
+              finalScore,
+              timeSpent,
+              attempts: 1,
+            );
+            
+            // Navigate to success screen
+            Get.offNamed('/success', arguments: {
+              'score': finalScore,
+              'correctAnswers': correctCount.value,
+              'totalQuestions': questions.length,
+              'categoryName': categoryName,
+            });
+          } else {
+            // Navigate to failure screen
+            Get.offNamed(Routes.QUIZFAILURE, arguments: {
+              'score': finalScore,
+              'correctAnswers': correctCount.value,
+              'totalQuestions': questions.length,
+              'categoryName': categoryName,
+            });
+          }
         }
       }
+    } catch (e) {
+      print('Error completing quiz: $e');
+    } finally {
+      isCompletingQuiz.value = false;
     }
   }
   

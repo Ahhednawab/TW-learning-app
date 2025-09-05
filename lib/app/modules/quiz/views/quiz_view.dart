@@ -14,23 +14,25 @@ class QuizView extends GetView<QuizController> {
     final bool isTablet = Responsive.isTablet(context);
     return Scaffold(
       appBar: customAppBar(title: controller.categoryName.isNotEmpty ? controller.categoryName : 'Quiz'),
-      body: Obx(() => controller.isLoading.value
-          ? Center(child: CircularProgressIndicator(color: primaryColor))
-          : controller.questions.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
-                      Text(
-                        'No quiz questions available',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+      body: Stack(
+        children: [
+          Obx(() => controller.isLoading.value
+              ? Center(child: CircularProgressIndicator(color: primaryColor))
+              : controller.questions.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            'No quiz questions available',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )
-              : Padding(
+                    )
+                  : Padding(
                   padding: const EdgeInsets.all(14),
                   child: SingleChildScrollView(
                     child: Column(
@@ -210,6 +212,43 @@ class QuizView extends GetView<QuizController> {
                     ),
                   ),
                 )),
+          
+          // Completion Loading Overlay
+          Obx(() => controller.isCompletingQuiz.value
+              ? Container(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: primaryColor,
+                          strokeWidth: 3,
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Completing Quiz...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Please wait while we save your progress',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : SizedBox.shrink()),
+        ],
+      ),
     );
   }
 }

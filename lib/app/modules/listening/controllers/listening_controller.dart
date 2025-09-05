@@ -44,6 +44,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
   var selectedOption = (-1).obs;
   var isLoading = true.obs;
   var isPlaying = false.obs;
+  var isCompletingActivity = false.obs;
 
   // Store color states for each option
   var answerColor = <int, Color>{}.obs;
@@ -286,6 +287,8 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
   // Complete the game
   Future<void> completeGame() async {
     try {
+      isCompletingActivity.value = true;
+      
       String? userId = FirebaseService.currentUserId;
       
       if (userId != null) {
@@ -310,8 +313,10 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
         });
       
     } catch (e) {
-      print('Error completing game: $e');
+      print('Error completing listening game: $e');
       Get.back();
+    } finally {
+      isCompletingActivity.value = false;
     }
   }
 

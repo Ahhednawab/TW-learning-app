@@ -13,38 +13,40 @@ class ListeningView extends GetView<ListeningController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(title: controller.categoryName),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+      body: Stack(
+        children: [
+          Obx(() {
+            if (controller.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-        if (controller.questions.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 64, color: Colors.grey),
-                const SizedBox(height: 16),
-                Text(
-                  'No questions available',
-                  style: TextStyle(
-                    fontSize: Responsive.sp(context, 18),
-                    color: Colors.grey[600],
-                  ),
+            if (controller.questions.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No questions available',
+                      style: TextStyle(
+                        fontSize: Responsive.sp(context, 18),
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => Get.back(),
+                      child: const Text('Go Back'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => Get.back(),
-                  child: const Text('Go Back'),
-                ),
-              ],
-            ),
-          );
-        }
+              );
+            }
 
-        final question = controller.questions[controller.currentIndex.value];
+            final question = controller.questions[controller.currentIndex.value];
 
-        return SafeArea(
+            return SafeArea(
           child: Column(
             children: [
               // Header section with progress and info
@@ -278,6 +280,43 @@ class ListeningView extends GetView<ListeningController> {
           ),
         );
       }),
+          
+          // Completion Loading Overlay
+          Obx(() => controller.isCompletingActivity.value
+              ? Container(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: primaryColor,
+                          strokeWidth: 3,
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Completing Activity...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Please wait while we save your progress',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : SizedBox.shrink()),
+        ],
+      ),
     );
   }
 }

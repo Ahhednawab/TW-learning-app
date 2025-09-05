@@ -13,23 +13,25 @@ class SwipecardView extends GetView<SwipecardController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(title: controller.categoryName.isNotEmpty ? controller.categoryName : 'Swipe Cards'),
-      body: Obx(() => controller.isLoading.value
-          ? Center(child: CircularProgressIndicator(color: primaryColor))
-          : controller.words.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
-                      Text(
-                        'No words available',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+      body: Stack(
+        children: [
+          Obx(() => controller.isLoading.value
+              ? Center(child: CircularProgressIndicator(color: primaryColor))
+              : controller.words.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            'No words available',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )
-              : Padding(
+                    )
+                  : Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: SingleChildScrollView(
                     child: Column(
@@ -306,6 +308,43 @@ class SwipecardView extends GetView<SwipecardController> {
                     ),
                   ),
                 )),
+          
+          // Completion Loading Overlay
+          Obx(() => controller.isCompletingActivity.value
+              ? Container(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: primaryColor,
+                          strokeWidth: 3,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Completing Activity...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Please wait while we save your progress',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink()),
+        ],
+      ),
     );
   }
 }

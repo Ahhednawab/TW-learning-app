@@ -37,6 +37,7 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
   var progress = 0.0.obs;
   var score = 0.obs;
   var isLoading = true.obs;
+  var isCompletingActivity = false.obs;
 
   var selectedChinese = (-1).obs;  // Selected Chinese word index
   var selectedEnglish = (-1).obs;  // Selected English word index
@@ -285,6 +286,8 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
   
   Future<void> completeGame() async {
     try {
+      isCompletingActivity.value = true;
+      
       String? userId = FirebaseService.currentUserId;
       
       if (userId != null) {
@@ -308,8 +311,10 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
       });
       
     } catch (e) {
-      print('Error completing game: $e');
+      print('Error completing character matching game: $e');
       Get.back();
+    } finally {
+      isCompletingActivity.value = false;
     }
   }
 
