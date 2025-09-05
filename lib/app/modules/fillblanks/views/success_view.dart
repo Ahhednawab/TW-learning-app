@@ -19,7 +19,7 @@ class SuccessView extends GetView {
       print("Error retrieving score: $e");
     }
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           // Refresh games selection screen when user navigates back
           try {

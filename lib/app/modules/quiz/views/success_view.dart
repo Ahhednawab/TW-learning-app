@@ -11,7 +11,7 @@ class SuccessView extends GetView {
     // Get arguments from the navigation route
     final score = Get.arguments['score'] as int;
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           // Refresh games selection screen when user navigates back
           try {

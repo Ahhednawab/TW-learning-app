@@ -89,7 +89,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
+                                        color: Colors.grey.withValues(alpha: 0.2),
                                         spreadRadius: 2,
                                         blurRadius: 5,
                                       ),
@@ -113,7 +113,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                               ) {
                                                 return Container(
                                                   color: primaryColor
-                                                      .withOpacity(0.1),
+                                                      .withValues(alpha: 0.1),
                                                   child: Icon(
                                                     Icons.image_not_supported,
                                                     size: 40,
@@ -123,9 +123,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                               },
                                             )
                                             : Container(
-                                              color: primaryColor.withOpacity(
-                                                0.1,
-                                              ),
+                                              color: primaryColor.withValues(alpha: 0.1),
                                               child: Icon(
                                                 Icons.image,
                                                 size: 40,
@@ -137,9 +135,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                         if (!isRevealed)
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.white.withOpacity(
-                                                0.9,
-                                              ),
+                                              color: Colors.white.withValues(alpha: 0.9),
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                             ),
@@ -156,9 +152,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                         if (isRevealed)
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.green.withOpacity(
-                                                0.2,
-                                              ),
+                                              color: Colors.green.withValues(alpha: 0.2),
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                             ),
@@ -236,7 +230,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                           textColor = Colors.red[800]!;
                                         } else if (isSelected) {
                                           backgroundColor = primaryColor
-                                              .withOpacity(0.1);
+                                              .withValues(alpha: 0.1);
                                           borderColor = primaryColor;
                                           textColor = primaryColor;
                                         }
@@ -336,7 +330,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                                           textColor = Colors.red[800]!;
                                         } else if (isSelected) {
                                           backgroundColor = primaryColor
-                                              .withOpacity(0.1);
+                                              .withValues(alpha: 0.1);
                                           borderColor = primaryColor;
                                           textColor = primaryColor;
                                         }
@@ -399,7 +393,7 @@ class CharactermatchingView extends GetView<CharactermatchingController> {
                         Obx(
                           () => LinearProgressIndicator(
                             value: controller.progress.value,
-                            backgroundColor: primaryColor.withOpacity(0.4),
+                            backgroundColor: primaryColor.withValues(alpha: 0.4),
                             color: primaryColor,
                             minHeight: 6,
                           ),

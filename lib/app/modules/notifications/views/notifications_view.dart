@@ -70,7 +70,9 @@ class NotificationsView extends GetView<NotificationsController> {
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: primaryColor,
+            ),
           );
         }
         
@@ -186,15 +188,15 @@ class NotificationsView extends GetView<NotificationsController> {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: notification.isRead ? Colors.white : primaryColor.withOpacity(0.05),
+              color: notification.isRead ? Colors.white : primaryColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: notification.isRead ? Colors.grey[200]! : primaryColor.withOpacity(0.2),
+                color: notification.isRead ? Colors.grey[200]! : primaryColor.withValues(alpha: 0.2),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -245,7 +247,7 @@ class NotificationsView extends GetView<NotificationsController> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: _getTypeColor(notification.type).withOpacity(0.1),
+                            color: _getTypeColor(notification.type).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -284,7 +286,7 @@ class NotificationsView extends GetView<NotificationsController> {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: _getTypeColor(notification.type).withOpacity(0.1),
+        color: _getTypeColor(notification.type).withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(

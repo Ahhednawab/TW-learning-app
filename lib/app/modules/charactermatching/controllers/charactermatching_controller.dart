@@ -1,5 +1,4 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mandarinapp/app/models/word_model.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
@@ -140,8 +139,8 @@ class CharactermatchingController extends GetxController with GetTickerProviderS
       englishList.shuffle();
       englishOptions.value = englishList;
       
-      print('Chinese options: ${chineseOptions.value}');
-      print('English options: ${englishOptions.value}');
+      // print('Chinese options: ${chineseOptions.value}');
+      // print('English options: ${englishOptions.value}');
     }
   }
 

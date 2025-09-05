@@ -196,7 +196,7 @@ class ListeningView extends GetView<ListeningController> {
                                     side: BorderSide(
                                       color: backgroundColor != null
                                           ? Colors.transparent
-                                          : primaryColor.withOpacity(0.3),
+                                          : primaryColor.withValues(alpha: 0.3),
                                     ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
