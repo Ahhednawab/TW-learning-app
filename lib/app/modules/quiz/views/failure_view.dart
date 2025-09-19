@@ -57,7 +57,7 @@ class QuizFailureView extends GetView {
                   width: Responsive.wp(0.90),
                 ),
                 Positioned(
-                  bottom: 60,
+                  bottom: Responsive.isTablet(context) ? 160 : 60,
                   right: 0,
                   left: 0,
                   child: Column(
@@ -66,22 +66,22 @@ class QuizFailureView extends GetView {
                       Text(
                         'Try Again!',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 20),
+                          fontSize: Responsive.isTablet(context) ? 32 : 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.red[600],
                         ),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: Responsive.isTablet(context) ? 20 : 5,),
                       CircleAvatar(
                         backgroundColor: Colors.red[400],
-                        radius: Responsive.isTablet(context) ? 34 : 30,
+                        radius: Responsive.isTablet(context) ? 44 : 30,
                         child: Icon(
                           Icons.refresh,
                           color: Colors.white,
-                          size: Responsive.isTablet(context) ? 40 : 30,
+                          size: Responsive.isTablet(context) ? 50 : 30,
                         ),
                       ),
-                      SizedBox(height: 10),
+                       SizedBox(height: Responsive.isTablet(context) ? 30 : 10,),
                       Text(
                         'Need 80% to pass',
                         style: TextStyle(
@@ -93,7 +93,7 @@ class QuizFailureView extends GetView {
                   ),
                 ),
                 Positioned(
-                  top: 30,
+                  top: Responsive.isTablet(context) ? 150 : 60,
                   right: 0,
                   left: 0,
                   child: Column(
@@ -102,7 +102,7 @@ class QuizFailureView extends GetView {
                       Text(
                         'Keep Practicing!',
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 24),
+                          fontSize: Responsive.isTablet(context) ? 32 : 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.red[600],
                         ),

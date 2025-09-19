@@ -82,7 +82,7 @@ class SuccessView extends GetView {
                   width: Responsive.wp(0.90),
                 ),
                 Positioned(
-                  bottom: 60,
+                  bottom: Responsive.isTablet(context) ? 160 : 60,
                   right: 0,
                   left: 0,
                   child: Column(
@@ -91,14 +91,14 @@ class SuccessView extends GetView {
                       Text(
                         'badgeearned'.tr,
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 22),
+                          fontSize: Responsive.isTablet(  context) ? 28 : 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: Responsive.isTablet(context) ? 50 : 25),
                       CircleAvatar(
                         backgroundColor: primaryColor,
-                        radius: Responsive.isTablet(context) ? 38 : 34,
+                        radius: Responsive.isTablet(context) ? 84 : 30,
                         backgroundImage: AssetImage(
                           'assets/images/congrats.png',
                         ),
@@ -113,7 +113,7 @@ class SuccessView extends GetView {
                   ),
                 ),
                 Positioned(
-                  top: 30,
+                  top: Responsive.isTablet(context) ? 150 : 40,
                   right: 0,
                   left: 0,
                   child: Column(
@@ -122,7 +122,7 @@ class SuccessView extends GetView {
                       Text(
                         'congratulations'.tr,
                         style: TextStyle(
-                          fontSize: Responsive.sp(context, 26),
+                          fontSize: Responsive.isTablet(context) ? 32 : 22,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -140,7 +140,7 @@ class SuccessView extends GetView {
                        Text(
                         '$score/$totalQuestions',
                         style: TextStyle(
-                          fontSize: Responsive.isTablet(context) ? 42 : 38,
+                          fontSize: Responsive.isTablet(context) ? 62 : 38,
                           fontWeight: FontWeight.bold,
                           color: primaryColor,
                         ),

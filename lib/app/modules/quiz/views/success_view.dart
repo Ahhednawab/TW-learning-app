@@ -55,7 +55,7 @@ class SuccessView extends GetView {
               children: [
                 Image.asset('assets/images/ticket.png', width: Responsive.wp(0.90)),
                 Positioned(
-                  bottom: 60,
+                  bottom: Responsive.isTablet(context) ? 160 : 60,
                   right: 0,
                   left: 0,
                   child: Column(
@@ -63,12 +63,12 @@ class SuccessView extends GetView {
                     children: [
                       Text(
                         'badgeearned'.tr,
-                        style: TextStyle(fontSize: Responsive.sp(context, 22), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: Responsive.sp(context, 25), fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: Responsive.isTablet(context) ? 50 : 25),
                       CircleAvatar(
                         backgroundColor: primaryColor,
-                        radius: Responsive.isTablet(context) ? 34 : 30,
+                        radius: Responsive.isTablet(context) ? 84 : 30,
                         backgroundImage: AssetImage('assets/images/congrats.png'),
                       ),
                       
@@ -81,7 +81,7 @@ class SuccessView extends GetView {
                   )
                 ),
                 Positioned(
-                  top: 60,
+                  top: Responsive.isTablet(context) ? 150 : 40,
                   right: 0,
                   left: 0,
                   child: Column(
@@ -89,13 +89,13 @@ class SuccessView extends GetView {
                     children: [
                       Text(
                         'scored'.tr,
-                        style: TextStyle(fontSize: Responsive.sp(context, 22), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: Responsive.isTablet(context) ? 32 : 22, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),                      
                       SizedBox(height: 5),
                       Text(
                         '${score.toStringAsFixed(0)}%',
-                        style: TextStyle(fontSize: Responsive.sp(context, 32), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: Responsive.isTablet(context) ? 42 : 38, fontWeight: FontWeight.bold, color: primaryColor),
                       ),
                     ],
                   )
