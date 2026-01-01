@@ -274,24 +274,24 @@ class HomeView extends GetView<HomeController> {
                 ),
                 const SizedBox(height: 28),
                 // Advertise Card
-                Container(
-                  height: Responsive.hp(0.1),
-                  margin: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    color: greyColor,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'advertise'.tr,
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: Responsive.sp(Get.context!, 14),
-                      ),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   height: Responsive.hp(0.1),
+                //   margin: const EdgeInsets.symmetric(horizontal: 14),
+                //   decoration: BoxDecoration(
+                //     color: greyColor,
+                //     borderRadius: BorderRadius.circular(12),
+                //   ),
+                //   child: Center(
+                //     child: Text(
+                //       'advertise'.tr,
+                //       style: TextStyle(
+                //         color: whiteColor,
+                //         fontWeight: FontWeight.w500,
+                //         fontSize: Responsive.sp(Get.context!, 14),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 const SizedBox(height: 18),
               ],
             ),

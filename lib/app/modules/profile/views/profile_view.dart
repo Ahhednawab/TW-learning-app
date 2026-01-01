@@ -6,6 +6,7 @@ import 'package:mandarinapp/app/modules/profile/widgets/profile_header.dart';
 import 'package:mandarinapp/app/modules/profile/widgets/profile_section_header.dart';
 import 'package:mandarinapp/app/modules/profile/widgets/profile_list_tile.dart';
 import 'package:mandarinapp/app/routes/app_pages.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../controllers/profile_controller.dart';
 import 'package:mandarinapp/app/helper/responsive.dart';
 
@@ -40,16 +41,25 @@ class ProfileView extends GetView<ProfileController> {
             // ),
             SizedBox(height: Responsive.isTablet(context) ? 66 : 58),
             // Profile header
-            Obx(() => controller.isLoading.value
-                ? Center(child: CircularProgressIndicator(color: primaryColor))
-                : ProfileHeader(
-                    avatarUrl: controller.currentUser.value?.profile.displayName[0].toUpperCase(),
-                    userName: controller.currentUser.value?.profile.displayName ?? 'User',
-                    learnedWords: controller.totalWordsLearned.value,
-                    onEdit: () {
-                      Get.toNamed(Routes.EDITPROFILE);
-                    },
-                  )),
+            Obx(
+              () =>
+                  controller.isLoading.value
+                      ? Center(
+                        child: CircularProgressIndicator(color: primaryColor),
+                      )
+                      : ProfileHeader(
+                        avatarUrl:
+                            controller.currentUser.value?.profile.displayName[0]
+                                .toUpperCase(),
+                        userName:
+                            controller.currentUser.value?.profile.displayName ??
+                            'User',
+                        learnedWords: controller.totalWordsLearned.value,
+                        onEdit: () {
+                          Get.toNamed(Routes.EDITPROFILE);
+                        },
+                      ),
+            ),
             const SizedBox(height: 16),
             // Divider
             Padding(
@@ -67,7 +77,7 @@ class ProfileView extends GetView<ProfileController> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha:0.03),
+                      color: Colors.black.withValues(alpha: 0.03),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -91,7 +101,7 @@ class ProfileView extends GetView<ProfileController> {
                       icon: Icons.notifications_none_rounded,
                       label: 'notifications'.tr,
                       trailing: Obx(
-                        ()=> Transform.scale(
+                        () => Transform.scale(
                           scale: 0.7,
                           child: CupertinoSwitch(
                             value: controller.isNotificationEnabled.value,
@@ -110,7 +120,7 @@ class ProfileView extends GetView<ProfileController> {
               ),
             ),
             // OTHERS section
-             ProfileSectionHeader(title: 'others'.tr),
+            ProfileSectionHeader(title: 'others'.tr),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Container(
@@ -119,7 +129,7 @@ class ProfileView extends GetView<ProfileController> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha:0.03),
+                      color: Colors.black.withValues(alpha: 0.03),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -131,7 +141,19 @@ class ProfileView extends GetView<ProfileController> {
                       icon: Icons.star_border_rounded,
                       label: 'rateapp'.tr,
                       trailing: null,
-                      onTap: () {},
+                      onTap: () async {
+                        Uri url = Uri.parse(
+                          "https://play.google.com/store/apps/details?id=com.mandarinapp.mandarinapp",
+                        );
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } else {
+                          print("❌ Could not launch $url");
+                        }
+                      },
                     ),
                     // Divider(height: 1, color: lightgreyColor),
                     // ProfileListTile(
@@ -153,6 +175,7 @@ class ProfileView extends GetView<ProfileController> {
             ),
           ],
         ),
-      ));
+      ),
+    );
   }
 }

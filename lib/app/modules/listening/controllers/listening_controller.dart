@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:mandarinapp/app/models/user_progress_model.dart';
@@ -50,6 +51,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
   var answerColor = <int, Color>{}.obs;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
+  late final FlutterTts _flutterTts;
 
   // Game data
   final RxList<ListeningQuestion> questions = <ListeningQuestion>[].obs;
@@ -58,7 +60,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
   @override
   void onInit() {
     super.onInit();
-    
+    _initTts();
     // Get arguments from navigation
     final args = Get.arguments;
     if (args != null) {
@@ -68,6 +70,16 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
     }
     
     loadGameData();
+  }
+
+   void _initTts() {
+    _flutterTts = FlutterTts();
+
+    // Adjust these as needed for your UX
+    _flutterTts.setLanguage('zh-TW');
+    _flutterTts.setSpeechRate(0.4); // slower for learning
+    _flutterTts.setPitch(1.0);
+    _flutterTts.setVolume(1.0);
   }
 
   // Load words from Firestore and generate questions
@@ -149,31 +161,57 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
   }
 
   // Play audio for current question
-  Future<void> playAudio() async {
-    if (questions.isEmpty || currentIndex.value >= questions.length) return;
-    
+  // NEW: helper to speak text
+  Future<void> _speakWord(String text) async {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return;
+
     try {
-      isPlaying.value = true;
-      ListeningQuestion question = questions[currentIndex.value];
-      
-      await _audioPlayer.stop();
-      
-      if (question.audioUrl.isNotEmpty) {
-        await _audioPlayer.setVolume(1.0);
-        await _audioPlayer.play(UrlSource(question.audioUrl));
-      } else {
-        // Fallback to asset audio if available
-        await _audioPlayer.setVolume(0.4);
-        await _audioPlayer.play(AssetSource('audio/dog.mp3'));
-      }
-      
+      await _flutterTts.stop();
+      await _flutterTts.speak(trimmed);
     } catch (e) {
-      print('Error playing audio: $e');
-      // Play fallback sound
-      await _audioPlayer.setVolume(0.4);
-      await _audioPlayer.play(AssetSource('audio/dog.mp3'));
-    } finally {
-      isPlaying.value = false;
+      print('Error playing word with TTS: $e');
+    }
+  }
+
+  /// UPDATED: now uses TTS to play the current word.
+  Future<void> playAudio() async {
+    if (questions.isNotEmpty && currentIndex.value < questions.length) {
+      ListeningQuestion currentWord = questions[currentIndex.value];
+
+      try {
+        // Stop any previous audio / TTS to avoid overlaps
+        await _audioPlayer.stop();
+        await _flutterTts.stop();
+      } catch (_) {}
+
+      // 1. Primary: speak the word text via TTS
+      try {
+        // Replace `currentWord.word` with your correct field if needed
+        final String wordText = currentWord.traditional;
+        if (wordText.isNotEmpty) {
+          await _speakWord(wordText);
+          return;
+        }
+      } catch (e) {
+        print('Error accessing word text for TTS: $e');
+      }
+
+      // 2. Fallback: play remote audio if available
+      if (currentWord.audioUrl.isNotEmpty) {
+        try {
+          print('Playing audio: ${currentWord.audioUrl}');
+          await _audioPlayer.setVolume(1.0);
+          await _audioPlayer.stop();
+          await _audioPlayer.play(UrlSource(currentWord.audioUrl));
+          return;
+        } catch (e) {
+          print('Error playing audio url, will fallback sound: $e');
+        }
+      }
+
+      // 3. Last fallback: generic asset sound
+      playSound('audio/correct.mp3');
     }
   }
 

@@ -78,7 +78,7 @@ class SwipecardView extends GetView<SwipecardController> {
                           word.imageUrl.isNotEmpty
                               ? CachedNetworkImage(
                                   imageUrl: word.imageUrl,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                   width: double.infinity,
                                   height: double.infinity,
                                   errorWidget: (context, error, stackTrace) {

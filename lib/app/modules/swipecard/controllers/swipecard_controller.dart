@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import '../../../models/word_model.dart';
 import '../../../models/user_progress_model.dart';
@@ -25,14 +26,27 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
   late AnimationController overlayController;
   late Animation<double> overlayAnimation;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  late final FlutterTts _flutterTts;
 
   @override
   void onInit() {
     super.onInit();
+    _initTts();  
     loadArguments();
     initializeAnimations();
     loadWords();
   }
+
+    void _initTts() {
+    _flutterTts = FlutterTts();
+
+    // Adjust these as needed for your UX
+    _flutterTts.setLanguage('en-US');
+    _flutterTts.setSpeechRate(0.4); // slower for learning
+    _flutterTts.setPitch(1.0);
+    _flutterTts.setVolume(1.0);
+  }
+
 
   void loadArguments() {
     try {
@@ -110,24 +124,57 @@ class SwipecardController extends GetxController with GetTickerProviderStateMixi
     }
   }
 
+   // NEW: helper to speak text
+  Future<void> _speakWord(String text) async {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return;
+
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.speak(trimmed);
+    } catch (e) {
+      print('Error playing word with TTS: $e');
+    }
+  }
+
+  /// UPDATED: now uses TTS to play the current word.
   Future<void> playWordAudio() async {
     if (words.isNotEmpty && currentIndex.value < words.length) {
       WordModel currentWord = words[currentIndex.value];
+
+      try {
+        // Stop any previous audio / TTS to avoid overlaps
+        await _audioPlayer.stop();
+        await _flutterTts.stop();
+      } catch (_) {}
+
+      // 1. Primary: speak the word text via TTS
+      try {
+        // Replace `currentWord.word` with your correct field if needed
+        final String wordText = currentWord.english;
+        if (wordText.isNotEmpty) {
+          await _speakWord(wordText);
+          return;
+        }
+      } catch (e) {
+        print('Error accessing word text for TTS: $e');
+      }
+
+      // 2. Fallback: play remote audio if available
       if (currentWord.audioUrl.isNotEmpty) {
         try {
           print('Playing audio: ${currentWord.audioUrl}');
           await _audioPlayer.setVolume(1.0);
           await _audioPlayer.stop();
           await _audioPlayer.play(UrlSource(currentWord.audioUrl));
+          return;
         } catch (e) {
-          print('Error playing audio: $e');
-          // Fallback to asset audio if available
-          playSound('audio/correct.mp3');
+          print('Error playing audio url, will fallback sound: $e');
         }
-      } else {
-        // Fallback audio
-        playSound('audio/correct.mp3');
       }
+
+      // 3. Last fallback: generic asset sound
+      playSound('audio/correct.mp3');
     }
   }
 

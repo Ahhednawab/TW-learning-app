@@ -106,7 +106,7 @@ class ListeningView extends GetView<ListeningController> {
                                 if (question.imageUrl.isNotEmpty)
                                   CachedNetworkImage(
                                     imageUrl: question.imageUrl,
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.fill,
                                     width: double.infinity,
                                     height: double.infinity,
                                     errorWidget: (context, error, stackTrace) {

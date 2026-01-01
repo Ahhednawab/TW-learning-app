@@ -70,7 +70,7 @@ class QuizView extends GetView<QuizController> {
                               question.imageUrl.isNotEmpty
                                   ? CachedNetworkImage(
                                       imageUrl: question.imageUrl,
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.contain,
                                       width: double.infinity,
                                       height: double.infinity,
                                       errorWidget: (context, error, stackTrace) {

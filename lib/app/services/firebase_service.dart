@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:mandarinapp/app/modules/home/controllers/home_controller.dart';
 import 'package:mandarinapp/app/modules/vocabulary/controllers/vocabulary_controller.dart';
 import 'package:mandarinapp/app/services/Snackbarservice.dart';
 import '../models/user_model.dart';
@@ -786,6 +787,8 @@ class FirebaseService {
       await _firestore.collection('userProgress').doc(userId).update(updateData);
       
       // Check and trigger unlocking
+      await Get.find<HomeController>().loadUserData();
+      await Get.find<VocabularyController>().loadData();
       await checkAndUnlockProgress(userId, categoryId, activityType, gameType: gameType);
       
       return true;
@@ -825,14 +828,20 @@ class FirebaseService {
           completedCategories++;
         }
         
-        // Count activities
+        // Count activities using the corrected logic: 3 main activities per category
+        // Main activities: swipeCards, quiz, games (games is treated as a single unit with proportional progress)
         if (categoryProgress.activities.swipeCards.isCompleted) completedActivities++;
         if (categoryProgress.activities.quiz.isCompleted) completedActivities++;
-        if (categoryProgress.activities.games.fillInBlanks.isCompleted) completedActivities++;
-        if (categoryProgress.activities.games.characterMatching.isCompleted) completedActivities++;
-        if (categoryProgress.activities.games.listening.isCompleted) completedActivities++;
         
-        totalActivities += 5; // 5 activities per category
+        // Games is counted proportionally: 1 completed game = 0.33, 2 games = 0.67, 3 games = 1
+        final games = categoryProgress.activities.games;
+        int completedGames = 0;
+        if (games.fillInBlanks.isCompleted) completedGames++;
+        if (games.characterMatching.isCompleted) completedGames++;
+        if (games.listening.isCompleted) completedGames++;
+        completedActivities += (completedGames / 3) as int;
+        
+        totalActivities += 3; // 3 main activities per category
       }
 
       return {

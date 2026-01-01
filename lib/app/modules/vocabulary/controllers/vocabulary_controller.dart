@@ -111,6 +111,11 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
   }
 
   // Local calculation of category progress based on userProgress data
+  // Progress is calculated as: (total activity units / 3) * 100
+  // The 3 main activities are: swipeCards, quiz, and games
+  // - swipeCards: counts as 0 or 1 (binary)
+  // - quiz: counts as 0 or 1 (binary)
+  // - games: counts as 0 to 1 proportionally (0, 0.33, 0.67, or 1 based on how many of 3 games are completed)
   double calculateCategoryProgress(String categoryId) {
     if (userProgress.value == null) return 0.0;
     
@@ -120,30 +125,25 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
     // Calculate progress based on activities completion
     final activities = categoryProgress.activities;
     
-    int completedActivities = 0;
-    int totalActivities = 0;
+    double activityProgress = 0.0;
+    const int totalMainActivities = 3; // swipeCards, quiz, games
     
-    // Check swipeCards
-    totalActivities++;
-    if (activities.swipeCards.isCompleted) completedActivities++;
+    // Activity 1: swipeCards (0 or 1)
+    if (activities.swipeCards.isCompleted) activityProgress += 1.0;
     
-    // Check quiz
-    totalActivities++;
-    if (activities.quiz.isCompleted) completedActivities++;
+    // Activity 2: quiz (0 or 1)
+    if (activities.quiz.isCompleted) activityProgress += 1.0;
     
-    // Check games
+    // Activity 3: games (0, 0.33, 0.67, or 1)
+    // Count how many of the 3 games are completed
     final games = activities.games;
-    totalActivities++;
-    if (games.fillInBlanks.isCompleted) completedActivities++;
+    int completedGames = 0;
+    if (games.fillInBlanks.isCompleted) completedGames++;
+    if (games.characterMatching.isCompleted) completedGames++;
+    if (games.listening.isCompleted) completedGames++;
+    activityProgress += (completedGames / 3);
     
-    totalActivities++;
-    if (games.characterMatching.isCompleted) completedActivities++;
-    
-    totalActivities++;
-    if (games.listening.isCompleted) completedActivities++;
-    
-    if (totalActivities == 0) return 0.0;
-    return (completedActivities / totalActivities) * 100;
+    return (activityProgress / totalMainActivities) * 100;
   }
 
   bool isLevelUnlocked(String levelId) {
@@ -164,36 +164,84 @@ class VocabularyController extends GetxController with GetTickerProviderStateMix
     });
   }
 
-  IconData getCategoryIcon(String categoryName) {
-    switch (categoryName.toLowerCase()) {
-      case 'animals':
-        return Icons.pets;
-      case 'appearance':
-        return Icons.face;
-      case 'culture':
-        return Icons.museum;
-      case 'buildings':
-        return Icons.apartment;
-      case 'nature':
-        return Icons.nature;
-      case 'sports':
-        return Icons.sports;
-      case 'food':
-        return Icons.fastfood;
-      case 'clothes':
-        return Icons.checkroom;
-      case 'travel':
-        return Icons.travel_explore;
-      case 'technology':
-        return Icons.computer;
-      case 'health':
-        return Icons.health_and_safety;
-      case 'education':
-        return Icons.school;
-      default:
-        return Icons.category;
-    }
+ IconData getCategoryIcon(String categoryName) {
+  switch (categoryName.toLowerCase()) {
+
+    // LEVEL 1
+    case 'colors':
+      return Icons.palette;
+    case 'numbers':
+      return Icons.onetwothree;
+    case 'family':
+      return Icons.family_restroom;
+    case 'body_parts':
+      return Icons.accessibility_new;
+    case 'clothes':
+      return Icons.checkroom;
+    case 'school':
+      return Icons.school;
+
+    // LEVEL 2
+    case 'jobs':
+      return Icons.work;
+    case 'hobbies':
+      return Icons.interests;
+    case 'sports':
+      return Icons.sports_soccer;
+    case 'travel':
+      return Icons.travel_explore;
+    case 'weather':
+      return Icons.wb_sunny;
+    case 'time':
+      return Icons.access_time;
+
+    // LEVEL 3
+    case 'days_and_months':
+      return Icons.calendar_month;
+    case 'opposites':
+      return Icons.compare_arrows;
+    case 'synonyms':
+      return Icons.sync_alt;
+    case 'antonyms':
+      return Icons.swap_horiz;
+    case 'transportation':
+      return Icons.directions_bus;
+    case 'home':
+      return Icons.home;
+
+    // LEVEL 4
+    case 'kitchen':
+      return Icons.kitchen;
+    case 'bathroom':
+      return Icons.bathtub;
+    case 'living_room':
+      return Icons.weekend;
+    case 'fruits':
+      return Icons.local_grocery_store;
+    case 'vegetables':
+      return Icons.eco;
+    case 'drinks':
+      return Icons.local_drink;
+
+    // LEVEL 5
+    case 'places':
+      return Icons.place;
+    case 'countries':
+      return Icons.public;
+    case 'cities':
+      return Icons.location_city;
+    case 'technology':
+      return Icons.computer;
+    case 'emotions':
+      return Icons.emoji_emotions;
+    case 'shapes':
+      return Icons.category;
+
+    // DEFAULT
+    default:
+      return Icons.category;
   }
+}
 
   @override
   void onClose() {
