@@ -119,7 +119,7 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
       
       // Generate 4 options including the correct answer
       List<String> options = generateOptions(word, gameWords);
-      int correctIndex = options.indexOf(word.simplified);
+      int correctIndex = options.indexOf(word.english);
       
       questions.add(ListeningQuestion(
         wordId: word.wordId,
@@ -141,14 +141,14 @@ class ListeningController extends GetxController with GetTickerProviderStateMixi
 
   // Generate 4 options for multiple choice
   List<String> generateOptions(WordModel correctWord, List<WordModel> allWords) {
-    List<String> options = [correctWord.simplified];
+    List<String> options = [correctWord.english];
     
     // Add 3 random incorrect options
     List<WordModel> otherWords = allWords.where((w) => w.wordId != correctWord.wordId).toList();
     otherWords.shuffle();
     
     for (int i = 0; i < 3 && i < otherWords.length; i++) {
-      options.add(otherWords[i].simplified);
+      options.add(otherWords[i].english);
     }
     
     // If we don't have enough words, add some fallback options
